@@ -1,0 +1,7 @@
+backend/config.toml
+backend/.env
+frontend/.env.local
+frontend/node_modules/
+frontend/.next/
+frontend/tsconfig.tsbuildinfo
+backend/gugudu-backend

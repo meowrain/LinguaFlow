@@ -1,0 +1,244 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f7f7f4;
+  --foreground: #171717;
+  --surface: #ffffff;
+  --surface-muted: #f3f4f6;
+  --border: #e5e7eb;
+  --muted: #6b7280;
+}
+
+.dark {
+  --background: #0f0f0f;
+  --foreground: #ededed;
+  --surface: #111827;
+  --surface-muted: #1f2937;
+  --border: #1f2937;
+  --muted: #9ca3af;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface-muted);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #9ca3af;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* 选中文本样式 */
+::selection {
+  background-color: rgba(14, 165, 233, 0.3);
+  color: var(--foreground);
+}
+
+.reading-selection-highlight {
+  background: rgba(14, 165, 233, 0.22);
+  color: var(--foreground);
+  border-radius: 3px;
+  padding: 0.05rem 0.12rem;
+}
+
+/* 划词翻译气泡 */
+.translation-tooltip {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 10px 40px rgba(15, 23, 42, 0.18);
+  z-index: 1000;
+  max-width: 400px;
+  animation: fadeIn 0.2s ease-in;
+}
+
+.dark .translation-tooltip {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+html:not(.dark) .bg-gray-950 {
+  background-color: #f3f4f6 !important;
+}
+
+html:not(.dark) .bg-gray-950\/30,
+html:not(.dark) .bg-gray-950\/50 {
+  background-color: rgba(243, 244, 246, 0.8) !important;
+}
+
+html:not(.dark) .bg-gray-900 {
+  background-color: #ffffff !important;
+}
+
+html:not(.dark) .bg-gray-900\/40,
+html:not(.dark) .bg-gray-900\/50,
+html:not(.dark) .bg-gray-900\/60 {
+  background-color: rgba(255, 255, 255, 0.82) !important;
+}
+
+html:not(.dark) .bg-gray-800 {
+  background-color: #e5e7eb !important;
+}
+
+html:not(.dark) .bg-gray-800\/50 {
+  background-color: rgba(229, 231, 235, 0.65) !important;
+}
+
+html:not(.dark) .border-gray-800,
+html:not(.dark) .border-gray-700 {
+  border-color: #e5e7eb !important;
+}
+
+html:not(.dark) .border-gray-600,
+html:not(.dark) .border-gray-500 {
+  border-color: #d1d5db !important;
+}
+
+html:not(.dark) .text-gray-100,
+html:not(.dark) .text-gray-200 {
+  color: #111827 !important;
+}
+
+html:not(.dark) .text-gray-300 {
+  color: #374151 !important;
+}
+
+html:not(.dark) .text-gray-400 {
+  color: #4b5563 !important;
+}
+
+html:not(.dark) .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+html:not(.dark) .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+html:not(.dark) .text-gray-700 {
+  color: #6b7280 !important;
+}
+
+html:not(.dark) .hover\:bg-gray-900:hover,
+html:not(.dark) .hover\:bg-gray-800:hover,
+html:not(.dark) .hover\:bg-gray-700:hover {
+  background-color: #f3f4f6 !important;
+}
+
+html:not(.dark) .hover\:border-gray-800:hover,
+html:not(.dark) .hover\:border-gray-600:hover {
+  border-color: #9ca3af !important;
+}
+
+html:not(.dark) .hover\:text-gray-200:hover,
+html:not(.dark) .hover\:text-gray-300:hover,
+html:not(.dark) .hover\:text-white:hover {
+  color: #111827 !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 文章内容样式 */
+.article-content {
+  line-height: 1.8;
+  font-size: 1.125rem;
+}
+
+.article-content p {
+  margin-bottom: 1.5rem;
+}
+
+.article-content h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.article-content h3 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.article-content ul,
+.article-content ol {
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.article-content li {
+  margin-bottom: 0.5rem;
+}
+
+.article-content blockquote {
+  border-left: 4px solid #3b82f6;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  color: var(--muted);
+}
+
+.article-content code {
+  background: var(--surface-muted);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.875em;
+}
+
+.article-content pre {
+  background: var(--surface-muted);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+.article-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
