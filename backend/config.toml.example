@@ -35,15 +35,31 @@ youdao_appsecret = ""
 
 [ai]
 enabled = false
-# OpenAI-compatible chat completions base URL, e.g. https://api.openai.com/v1 or https://api.deepseek.com
-base_url = "https://api.openai.com/v1"
+# MiMo OpenAI-compatible chat completions base URL
+base_url = "https://api.xiaomimimo.com/v1"
+# Leave empty to reuse [tts].api_key.
 api_key = ""
-model = "gpt-4o-mini"
+model = "mimo-v2.5-pro"
 request_timeout_seconds = 20
+
+[tts]
+enabled = false
+# MiMo OpenAI-compatible chat completions base URL
+base_url = "https://api.xiaomimimo.com/v1"
+api_key = ""
+model = "mimo-v2.5-tts"
+voice = "Chloe"
+response_format = "wav"
+instructions = "Speak clearly for English learners with natural pauses and a neutral American accent."
+cache_dir = "storage/tts"
+request_timeout_seconds = 30
+max_input_length = 3000
 
 [rss]
 enabled = true
 import_token = "change-me-rss-import-token"
+# Optional. Use a local proxy when RSS sources are not reachable directly.
+# proxy = "http://127.0.0.1:7897"
 user_agent = "GuGuDu RSS Importer/1.0"
 request_timeout_seconds = 15
 max_items_per_feed = 10
@@ -56,6 +72,8 @@ category_name = "科学与技术"
 category_en = "Science and Technology"
 category_slug = "science-technology"
 tags = "voa,learning english,science,technology"
+# Optional. Overrides [rss].max_items_per_feed for this feed.
+# max_items = 50
 enabled = true
 
 [[rss.feeds]]
@@ -76,4 +94,158 @@ category_name = "时事英语"
 category_en = "As It Is"
 category_slug = "as-it-is"
 tags = "voa,learning english,news"
+enabled = true
+
+[[rss.feeds]]
+name = "Sixth Tone"
+url = "https://api.sixthtone.com/cont/output/rssApi"
+source = "Sixth Tone"
+category_name = "中国观察"
+category_en = "China"
+category_slug = "china"
+tags = "sixth tone,china,news"
+max_items = 60
+enabled = true
+
+[[rss.feeds]]
+name = "Smithsonian Magazine"
+url = "https://www.smithsonianmag.com/rss/latest_articles/"
+source = "Smithsonian Magazine"
+category_name = "文化与历史"
+category_en = "Culture & History"
+category_slug = "culture-history"
+tags = "smithsonian,culture,history,science"
+max_items = 10
+enabled = true
+
+[[rss.feeds]]
+name = "Nautilus"
+url = "https://nautil.us/feed/"
+source = "Nautilus"
+category_name = "科学与思想"
+category_en = "Science & Ideas"
+category_slug = "science-ideas"
+tags = "nautilus,science,ideas,essay"
+max_items = 8
+enabled = true
+
+[[rss.feeds]]
+name = "Quanta Magazine"
+url = "https://www.quantamagazine.org/feed/"
+source = "Quanta Magazine"
+category_name = "科学与技术"
+category_en = "Science and Technology"
+category_slug = "science-technology"
+tags = "quanta,science,math,physics,biology"
+max_items = 8
+enabled = true
+
+[[rss.feeds]]
+name = "MIT Technology Review"
+url = "https://www.technologyreview.com/feed/"
+source = "MIT Technology Review"
+category_name = "科学与技术"
+category_en = "Science and Technology"
+category_slug = "science-technology"
+tags = "mit technology review,technology,ai,science"
+max_items = 10
+enabled = true
+
+[[rss.feeds]]
+name = "Aeon"
+url = "https://aeon.co/feed.rss"
+source = "Aeon"
+category_name = "文化与思想"
+category_en = "Culture & Ideas"
+category_slug = "culture-ideas"
+tags = "aeon,essay,culture,philosophy,ideas"
+max_items = 8
+enabled = true
+
+[[rss.feeds]]
+name = "ScienceDaily"
+url = "https://www.sciencedaily.com/rss/top.xml"
+source = "ScienceDaily"
+category_name = "科学与技术"
+category_en = "Science and Technology"
+category_slug = "science-technology"
+tags = "sciencedaily,science,research,health,technology"
+max_items = 12
+enabled = true
+
+[[rss.feeds]]
+name = "NASA Earth Observatory"
+url = "https://earthobservatory.nasa.gov/feeds/earth-observatory.rss"
+source = "NASA Earth Observatory"
+category_name = "地球与环境"
+category_en = "Earth & Environment"
+category_slug = "earth-environment"
+tags = "nasa,earth,environment,climate,space"
+max_items = 8
+enabled = true
+
+[[rss.feeds]]
+name = "Longreads"
+url = "https://longreads.com/feed/"
+source = "Longreads"
+category_name = "长文阅读"
+category_en = "Longform"
+category_slug = "longform"
+tags = "longreads,longform,essay,features"
+max_items = 8
+enabled = true
+
+[[rss.feeds]]
+name = "WIRED"
+url = "https://www.wired.com/feed/rss"
+source = "WIRED"
+category_name = "科技与社会"
+category_en = "Technology & Society"
+category_slug = "technology-society"
+tags = "wired,technology,science,culture"
+max_items = 10
+enabled = true
+
+[[rss.feeds]]
+name = "The Verge"
+url = "https://www.theverge.com/rss/index.xml"
+source = "The Verge"
+category_name = "科技与社会"
+category_en = "Technology & Society"
+category_slug = "technology-society"
+tags = "the verge,technology,consumer tech,science"
+max_items = 10
+enabled = true
+
+[[rss.feeds]]
+name = "Ars Technica"
+url = "https://feeds.arstechnica.com/arstechnica/index"
+source = "Ars Technica"
+category_name = "科学与技术"
+category_en = "Science and Technology"
+category_slug = "science-technology"
+tags = "ars technica,technology,science,security"
+max_items = 10
+enabled = true
+
+[[rss.feeds]]
+name = "Breaking News English"
+url = "https://breakingnewsenglish.com/rss.xml"
+source = "Breaking News English"
+category_name = "英语学习新闻"
+category_en = "English Learning News"
+category_slug = "english-learning-news"
+tags = "breaking news english,learning english,news"
+max_items = 12
+enabled = true
+
+[[rss.feeds]]
+name = "NPR Education"
+url = "https://feeds.npr.org/1013/rss.xml"
+source = "NPR Education"
+category_name = "教育与社会"
+category_en = "Education & Society"
+category_slug = "education-society"
+tags = "npr,education,society,learning"
+max_items = 10
 enabled = true

@@ -1,0 +1,10 @@
+.env
+config.toml
+gugudu-backend
+storage/
+
+.git/
+.gitignore
+
+*.log
+tmp/

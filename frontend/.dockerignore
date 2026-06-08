@@ -1,0 +1,10 @@
+.env.local
+node_modules/
+.next/
+tsconfig.tsbuildinfo
+
+.git/
+.gitignore
+
+*.log
+tmp/

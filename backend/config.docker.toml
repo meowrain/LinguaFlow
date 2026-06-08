@@ -1,0 +1,91 @@
+[database]
+host = "postgres"
+port = "5432"
+user = "postgres"
+password = "postgres"
+dbname = "gugudu"
+
+[redis]
+host = "redis"
+port = "6379"
+password = ""
+
+[jwt]
+secret = "change-this-jwt-secret-in-development"
+
+[server]
+port = "8080"
+gin_mode = "debug"
+
+[cors]
+allowed_origins = "http://localhost:3000"
+
+[translation]
+# 百度翻译 API (https://fanyi-api.baidu.com/)
+baidu_appid = ""
+baidu_secret = ""
+
+# 百度智能云文本翻译-词典版 API Key / Secret Key
+baidu_dict_api_key = ""
+baidu_dict_secret_key = ""
+
+# 有道翻译 API (https://ai.youdao.com/)
+youdao_appkey = ""
+youdao_appsecret = ""
+
+[ai]
+enabled = false
+# Leave api_key empty to reuse [tts].api_key.
+base_url = "https://api.xiaomimimo.com/v1"
+api_key = ""
+model = "mimo-v2.5-pro"
+request_timeout_seconds = 20
+
+[tts]
+enabled = false
+base_url = "https://api.xiaomimimo.com/v1"
+api_key = ""
+model = "mimo-v2.5-tts"
+voice = "Chloe"
+response_format = "wav"
+instructions = "Speak clearly for English learners with natural pauses and a neutral American accent."
+cache_dir = "storage/tts"
+request_timeout_seconds = 30
+max_input_length = 3000
+
+[rss]
+enabled = true
+import_token = "change-me-rss-import-token"
+user_agent = "GuGuDu RSS Importer/1.0"
+request_timeout_seconds = 15
+max_items_per_feed = 10
+
+[[rss.feeds]]
+name = "VOA Learning English - Science & Technology"
+url = "https://learningenglish.voanews.com/api/zmg_pl-vomx-tpeymtm"
+source = "VOA Learning English"
+category_name = "科学与技术"
+category_en = "Science and Technology"
+category_slug = "science-technology"
+tags = "voa,learning english,science,technology"
+enabled = true
+
+[[rss.feeds]]
+name = "VOA Learning English - Health & Lifestyle"
+url = "https://learningenglish.voanews.com/api/zmmpql-vomx-tpey-_q"
+source = "VOA Learning English"
+category_name = "健康与生活"
+category_en = "Health and Lifestyle"
+category_slug = "health-lifestyle"
+tags = "voa,learning english,health,lifestyle"
+enabled = true
+
+[[rss.feeds]]
+name = "VOA Learning English - As It Is"
+url = "https://learningenglish.voanews.com/api/zkm-ql-vomx-tpej-rqi"
+source = "VOA Learning English"
+category_name = "时事英语"
+category_en = "As It Is"
+category_slug = "as-it-is"
+tags = "voa,learning english,news"
+enabled = true
