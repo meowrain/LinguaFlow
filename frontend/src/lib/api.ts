@@ -1,6 +1,18 @@
 import axios from 'axios';
+import { AdminArticleInput } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+export const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
+
+function authHeaders(): Record<string, string> {
+  const token = localStorage.getItem('token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+export function resolveAPIAssetURL(path: string) {
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${API_ORIGIN}${path.startsWith('/') ? path : `/${path}`}`;
+}
 
 const api = axios.create({
   baseURL: API_URL,
@@ -45,6 +57,8 @@ export const authAPI = {
     api.post('/auth/login', data),
   getProfile: () =>
     api.get('/profile'),
+  uploadAvatar: (data: FormData) =>
+    api.post('/profile/avatar', data),
 };
 
 // 文章 API
@@ -54,6 +68,7 @@ export const articleAPI = {
     page_size?: number;
     category?: string;
     difficulty?: string;
+    source?: string;
     search?: string;
   }) => api.get('/articles', { params }),
   getFeaturedArticles: (limit?: number) =>
@@ -62,6 +77,22 @@ export const articleAPI = {
     api.get(`/articles/${slug}`),
   updateReadProgress: (id: number, data: { progress: number; read_time: number }) =>
     api.post(`/articles/${id}/progress`, data),
+  discussWithAssistant: (
+    id: number,
+    data: { messages: Array<{ role: 'user' | 'assistant'; content: string }> }
+  ) => api.post(`/articles/${id}/assistant`, data),
+  streamAssistant: (
+    id: number,
+    data: { messages: Array<{ role: 'user' | 'assistant'; content: string }> }
+  ) =>
+    fetch(`${API_URL}/articles/${id}/assistant`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(),
+      },
+      body: JSON.stringify(data),
+    }),
   getCompletion: (id: number) =>
     api.get(`/article-completions/${id}`),
 };
@@ -69,6 +100,31 @@ export const articleAPI = {
 // 分类 API
 export const categoryAPI = {
   getCategories: () => api.get('/categories'),
+};
+
+// RSS API
+export const rssAPI = {
+  getFeeds: () => api.get('/rss/feeds'),
+  importFeeds: () => api.post('/admin/rss/import'),
+};
+
+export const adminArticleAPI = {
+  getArticles: (params?: {
+    page?: number;
+    page_size?: number;
+    status?: string;
+    category?: string;
+    source?: string;
+    search?: string;
+  }) => api.get('/admin/articles', { params }),
+  getArticle: (id: number) => api.get(`/admin/articles/${id}`),
+  createArticle: (data: AdminArticleInput) => api.post('/admin/articles', data),
+  updateArticle: (id: number, data: AdminArticleInput) => api.put(`/admin/articles/${id}`, data),
+  updateStatus: (id: number, status: 'draft' | 'published' | 'archived') =>
+    api.patch(`/admin/articles/${id}/status`, { status }),
+  updateFeatured: (id: number, is_featured: boolean) =>
+    api.patch(`/admin/articles/${id}/featured`, { is_featured }),
+  deleteArticle: (id: number) => api.delete(`/admin/articles/${id}`),
 };
 
 // 翻译 API
@@ -81,9 +137,19 @@ export const translationAPI = {
     api.post('/sentences/analyze', { text }),
 };
 
+export const ttsAPI = {
+  generateSpeech: (data: {
+    text: string;
+    voice?: string;
+    speed?: number;
+    format?: string;
+    instructions?: string;
+  }) => api.post('/tts', data),
+};
+
 // 生词本 API
 export const vocabularyAPI = {
-  getVocabulary: (params?: { due?: boolean; article_id?: number }) =>
+  getVocabulary: (params?: { due?: boolean; article_id?: number; weak?: boolean }) =>
     api.get('/vocabulary', { params }),
   addWord: (data: {
     word: string;
@@ -109,9 +175,31 @@ export const subscriptionAPI = {
     api.delete(`/subscriptions/${article_id}`),
 };
 
+// 会员 API
+export const membershipAPI = {
+  getInfo: () => api.get('/membership/info'),
+  getPlans: () => api.get('/membership/plans'),
+  getBenefits: () => api.get('/membership/benefits'),
+  createOrder: (product_type: 'monthly' | 'yearly' | 'lifetime') =>
+    api.post('/membership/orders', { product_type }),
+  getOrders: () => api.get('/membership/orders'),
+  activateOrder: (order_no: string) =>
+    api.post(`/membership/orders/${order_no}/activate`),
+};
+
 // 历史记录 API
 export const historyAPI = {
   getReadHistory: () => api.get('/history'),
+};
+
+// 学习闭环 API
+export const studyAPI = {
+  getToday: () => api.get('/study/today'),
+  updateGoal: (data: {
+    daily_read_minutes: number;
+    daily_review_words: number;
+    daily_articles: number;
+  }) => api.put('/study/goal', data),
 };
 
 export default api;

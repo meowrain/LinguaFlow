@@ -1,19 +1,36 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/authStore';
+import { authAPI, resolveAPIAssetURL } from '@/lib/api';
 import { ChevronDown, Search, User, LogOut, Menu } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ThemeToggle from './ThemeToggle';
 
 export default function Header() {
   const pathname = usePathname();
-  const { user, isAuthenticated, logout } = useAuthStore();
+  const { user, isAuthenticated, logout, updateUser } = useAuthStore();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const avatarURL = user?.avatar ? resolveAPIAssetURL(user.avatar) : '';
+  const isAdmin = Boolean(user?.is_admin);
+
+  useEffect(() => {
+    if (!isAuthenticated || !user || typeof user.is_admin === 'boolean') return;
+
+    authAPI.getProfile()
+      .then((response) => {
+        updateUser(response.data.data);
+      })
+      .catch(() => {
+        // The global API interceptor handles expired sessions.
+      });
+  }, [isAuthenticated, updateUser, user]);
 
   const navItems = [
     { name: '首页', path: '/' },
+    { name: '每日学习', path: '/study' },
     { name: '最近更新', path: '/latest' },
     { name: '全部外刊', path: '/journals' },
     { name: '复习', path: '/vocabulary' },
@@ -55,7 +72,7 @@ export default function Header() {
             </Link>
             <span className="h-7 w-px bg-gray-200 dark:bg-gray-700" />
             <Link
-              href="/register"
+              href="/membership"
               className="py-5 text-sm font-bold text-gray-700 transition-colors hover:text-gray-950 dark:text-gray-200 dark:hover:text-white"
             >
               加入会员
@@ -81,17 +98,42 @@ export default function Header() {
                   <span className="text-sm hidden sm:inline">
                     Hi, {user.nickname || user.username} 💎
                   </span>
-                  <User className="w-5 h-5" />
+                  {avatarURL ? (
+                    <Image
+                      src={avatarURL}
+                      alt="用户头像"
+                      width={28}
+                      height={28}
+                      unoptimized
+                      className="h-7 w-7 rounded-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-5 h-5" />
+                  )}
                 </button>
 
                 {showUserMenu && (
                   <div className="absolute right-0 mt-2 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-800 dark:bg-gray-900">
+                    <Link
+                      href="/study"
+                      className="block px-4 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      每日学习
+                    </Link>
                     <Link
                       href="/profile"
                       className="block px-4 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
                       onClick={() => setShowUserMenu(false)}
                     >
                       个人中心
+                    </Link>
+                    <Link
+                      href="/membership"
+                      className="block px-4 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      会员中心
                     </Link>
                     <Link
                       href="/subscriptions"
@@ -114,6 +156,15 @@ export default function Header() {
                     >
                       阅读历史
                     </Link>
+                    {isAdmin && (
+                      <Link
+                        href="/admin/articles"
+                        className="block px-4 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        文章管理
+                      </Link>
+                    )}
                     <button
                       onClick={() => {
                         logout();

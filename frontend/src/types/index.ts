@@ -49,6 +49,7 @@ export interface Vocabulary {
   context?: string;
   is_learned: boolean;
   review_count: number;
+  forgotten_count: number;
   last_review?: string;
   next_review_at?: string;
   review_interval: number;
@@ -70,11 +71,92 @@ export interface ReadHistory {
   updated_at: string;
 }
 
+export interface StudyGoal {
+  id: number;
+  user_id: number;
+  daily_read_minutes: number;
+  daily_review_words: number;
+  daily_articles: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface StudyRecord {
+  id?: number;
+  user_id: number;
+  date: string;
+  read_seconds: number;
+  reviewed_words: number;
+  completed_articles: number;
+  is_completed: boolean;
+  last_activity_at?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface StudyToday {
+  goal: StudyGoal;
+  today: StudyRecord;
+  progress: {
+    read_minutes: number;
+    reviewed_words: number;
+    completed_articles: number;
+  };
+  completion: number;
+  is_completed: boolean;
+  streak: number;
+  calendar: StudyRecord[];
+}
+
 export interface Subscription {
   id: number;
   user_id: number;
   article_id: number;
   article?: Article;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MembershipPlan {
+  id: 'monthly' | 'yearly' | 'lifetime';
+  name: string;
+  name_en: string;
+  price: number;
+  currency: string;
+  duration: number;
+  save_percent: number;
+  features: string[];
+  recommended?: boolean;
+}
+
+export interface MembershipBenefit {
+  id?: number;
+  name: string;
+  name_en?: string;
+  description: string;
+  icon?: string;
+  for_free: boolean;
+  for_premium: boolean;
+  sort_order?: number;
+}
+
+export interface MembershipInfo {
+  is_premium: boolean;
+  membership_type: 'free' | 'monthly' | 'yearly' | 'lifetime';
+  membership_expiry?: string | null;
+  is_lifetime?: boolean;
+}
+
+export interface MembershipOrder {
+  id: number;
+  order_no: string;
+  product_type: 'monthly' | 'yearly' | 'lifetime';
+  amount: number;
+  currency: string;
+  status: 'pending' | 'paid' | 'cancelled' | 'refunded';
+  payment_method?: string;
+  payment_time?: string | null;
+  expiry_time?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -96,6 +178,16 @@ export interface SentenceAnalysis {
   provider?: string;
 }
 
+export interface ArticleAssistantMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+export interface ArticleAssistantResult {
+  message: ArticleAssistantMessage;
+  provider: string;
+}
+
 export interface ArticleCompletion {
   article: Article;
   history: ReadHistory;
@@ -111,6 +203,37 @@ export interface ArticleCompletion {
   next_article?: Article;
 }
 
+export interface RSSFeedSummary {
+  name: string;
+  source: string;
+  category_name?: string;
+  category_en?: string;
+  category_slug?: string;
+  tags?: string;
+  enabled: boolean;
+  article_count: number;
+  latest_article?: Article;
+  latest_published_at?: string;
+}
+
+export interface RSSImportFeedReport {
+  name: string;
+  url: string;
+  created: number;
+  updated: number;
+  skipped: number;
+  errors?: string[];
+}
+
+export interface RSSImportReport {
+  feeds: RSSImportFeedReport[];
+  created: number;
+  updated: number;
+  skipped: number;
+  errors?: string[];
+  imported_at: string;
+}
+
 export interface PaginationInfo {
   page: number;
   page_size: number;
@@ -122,4 +245,24 @@ export interface ApiResponse<T> {
   data: T;
   pagination?: PaginationInfo;
   message?: string;
+}
+
+export interface AdminArticleInput {
+  title: string;
+  title_cn?: string;
+  slug?: string;
+  summary?: string;
+  summary_cn?: string;
+  content: string;
+  content_cn?: string;
+  cover_image?: string;
+  category_id: number;
+  tags?: string;
+  source?: string;
+  source_url?: string;
+  author?: string;
+  published_at?: string;
+  difficulty_level?: 'easy' | 'medium' | 'hard' | 'auto';
+  status?: 'draft' | 'published' | 'archived';
+  is_featured?: boolean;
 }

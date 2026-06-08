@@ -7,7 +7,10 @@ interface User {
   email: string;
   nickname?: string;
   avatar?: string;
+  is_admin: boolean;
   is_premium: boolean;
+  membership_type?: 'free' | 'monthly' | 'yearly' | 'lifetime';
+  membership_expiry?: string | null;
 }
 
 interface AuthState {
