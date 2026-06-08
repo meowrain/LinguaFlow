@@ -169,7 +169,7 @@ export default function MembershipPage() {
               </div>
               <div>
                 <p className="text-sm text-gray-500">会员中心</p>
-                <h1 className="text-3xl font-black">GuGuDu Premium</h1>
+                <h1 className="text-3xl font-black">LinguaFlow Premium</h1>
               </div>
             </div>
             <p className="max-w-2xl text-sm leading-6 text-gray-400">

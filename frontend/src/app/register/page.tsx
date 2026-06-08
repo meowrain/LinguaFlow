@@ -54,7 +54,7 @@ export default function RegisterPage() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">创建账号</h1>
-          <p className="text-gray-400">加入 GuGuDu，开始你的英语学习之旅</p>
+          <p className="text-gray-400">加入 LinguaFlow，开始你的英语学习之旅</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -30,7 +30,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [systemTheme, setSystemTheme] = useState<ResolvedTheme>('dark');
 
   useEffect(() => {
-    const savedTheme = window.localStorage.getItem('gugudu-theme') as Theme | null;
+    const savedTheme = window.localStorage.getItem('linguaflow-theme') as Theme | null;
     const initialTheme =
       savedTheme === 'light' || savedTheme === 'dark' || savedTheme === 'system'
         ? savedTheme
@@ -54,7 +54,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   const setTheme = (nextTheme: Theme) => {
     setThemeState(nextTheme);
-    window.localStorage.setItem('gugudu-theme', nextTheme);
+    window.localStorage.setItem('linguaflow-theme', nextTheme);
     applyTheme(nextTheme, systemTheme);
   };
 

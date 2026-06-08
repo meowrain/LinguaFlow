@@ -40,7 +40,7 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold mb-2">欢迎回来</h1>
-          <p className="text-gray-400">登录到你的 GuGuDu 账号</p>
+          <p className="text-gray-400">登录到你的 LinguaFlow 账号</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

@@ -36,7 +36,7 @@ const difficultyLabels = {
   hard: '困难',
 };
 
-const SAVED_SENTENCES_KEY = 'gugudu:saved-sentences';
+const SAVED_SENTENCES_KEY = 'linguaflow:saved-sentences';
 const ttsVoices = ['Mia', 'Chloe', 'Milo', 'Dean'];
 const ttsRates = [0.75, 0.9, 1, 1.15, 1.3];
 const sentenceAIPrompts = [
