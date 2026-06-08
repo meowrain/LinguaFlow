@@ -1,6 +1,7 @@
 package services
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"fmt"
@@ -20,6 +21,16 @@ type SentenceAnalysisResult struct {
 	Provider       string   `json:"provider"`
 }
 
+type ArticleAssistantMessage struct {
+	Role    string `json:"role"`
+	Content string `json:"content"`
+}
+
+type ArticleAssistantResult struct {
+	Message  ArticleAssistantMessage `json:"message"`
+	Provider string                  `json:"provider"`
+}
+
 type AIAnalysisService struct {
 	BaseURL string
 	APIKey  string
@@ -30,8 +41,9 @@ type AIAnalysisService struct {
 type chatCompletionRequest struct {
 	Model       string        `json:"model"`
 	Messages    []chatMessage `json:"messages"`
-	Temperature float64       `json:"temperature"`
+	Temperature *float64      `json:"temperature,omitempty"`
 	MaxTokens   int           `json:"max_tokens"`
+	Stream      bool          `json:"stream,omitempty"`
 }
 
 type chatMessage struct {
@@ -41,6 +53,18 @@ type chatMessage struct {
 
 type chatCompletionResponse struct {
 	Choices []struct {
+		Message chatMessage `json:"message"`
+	} `json:"choices"`
+	Error *struct {
+		Message string `json:"message"`
+		Type    string `json:"type"`
+		Code    any    `json:"code"`
+	} `json:"error"`
+}
+
+type chatCompletionStreamResponse struct {
+	Choices []struct {
+		Delta   chatMessage `json:"delta"`
 		Message chatMessage `json:"message"`
 	} `json:"choices"`
 	Error *struct {
@@ -94,7 +118,7 @@ difficulty_tips: 字符串数组，2-5 条，指出阅读难点和理解方法`)
 				Content: fmt.Sprintf("请精读解析下面英文：\n%s", text),
 			},
 		},
-		Temperature: 0.2,
+		Temperature: temperatureForModel(s.Model, 0.2),
 		MaxTokens:   1200,
 	}
 
@@ -155,6 +179,224 @@ difficulty_tips: 字符串数组，2-5 条，指出阅读难点和理解方法`)
 	analysis.Provider = "ai"
 
 	return &analysis, nil
+}
+
+func (s *AIAnalysisService) DiscussArticle(title, summary, content string, history []ArticleAssistantMessage) (*ArticleAssistantResult, error) {
+	if !s.IsConfigured() {
+		return nil, fmt.Errorf("AI 文章助手未配置")
+	}
+
+	payload := chatCompletionRequest{
+		Model:       s.Model,
+		Messages:    buildArticleAssistantMessages(title, summary, content, history),
+		Temperature: temperatureForModel(s.Model, 0.4),
+		MaxTokens:   1200,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("构建 AI 助手请求失败: %w", err)
+	}
+
+	endpoint := s.BaseURL + "/chat/completions"
+	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("构建 AI 助手请求失败: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+s.APIKey)
+
+	resp, err := s.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("AI 助手请求失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("读取 AI 助手响应失败: %w", err)
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("AI 助手 HTTP %d: %s", resp.StatusCode, string(respBody))
+	}
+
+	var completion chatCompletionResponse
+	if err := json.Unmarshal(respBody, &completion); err != nil {
+		return nil, fmt.Errorf("解析 AI 助手响应失败: %w", err)
+	}
+	if completion.Error != nil {
+		return nil, fmt.Errorf("AI 助手错误: %s", completion.Error.Message)
+	}
+	if len(completion.Choices) == 0 || strings.TrimSpace(completion.Choices[0].Message.Content) == "" {
+		return nil, fmt.Errorf("AI 助手结果为空")
+	}
+
+	return &ArticleAssistantResult{
+		Message: ArticleAssistantMessage{
+			Role:    "assistant",
+			Content: strings.TrimSpace(completion.Choices[0].Message.Content),
+		},
+		Provider: "ai",
+	}, nil
+}
+
+func (s *AIAnalysisService) DiscussArticleStream(title, summary, content string, history []ArticleAssistantMessage, onDelta func(string) error) error {
+	if !s.IsConfigured() {
+		return fmt.Errorf("AI 文章助手未配置")
+	}
+	if onDelta == nil {
+		return fmt.Errorf("AI 文章助手流式回调未配置")
+	}
+
+	payload := chatCompletionRequest{
+		Model:       s.Model,
+		Messages:    buildArticleAssistantMessages(title, summary, content, history),
+		Temperature: temperatureForModel(s.Model, 0.4),
+		MaxTokens:   1200,
+		Stream:      true,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return fmt.Errorf("构建 AI 助手请求失败: %w", err)
+	}
+
+	endpoint := s.BaseURL + "/chat/completions"
+	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(body))
+	if err != nil {
+		return fmt.Errorf("构建 AI 助手请求失败: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "text/event-stream")
+	req.Header.Set("Authorization", "Bearer "+s.APIKey)
+
+	streamClient := *s.client
+	streamClient.Timeout = 0
+	resp, err := streamClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("AI 助手请求失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		respBody, _ := io.ReadAll(resp.Body)
+		return fmt.Errorf("AI 助手 HTTP %d: %s", resp.StatusCode, string(respBody))
+	}
+
+	scanner := bufio.NewScanner(resp.Body)
+	scanner.Buffer(make([]byte, 0, 64*1024), 1024*1024)
+	received := false
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" || strings.HasPrefix(line, ":") {
+			continue
+		}
+		if !strings.HasPrefix(line, "data:") {
+			continue
+		}
+
+		data := strings.TrimSpace(strings.TrimPrefix(line, "data:"))
+		if data == "" {
+			continue
+		}
+		if data == "[DONE]" {
+			break
+		}
+
+		var chunk chatCompletionStreamResponse
+		if err := json.Unmarshal([]byte(data), &chunk); err != nil {
+			return fmt.Errorf("解析 AI 助手流式响应失败: %w", err)
+		}
+		if chunk.Error != nil {
+			return fmt.Errorf("AI 助手错误: %s", chunk.Error.Message)
+		}
+
+		for _, choice := range chunk.Choices {
+			delta := firstNonEmptyAIContent(choice.Delta.Content, choice.Message.Content)
+			if delta == "" {
+				continue
+			}
+			received = true
+			if err := onDelta(delta); err != nil {
+				return err
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("读取 AI 助手流式响应失败: %w", err)
+	}
+	if !received {
+		return fmt.Errorf("AI 助手结果为空")
+	}
+
+	return nil
+}
+
+func buildArticleAssistantMessages(title, summary, content string, history []ArticleAssistantMessage) []chatMessage {
+	messages := []chatMessage{
+		{
+			Role: "system",
+			Content: strings.TrimSpace(`你是一个面向中文英语学习者的文章阅读 AI 助手。
+你需要围绕用户正在阅读的英文文章回答问题、解释观点、拆解语言点、引导思考。
+回答要求：
+1. 主要使用中文，必要时保留英文原句或关键词。
+2. 所有解释必须基于给定文章内容；如果用户问到文章外事实，请明确说明并区分推断。
+3. 不要编造文章没有出现的细节。
+4. 用户问语言学习问题时，给出简洁例句、词组或句式拆解。
+5. 回答保持清晰、自然，避免 Markdown 表格。`),
+		},
+		{
+			Role: "user",
+			Content: fmt.Sprintf(strings.TrimSpace(`文章标题：
+%s
+
+文章摘要：
+%s
+
+文章正文：
+%s`), title, summary, content),
+		},
+		{
+			Role:    "assistant",
+			Content: "我已阅读这篇文章。你可以问我文章观点、段落逻辑、词句理解、背景推断或学习建议。",
+		},
+	}
+
+	for _, item := range history {
+		role := strings.ToLower(strings.TrimSpace(item.Role))
+		content := strings.TrimSpace(item.Content)
+		if content == "" {
+			continue
+		}
+		if role != "user" && role != "assistant" {
+			continue
+		}
+		messages = append(messages, chatMessage{
+			Role:    role,
+			Content: content,
+		})
+	}
+
+	return messages
+}
+
+func temperatureForModel(model string, value float64) *float64 {
+	normalized := strings.ToLower(strings.TrimSpace(model))
+	if strings.HasPrefix(normalized, "mimo-v2.5") {
+		return nil
+	}
+	return &value
+}
+
+func firstNonEmptyAIContent(values ...string) string {
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			return value
+		}
+	}
+	return ""
 }
 
 func cleanJSONContent(content string) string {

@@ -17,6 +17,7 @@ type User struct {
 	Password  string         `gorm:"size:255;not null" json:"-"`
 	Nickname  string         `gorm:"size:50" json:"nickname"`
 	Avatar    string         `gorm:"size:255" json:"avatar"`
+	IsAdmin   bool           `gorm:"default:false;index" json:"is_admin"`
 	IsPremium bool           `gorm:"default:false" json:"is_premium"`
 
 	// 会员信息
@@ -33,6 +34,8 @@ type User struct {
 	ReadHistory   []ReadHistory  `gorm:"foreignKey:UserID" json:"read_history,omitempty"`
 	Vocabulary    []Vocabulary   `gorm:"foreignKey:UserID" json:"vocabulary,omitempty"`
 	Orders        []Order        `gorm:"foreignKey:UserID" json:"orders,omitempty"`
+	StudyGoal     *StudyGoal     `gorm:"foreignKey:UserID" json:"study_goal,omitempty"`
+	StudyRecords  []StudyRecord  `gorm:"foreignKey:UserID" json:"study_records,omitempty"`
 }
 
 // Category 分类
@@ -144,10 +147,11 @@ type Vocabulary struct {
 	Examples    string `gorm:"type:text" json:"examples"`   // 例句（JSON格式）
 
 	// 学习相关
-	ArticleID      *uint      `gorm:"index" json:"article_id"`         // 从哪篇文章添加的
-	Context        string     `gorm:"type:text" json:"context"`        // 上下文语境
-	IsLearned      bool       `gorm:"default:false" json:"is_learned"` // 是否已掌握
-	ReviewCount    int        `gorm:"default:0" json:"review_count"`   // 复习次数
+	ArticleID      *uint      `gorm:"index" json:"article_id"`                // 从哪篇文章添加的
+	Context        string     `gorm:"type:text" json:"context"`               // 上下文语境
+	IsLearned      bool       `gorm:"default:false" json:"is_learned"`        // 是否已掌握
+	ReviewCount    int        `gorm:"default:0" json:"review_count"`          // 复习次数
+	ForgottenCount int        `gorm:"default:0;index" json:"forgotten_count"` // 遗忘次数
 	LastReview     *time.Time `json:"last_review"`
 	NextReviewAt   *time.Time `gorm:"index" json:"next_review_at"`      // 下次复习时间
 	ReviewInterval int        `gorm:"default:0" json:"review_interval"` // 复习间隔（天）
@@ -155,6 +159,39 @@ type Vocabulary struct {
 
 	User    User     `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Article *Article `gorm:"foreignKey:ArticleID" json:"article,omitempty"`
+}
+
+// StudyGoal 每日学习目标
+type StudyGoal struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+
+	UserID           uint `gorm:"not null;uniqueIndex" json:"user_id"`
+	DailyReadMinutes int  `gorm:"default:20" json:"daily_read_minutes"`
+	DailyReviewWords int  `gorm:"default:10" json:"daily_review_words"`
+	DailyArticles    int  `gorm:"default:1" json:"daily_articles"`
+
+	User *User `gorm:"foreignKey:UserID" json:"user,omitempty"`
+}
+
+// StudyRecord 每日学习记录
+type StudyRecord struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+
+	UserID            uint      `gorm:"not null;uniqueIndex:idx_user_study_date" json:"user_id"`
+	Date              string    `gorm:"size:10;not null;uniqueIndex:idx_user_study_date" json:"date"`
+	ReadSeconds       int       `gorm:"default:0" json:"read_seconds"`
+	ReviewedWords     int       `gorm:"default:0" json:"reviewed_words"`
+	CompletedArticles int       `gorm:"default:0" json:"completed_articles"`
+	IsCompleted       bool      `gorm:"default:false;index" json:"is_completed"`
+	LastActivityAt    time.Time `json:"last_activity_at"`
+
+	User *User `gorm:"foreignKey:UserID" json:"user,omitempty"`
 }
 
 // TranslationCache 翻译缓存

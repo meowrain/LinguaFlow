@@ -1,16 +1,26 @@
 package handlers
 
 import (
+	"crypto/rand"
+	"encoding/hex"
+	"errors"
 	"gugudu-backend/database"
 	"gugudu-backend/middleware"
 	"gugudu-backend/models"
+	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
+
+const maxAvatarUploadBytes = 2 << 20
 
 // RegisterRequest 注册请求
 type RegisterRequest struct {
@@ -71,10 +81,14 @@ func Register(c *gin.Context) {
 		"message": "User registered successfully",
 		"token":   token,
 		"user": gin.H{
-			"id":       user.ID,
-			"username": user.Username,
-			"email":    user.Email,
-			"nickname": user.Nickname,
+			"id":                user.ID,
+			"username":          user.Username,
+			"email":             user.Email,
+			"nickname":          user.Nickname,
+			"is_admin":          user.IsAdmin,
+			"is_premium":        user.IsPremium,
+			"membership_type":   user.MembershipType,
+			"membership_expiry": user.MembershipExpiry,
 		},
 	})
 }
@@ -99,6 +113,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password"})
 		return
 	}
+	ensureMembershipActive(database.DB, &user)
 
 	// 生成 JWT token
 	token, err := generateToken(user.ID, user.Username)
@@ -111,12 +126,15 @@ func Login(c *gin.Context) {
 		"message": "Login successful",
 		"token":   token,
 		"user": gin.H{
-			"id":         user.ID,
-			"username":   user.Username,
-			"email":      user.Email,
-			"nickname":   user.Nickname,
-			"avatar":     user.Avatar,
-			"is_premium": user.IsPremium,
+			"id":                user.ID,
+			"username":          user.Username,
+			"email":             user.Email,
+			"nickname":          user.Nickname,
+			"avatar":            user.Avatar,
+			"is_admin":          user.IsAdmin,
+			"is_premium":        user.IsPremium,
+			"membership_type":   user.MembershipType,
+			"membership_expiry": user.MembershipExpiry,
 		},
 	})
 }
@@ -130,21 +148,145 @@ func GetProfile(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
+	ensureMembershipActive(database.DB, &user)
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": gin.H{
-			"id":              user.ID,
-			"username":        user.Username,
-			"email":           user.Email,
-			"nickname":        user.Nickname,
-			"avatar":          user.Avatar,
-			"is_premium":      user.IsPremium,
-			"total_read_time": user.TotalReadTime,
-			"articles_read":   user.ArticlesRead,
-			"words_learned":   user.WordsLearned,
-			"created_at":      user.CreatedAt,
+			"id":                user.ID,
+			"username":          user.Username,
+			"email":             user.Email,
+			"nickname":          user.Nickname,
+			"avatar":            user.Avatar,
+			"is_admin":          user.IsAdmin,
+			"is_premium":        user.IsPremium,
+			"membership_type":   user.MembershipType,
+			"membership_expiry": user.MembershipExpiry,
+			"total_read_time":   user.TotalReadTime,
+			"articles_read":     user.ArticlesRead,
+			"words_learned":     user.WordsLearned,
+			"created_at":        user.CreatedAt,
 		},
 	})
+}
+
+// UploadAvatar 上传并更新当前用户头像
+func UploadAvatar(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, maxAvatarUploadBytes+(128<<10))
+
+	fileHeader, err := c.FormFile("avatar")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Avatar file is required"})
+		return
+	}
+
+	if fileHeader.Size > maxAvatarUploadBytes {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Avatar must be 2MB or smaller"})
+		return
+	}
+
+	file, err := fileHeader.Open()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to open avatar file"})
+		return
+	}
+	defer file.Close()
+
+	head := make([]byte, 512)
+	n, err := file.Read(head)
+	if err != nil && !errors.Is(err, io.EOF) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Failed to read avatar file"})
+		return
+	}
+
+	contentType := http.DetectContentType(head[:n])
+	ext, ok := avatarExtension(contentType)
+	if !ok {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Avatar must be a JPG, PNG, WebP, or GIF image"})
+		return
+	}
+
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to process avatar file"})
+		return
+	}
+
+	var user models.User
+	if err := database.DB.First(&user, userID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		return
+	}
+
+	if err := os.MkdirAll("storage/avatars", 0755); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to prepare avatar storage"})
+		return
+	}
+
+	token, err := randomHex(8)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate avatar filename"})
+		return
+	}
+
+	filename := "user-" + strconv.FormatUint(uint64(user.ID), 10) + "-" + token + ext
+	dstPath := filepath.Join("storage", "avatars", filename)
+	dst, err := os.Create(dstPath)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save avatar"})
+		return
+	}
+	defer dst.Close()
+
+	if _, err := io.Copy(dst, file); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save avatar"})
+		return
+	}
+
+	avatarURL := "/storage/avatars/" + filename
+	if err := database.DB.Model(&user).Update("avatar", avatarURL).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar"})
+		return
+	}
+
+	removeOldAvatar(user.Avatar)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Avatar updated successfully",
+		"data": gin.H{
+			"avatar": avatarURL,
+		},
+	})
+}
+
+func avatarExtension(contentType string) (string, bool) {
+	switch contentType {
+	case "image/jpeg":
+		return ".jpg", true
+	case "image/png":
+		return ".png", true
+	case "image/webp":
+		return ".webp", true
+	case "image/gif":
+		return ".gif", true
+	default:
+		return "", false
+	}
+}
+
+func randomHex(byteCount int) (string, error) {
+	buf := make([]byte, byteCount)
+	if _, err := rand.Read(buf); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(buf), nil
+}
+
+func removeOldAvatar(avatar string) {
+	if !strings.HasPrefix(avatar, "/storage/avatars/") {
+		return
+	}
+
+	_ = os.Remove(filepath.Join(".", filepath.FromSlash(strings.TrimPrefix(avatar, "/"))))
 }
 
 // generateToken 生成 JWT token

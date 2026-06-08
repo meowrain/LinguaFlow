@@ -16,6 +16,7 @@ type Config struct {
 	CORS        CORSConfig        `toml:"cors"`
 	Translation TranslationConfig `toml:"translation"`
 	AI          AIConfig          `toml:"ai"`
+	TTS         TTSConfig         `toml:"tts"`
 	RSS         RSSConfig         `toml:"rss"`
 }
 
@@ -36,9 +37,22 @@ type AIConfig struct {
 	RequestTimeout int    `toml:"request_timeout_seconds"`
 }
 
+type TTSConfig struct {
+	Enabled        bool   `toml:"enabled"`
+	BaseURL        string `toml:"base_url"`
+	APIKey         string `toml:"api_key"`
+	Model          string `toml:"model"`
+	Voice          string `toml:"voice"`
+	ResponseFormat string `toml:"response_format"`
+	Instructions   string `toml:"instructions"`
+	CacheDir       string `toml:"cache_dir"`
+	RequestTimeout int    `toml:"request_timeout_seconds"`
+	MaxInputLength int    `toml:"max_input_length"`
+}
+
 type RSSConfig struct {
 	Enabled               bool            `toml:"enabled"`
-	ImportToken           string          `toml:"import_token"`
+	Proxy                 string          `toml:"proxy"`
 	UserAgent             string          `toml:"user_agent"`
 	RequestTimeoutSeconds int             `toml:"request_timeout_seconds"`
 	MaxItemsPerFeed       int             `toml:"max_items_per_feed"`
@@ -53,6 +67,7 @@ type RSSFeedConfig struct {
 	CategoryEN   string `toml:"category_en"`
 	CategorySlug string `toml:"category_slug"`
 	Tags         string `toml:"tags"`
+	MaxItems     int    `toml:"max_items"`
 	Enabled      bool   `toml:"enabled"`
 }
 

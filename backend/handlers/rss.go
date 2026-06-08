@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"gugudu-backend/config"
+	"gugudu-backend/database"
+	"gugudu-backend/models"
 	"gugudu-backend/services"
 	"net/http"
 	"strings"
@@ -12,25 +14,78 @@ import (
 
 var (
 	rssImportService *services.RSSImporter
-	rssImportToken   string
+	rssConfig        config.RSSConfig
 )
 
 func InitRSSImportService(db *gorm.DB, cfg config.RSSConfig) {
 	rssImportService = services.NewRSSImporter(db, cfg)
-	rssImportToken = strings.TrimSpace(cfg.ImportToken)
+	rssConfig = cfg
+}
+
+type rssFeedSummary struct {
+	Name              string          `json:"name"`
+	Source            string          `json:"source"`
+	CategoryName      string          `json:"category_name"`
+	CategoryEN        string          `json:"category_en"`
+	CategorySlug      string          `json:"category_slug"`
+	Tags              string          `json:"tags"`
+	Enabled           bool            `json:"enabled"`
+	ArticleCount      int64           `json:"article_count"`
+	LatestArticle     *models.Article `json:"latest_article,omitempty"`
+	LatestPublishedAt *string         `json:"latest_published_at,omitempty"`
+}
+
+func GetRSSFeeds(c *gin.Context) {
+	if len(rssConfig.Feeds) == 0 {
+		c.JSON(http.StatusOK, gin.H{"data": []rssFeedSummary{}})
+		return
+	}
+
+	feeds := make([]rssFeedSummary, 0, len(rssConfig.Feeds))
+	for _, feed := range rssConfig.Feeds {
+		source := firstRSSNonEmpty(feed.Source, feed.Name)
+		summary := rssFeedSummary{
+			Name:         feed.Name,
+			Source:       source,
+			CategoryName: feed.CategoryName,
+			CategoryEN:   feed.CategoryEN,
+			CategorySlug: feed.CategorySlug,
+			Tags:         feed.Tags,
+			Enabled:      feed.Enabled,
+		}
+
+		query := database.DB.Model(&models.Article{}).Where("status = ? AND source = ?", "published", source)
+		if strings.TrimSpace(feed.CategorySlug) != "" {
+			query = query.Joins("JOIN categories ON categories.id = articles.category_id").
+				Where("categories.slug = ?", feed.CategorySlug)
+		}
+		query.Count(&summary.ArticleCount)
+
+		var latest models.Article
+		if err := query.Session(&gorm.Session{}).
+			Preload("Category").
+			Order("published_at DESC").
+			First(&latest).Error; err == nil {
+			published := latest.PublishedAt.Format("2006-01-02T15:04:05Z07:00")
+			summary.LatestArticle = &latest
+			summary.LatestPublishedAt = &published
+		}
+
+		feeds = append(feeds, summary)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": feeds,
+		"meta": gin.H{
+			"enabled":            rssConfig.Enabled,
+			"max_items_per_feed": rssConfig.MaxItemsPerFeed,
+		},
+	})
 }
 
 func ImportRSS(c *gin.Context) {
 	if rssImportService == nil {
 		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "RSS import service is not initialized"})
-		return
-	}
-	if rssImportToken == "" {
-		c.JSON(http.StatusForbidden, gin.H{"error": "RSS import token is not configured"})
-		return
-	}
-	if importToken(c) != rssImportToken {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid import token"})
 		return
 	}
 
@@ -42,16 +97,12 @@ func ImportRSS(c *gin.Context) {
 	c.JSON(status, gin.H{"data": report})
 }
 
-func importToken(c *gin.Context) string {
-	token := strings.TrimSpace(c.GetHeader("X-Import-Token"))
-	if token != "" {
-		return token
+func firstRSSNonEmpty(values ...string) string {
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			return value
+		}
 	}
-
-	auth := strings.TrimSpace(c.GetHeader("Authorization"))
-	if strings.HasPrefix(strings.ToLower(auth), "bearer ") {
-		return strings.TrimSpace(auth[7:])
-	}
-
 	return ""
 }

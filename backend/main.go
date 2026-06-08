@@ -6,6 +6,8 @@ import (
 	"gugudu-backend/handlers"
 	"gugudu-backend/middleware"
 	"log"
+	"net/url"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -31,7 +33,7 @@ func main() {
 	defer database.CloseRedis()
 
 	// 初始化 JWT
-	middleware.InitJWT(cfg)
+	middleware.InitJWT(cfg.JWT.Secret)
 
 	// 初始化翻译服务
 	handlers.InitTranslationService(
@@ -45,18 +47,35 @@ func main() {
 	handlers.InitAIAnalysisService(
 		cfg.AI.Enabled,
 		cfg.AI.BaseURL,
-		cfg.AI.APIKey,
+		firstNonEmpty(cfg.AI.APIKey, cfg.TTS.APIKey),
 		cfg.AI.Model,
 		cfg.AI.RequestTimeout,
+	)
+	handlers.InitTTSService(
+		cfg.TTS.Enabled,
+		cfg.TTS.BaseURL,
+		cfg.TTS.APIKey,
+		cfg.TTS.Model,
+		cfg.TTS.Voice,
+		cfg.TTS.ResponseFormat,
+		cfg.TTS.Instructions,
+		cfg.TTS.CacheDir,
+		cfg.TTS.RequestTimeout,
+		cfg.TTS.MaxInputLength,
 	)
 	handlers.InitRSSImportService(database.DB, cfg.RSS)
 
 	// 创建 Gin 路由
 	r := gin.Default()
+	if err := r.SetTrustedProxies(nil); err != nil {
+		log.Fatal("Failed to set trusted proxies:", err)
+	}
+	r.Static("/storage", "storage")
 
 	// CORS 配置
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{cfg.CORS.AllowedOrigins},
+		AllowOrigins:     buildAllowedOrigins(cfg.CORS.AllowedOrigins),
+		AllowOriginFunc:  buildAllowOriginFunc(cfg.CORS.AllowedOrigins),
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization", "X-Import-Token"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -84,12 +103,28 @@ func main() {
 		// 分类
 		api.GET("/categories", handlers.GetCategories)
 
+		// RSS 来源
+		api.GET("/rss/feeds", handlers.GetRSSFeeds)
+
 		// 翻译服务（无需登录）
 		api.POST("/translate", handlers.Translate)
 		api.GET("/dictionary", handlers.LookupWord)
+		api.GET("/tts/audio/:filename", handlers.GetSpeechAudio)
 
 		// RSS 导入（导入 token 保护，供本地脚本或定时任务调用）
 		api.POST("/admin/rss/import", handlers.ImportRSS)
+
+		admin := api.Group("/admin")
+		admin.Use(middleware.AuthRequired(), middleware.AdminRequired())
+		{
+			admin.GET("/articles", handlers.AdminListArticles)
+			admin.POST("/articles", handlers.AdminCreateArticle)
+			admin.GET("/articles/:id", handlers.AdminGetArticle)
+			admin.PUT("/articles/:id", handlers.AdminUpdateArticle)
+			admin.DELETE("/articles/:id", handlers.AdminDeleteArticle)
+			admin.PATCH("/articles/:id/status", handlers.AdminUpdateArticleStatus)
+			admin.PATCH("/articles/:id/featured", handlers.AdminUpdateArticleFeatured)
+		}
 
 		// 需要认证的路由
 		protected := api.Group("")
@@ -97,6 +132,7 @@ func main() {
 		{
 			// 用户相关
 			protected.GET("/profile", handlers.GetProfile)
+			protected.POST("/profile/avatar", handlers.UploadAvatar)
 
 			// 会员相关
 			membershipHandler := handlers.NewMembershipHandler(database.DB)
@@ -118,8 +154,14 @@ func main() {
 			// 阅读历史
 			protected.GET("/history", handlers.GetReadHistory)
 			protected.POST("/articles/:id/progress", handlers.UpdateReadProgress)
+			protected.POST("/articles/:id/assistant", middleware.PremiumRequired(database.DB), handlers.DiscussArticleWithAssistant)
 			protected.GET("/article-completions/:id", handlers.GetArticleCompletion)
-			protected.POST("/sentences/analyze", handlers.AnalyzeSentence)
+			protected.POST("/sentences/analyze", middleware.PremiumRequired(database.DB), handlers.AnalyzeSentence)
+			protected.POST("/tts", handlers.GenerateSpeech)
+
+			// 每日学习
+			protected.GET("/study/today", handlers.GetStudyToday)
+			protected.PUT("/study/goal", handlers.UpdateStudyGoal)
 
 			// 生词本
 			protected.GET("/vocabulary", handlers.GetVocabulary)
@@ -138,5 +180,61 @@ func main() {
 	log.Printf("Server starting on port %s", cfg.Server.Port)
 	if err := r.Run(":" + cfg.Server.Port); err != nil {
 		log.Fatal("Failed to start server:", err)
+	}
+}
+
+func buildAllowedOrigins(configured string) []string {
+	seen := make(map[string]bool)
+	origins := make([]string, 0)
+
+	add := func(origin string) {
+		origin = strings.TrimSpace(origin)
+		if origin == "" || seen[origin] {
+			return
+		}
+		seen[origin] = true
+		origins = append(origins, origin)
+	}
+
+	for _, origin := range strings.Split(configured, ",") {
+		add(origin)
+	}
+
+	add("http://localhost:3000")
+	add("http://127.0.0.1:3000")
+	add("http://[::1]:3000")
+
+	return origins
+}
+
+func firstNonEmpty(values ...string) string {
+	for _, value := range values {
+		value = strings.TrimSpace(value)
+		if value != "" {
+			return value
+		}
+	}
+	return ""
+}
+
+func buildAllowOriginFunc(configured string) func(string) bool {
+	allowed := make(map[string]bool)
+	for _, origin := range buildAllowedOrigins(configured) {
+		allowed[origin] = true
+	}
+
+	return func(origin string) bool {
+		if allowed[origin] {
+			return true
+		}
+
+		parsed, err := url.Parse(origin)
+		if err != nil {
+			return false
+		}
+
+		host := parsed.Hostname()
+		return parsed.Scheme == "http" &&
+			(host == "localhost" || host == "127.0.0.1" || host == "::1")
 	}
 }

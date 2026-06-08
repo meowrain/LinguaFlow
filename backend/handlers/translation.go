@@ -294,8 +294,14 @@ func GetVocabulary(c *gin.Context) {
 		query = query.Where("article_id = ?", articleID)
 	}
 
+	if c.Query("weak") == "true" {
+		query = query.Where("forgotten_count > 0").
+			Order("forgotten_count DESC, COALESCE(last_review, updated_at) DESC")
+	} else {
+		query = query.Order("COALESCE(next_review_at, created_at) ASC, created_at DESC")
+	}
+
 	if err := query.
-		Order("COALESCE(next_review_at, created_at) ASC, created_at DESC").
 		Find(&vocabulary).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -420,6 +426,7 @@ func ReviewVocabulary(c *gin.Context) {
 		interval = 1
 		ease -= 0.2
 		vocab.IsLearned = false
+		vocab.ForgottenCount++
 	case "hard":
 		if interval < 1 {
 			interval = 1
@@ -455,6 +462,8 @@ func ReviewVocabulary(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to review word"})
 		return
 	}
+
+	addStudyReviewedWord(userID.(uint))
 
 	c.JSON(http.StatusOK, gin.H{"message": "Review saved", "data": vocab})
 }

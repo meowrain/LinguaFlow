@@ -1,8 +1,11 @@
 package handlers
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"gugudu-backend/models"
@@ -13,6 +16,18 @@ import (
 
 type MembershipHandler struct {
 	db *gorm.DB
+}
+
+type membershipPlan struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	NameEN      string   `json:"name_en"`
+	Price       float64  `json:"price"`
+	Currency    string   `json:"currency"`
+	Duration    int      `json:"duration"`
+	SavePercent int      `json:"save_percent"`
+	Features    []string `json:"features"`
+	Recommended bool     `json:"recommended,omitempty"`
 }
 
 func NewMembershipHandler(db *gorm.DB) *MembershipHandler {
@@ -29,83 +44,20 @@ func (h *MembershipHandler) GetMembershipInfo(c *gin.Context) {
 		return
 	}
 
-	// 检查会员是否过期
-	isPremiumActive := false
-	if user.IsPremium && user.MembershipExpiry != nil {
-		isPremiumActive = user.MembershipExpiry.After(time.Now())
-		// 如果已过期，更新状态
-		if !isPremiumActive && user.IsPremium {
-			user.IsPremium = false
-			h.db.Save(&user)
-		}
-	}
+	isPremiumActive := ensureMembershipActive(h.db, &user)
 
 	c.JSON(http.StatusOK, gin.H{
-		"is_premium":        user.IsPremium && isPremiumActive,
+		"is_premium":        isPremiumActive,
 		"membership_type":   user.MembershipType,
 		"membership_expiry": user.MembershipExpiry,
+		"is_lifetime":       user.IsPremium && user.MembershipType == "lifetime",
 	})
 }
 
 // GetMembershipPlans 获取会员套餐列表
 func (h *MembershipHandler) GetMembershipPlans(c *gin.Context) {
-	plans := []gin.H{
-		{
-			"id":          "monthly",
-			"name":        "月度会员",
-			"name_en":     "Monthly",
-			"price":       29.9,
-			"currency":    "CNY",
-			"duration":    30,
-			"save_percent": 0,
-			"features": []string{
-				"无限制阅读所有文章",
-				"AI 智能翻译",
-				"生词本功能",
-				"学习进度追踪",
-			},
-		},
-		{
-			"id":          "yearly",
-			"name":        "年度会员",
-			"name_en":     "Yearly",
-			"price":       199.9,
-			"currency":    "CNY",
-			"duration":    365,
-			"save_percent": 44,
-			"features": []string{
-				"无限制阅读所有文章",
-				"AI 智能翻译",
-				"生词本功能",
-				"学习进度追踪",
-				"优先客服支持",
-				"独家学习资料",
-			},
-			"recommended": true,
-		},
-		{
-			"id":          "lifetime",
-			"name":        "终身会员",
-			"name_en":     "Lifetime",
-			"price":       599.9,
-			"currency":    "CNY",
-			"duration":    -1, // -1 表示永久
-			"save_percent": 66,
-			"features": []string{
-				"无限制阅读所有文章",
-				"AI 智能翻译",
-				"生词本功能",
-				"学习进度追踪",
-				"优先客服支持",
-				"独家学习资料",
-				"终身免费更新",
-				"VIP 专属徽章",
-			},
-		},
-	}
-
 	c.JSON(http.StatusOK, gin.H{
-		"plans": plans,
+		"plans": membershipPlans(),
 	})
 }
 
@@ -192,28 +144,25 @@ func (h *MembershipHandler) CreateOrder(c *gin.Context) {
 	// 验证产品类型
 	var amount float64
 	var duration int
-	switch req.ProductType {
-	case "monthly":
-		amount = 29.9
-		duration = 30
-	case "yearly":
-		amount = 199.9
-		duration = 365
-	case "lifetime":
-		amount = 599.9
-		duration = -1
-	default:
+	plan, ok := findMembershipPlan(req.ProductType)
+	if !ok {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "无效的产品类型"})
 		return
 	}
+	amount = plan.Price
+	duration = plan.Duration
 
 	// 生成订单号
-	orderNo := fmt.Sprintf("GGD%d%d", time.Now().Unix(), userID)
+	orderNo, err := generateOrderNo()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "生成订单号失败"})
+		return
+	}
 
 	// 计算到期时间
 	var expiryTime *time.Time
 	if duration > 0 {
-		expiry := time.Now().AddDate(0, 0, duration)
+		expiry := calculateMembershipExpiry(time.Now(), duration, nil)
 		expiryTime = &expiry
 	}
 
@@ -234,7 +183,8 @@ func (h *MembershipHandler) CreateOrder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"order": order,
+		"order":   order,
+		"plan":    plan,
 		"message": "订单创建成功",
 	})
 }
@@ -295,7 +245,26 @@ func (h *MembershipHandler) ActivateMembership(c *gin.Context) {
 
 	user.IsPremium = true
 	user.MembershipType = order.ProductType
-	user.MembershipExpiry = order.ExpiryTime
+	if order.ProductType == "lifetime" {
+		user.MembershipExpiry = nil
+		order.ExpiryTime = nil
+	} else {
+		_, duration, ok := planPricing(order.ProductType)
+		if !ok {
+			tx.Rollback()
+			c.JSON(http.StatusBadRequest, gin.H{"error": "无效的产品类型"})
+			return
+		}
+		expiry := calculateMembershipExpiry(now, duration, user.MembershipExpiry)
+		user.MembershipExpiry = &expiry
+		order.ExpiryTime = &expiry
+	}
+
+	if err := tx.Save(&order).Error; err != nil {
+		tx.Rollback()
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "更新订单失败"})
+		return
+	}
 
 	if err := tx.Save(&user).Error; err != nil {
 		tx.Rollback()
@@ -311,6 +280,7 @@ func (h *MembershipHandler) ActivateMembership(c *gin.Context) {
 			"is_premium":        user.IsPremium,
 			"membership_type":   user.MembershipType,
 			"membership_expiry": user.MembershipExpiry,
+			"is_lifetime":       user.MembershipType == "lifetime",
 		},
 	})
 }
@@ -326,6 +296,10 @@ func CheckPremiumAccess(db *gorm.DB, userID uint) (bool, error) {
 		return false, nil
 	}
 
+	if user.MembershipType == "lifetime" {
+		return true, nil
+	}
+
 	// 检查是否过期
 	if user.MembershipExpiry != nil && user.MembershipExpiry.Before(time.Now()) {
 		// 自动更新为非会员状态
@@ -335,4 +309,116 @@ func CheckPremiumAccess(db *gorm.DB, userID uint) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func membershipPlans() []membershipPlan {
+	return []membershipPlan{
+		{
+			ID:          "monthly",
+			Name:        "月度会员",
+			NameEN:      "Monthly",
+			Price:       29.9,
+			Currency:    "CNY",
+			Duration:    30,
+			SavePercent: 0,
+			Features: []string{
+				"无限制阅读所有文章",
+				"AI 句子精读与智能翻译",
+				"生词本和复习计划",
+				"学习进度追踪",
+			},
+		},
+		{
+			ID:          "yearly",
+			Name:        "年度会员",
+			NameEN:      "Yearly",
+			Price:       199.9,
+			Currency:    "CNY",
+			Duration:    365,
+			SavePercent: 44,
+			Features: []string{
+				"无限制阅读所有文章",
+				"AI 句子精读与智能翻译",
+				"生词本和复习计划",
+				"学习进度追踪",
+				"优先客服支持",
+				"独家学习资料",
+			},
+			Recommended: true,
+		},
+		{
+			ID:          "lifetime",
+			Name:        "终身会员",
+			NameEN:      "Lifetime",
+			Price:       599.9,
+			Currency:    "CNY",
+			Duration:    -1,
+			SavePercent: 66,
+			Features: []string{
+				"无限制阅读所有文章",
+				"AI 句子精读与智能翻译",
+				"生词本和复习计划",
+				"学习进度追踪",
+				"优先客服支持",
+				"独家学习资料",
+				"终身免费更新",
+				"VIP 专属徽章",
+			},
+		},
+	}
+}
+
+func findMembershipPlan(productType string) (membershipPlan, bool) {
+	for _, plan := range membershipPlans() {
+		if plan.ID == productType {
+			return plan, true
+		}
+	}
+	return membershipPlan{}, false
+}
+
+func planPricing(productType string) (float64, int, bool) {
+	plan, ok := findMembershipPlan(productType)
+	if !ok {
+		return 0, 0, false
+	}
+	return plan.Price, plan.Duration, true
+}
+
+func generateOrderNo() (string, error) {
+	buf := make([]byte, 6)
+	if _, err := rand.Read(buf); err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("GGD%s%s", time.Now().UTC().Format("20060102150405"), strings.ToUpper(hex.EncodeToString(buf))), nil
+}
+
+func calculateMembershipExpiry(now time.Time, durationDays int, currentExpiry *time.Time) time.Time {
+	base := now
+	if currentExpiry != nil && currentExpiry.After(now) {
+		base = *currentExpiry
+	}
+	return base.AddDate(0, 0, durationDays)
+}
+
+func ensureMembershipActive(db *gorm.DB, user *models.User) bool {
+	if !user.IsPremium {
+		return false
+	}
+	if user.MembershipType == "lifetime" {
+		return true
+	}
+	if user.MembershipExpiry == nil {
+		user.IsPremium = false
+		user.MembershipType = "free"
+		db.Save(user)
+		return false
+	}
+	if user.MembershipExpiry.Before(time.Now()) {
+		user.IsPremium = false
+		user.MembershipType = "free"
+		db.Save(user)
+		return false
+	}
+	return true
 }

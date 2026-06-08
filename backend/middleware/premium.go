@@ -37,10 +37,29 @@ func PremiumRequired(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		if user.MembershipType == "lifetime" {
+			c.Next()
+			return
+		}
+
+		if user.MembershipExpiry == nil {
+			user.IsPremium = false
+			user.MembershipType = "free"
+			db.Save(&user)
+
+			c.JSON(http.StatusForbidden, gin.H{
+				"error": "会员状态无效，请重新开通",
+				"code":  "MEMBERSHIP_INVALID",
+			})
+			c.Abort()
+			return
+		}
+
 		// 检查会员是否过期
-		if user.MembershipExpiry != nil && user.MembershipExpiry.Before(time.Now()) {
+		if user.MembershipExpiry.Before(time.Now()) {
 			// 自动更新为非会员
 			user.IsPremium = false
+			user.MembershipType = "free"
 			db.Save(&user)
 
 			c.JSON(http.StatusForbidden, gin.H{

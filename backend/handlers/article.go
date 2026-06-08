@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"encoding/json"
 	"fmt"
 	"gugudu-backend/database"
 	"gugudu-backend/models"
@@ -39,6 +40,7 @@ func GetArticles(c *gin.Context) {
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
 	categorySlug := c.Query("category")
 	difficulty := c.Query("difficulty")
+	source := strings.TrimSpace(c.Query("source"))
 	search := c.Query("search")
 
 	offset := (page - 1) * pageSize
@@ -54,6 +56,10 @@ func GetArticles(c *gin.Context) {
 
 	if difficulty != "" {
 		query = query.Where("difficulty_level = ?", difficulty)
+	}
+
+	if source != "" {
+		query = query.Where("source = ?", source)
 	}
 
 	if search != "" {
@@ -190,6 +196,8 @@ func UpdateReadProgress(c *gin.Context) {
 			UpdateColumn("articles_read", database.DB.Raw("articles_read + 1"))
 	}
 
+	addStudyReadTime(userID.(uint), req.ReadTime, history.IsCompleted && !wasCompleted)
+
 	c.JSON(http.StatusOK, gin.H{"message": "Progress updated", "data": history})
 }
 
@@ -251,6 +259,117 @@ func GetArticleCompletion(c *gin.Context) {
 			"next_article": nextArticle,
 		},
 	})
+}
+
+// DiscussArticleWithAssistant 围绕文章和 AI 助手对话
+func DiscussArticleWithAssistant(c *gin.Context) {
+	articleID, _ := strconv.Atoi(c.Param("id"))
+
+	var req struct {
+		Messages []services.ArticleAssistantMessage `json:"messages" binding:"required,min=1,max=12"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if aiAnalysisService == nil || !aiAnalysisService.IsConfigured() {
+		c.JSON(http.StatusServiceUnavailable, gin.H{"error": "AI 文章助手未配置"})
+		return
+	}
+
+	messages := normalizeArticleAssistantMessages(req.Messages)
+	if len(messages) == 0 || messages[len(messages)-1].Role != "user" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "请发送有效问题"})
+		return
+	}
+
+	var article models.Article
+	if err := database.DB.Preload("Category").
+		Where("id = ? AND status = ?", articleID, "published").
+		First(&article).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
+	}
+
+	summary := article.Summary
+	if article.SummaryCN != "" {
+		summary += "\n中文摘要：" + article.SummaryCN
+	}
+
+	c.Header("Content-Type", "text/event-stream; charset=utf-8")
+	c.Header("Cache-Control", "no-cache")
+	c.Header("Connection", "keep-alive")
+	c.Header("X-Accel-Buffering", "no")
+	c.Status(http.StatusOK)
+
+	flusher, ok := c.Writer.(http.Flusher)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "当前服务器不支持流式输出"})
+		return
+	}
+
+	err := aiAnalysisService.DiscussArticleStream(
+		article.Title,
+		truncateRunes(summary, 1200),
+		truncateRunes(article.Content, 12000),
+		messages,
+		func(delta string) error {
+			payload, err := json.Marshal(gin.H{"delta": delta})
+			if err != nil {
+				return err
+			}
+			if _, err := fmt.Fprintf(c.Writer, "data: %s\n\n", payload); err != nil {
+				return err
+			}
+			flusher.Flush()
+			return nil
+		},
+	)
+	if err != nil {
+		fmt.Printf("AI 文章助手失败: %v\n", err)
+		payload, _ := json.Marshal(gin.H{"error": "AI 文章助手暂时不可用"})
+		fmt.Fprintf(c.Writer, "event: error\ndata: %s\n\n", payload)
+		flusher.Flush()
+		return
+	}
+
+	fmt.Fprint(c.Writer, "data: [DONE]\n\n")
+	flusher.Flush()
+}
+
+func normalizeArticleAssistantMessages(messages []services.ArticleAssistantMessage) []services.ArticleAssistantMessage {
+	normalized := make([]services.ArticleAssistantMessage, 0, len(messages))
+	for _, message := range messages {
+		role := strings.ToLower(strings.TrimSpace(message.Role))
+		content := strings.TrimSpace(message.Content)
+		if content == "" {
+			continue
+		}
+		if role != "user" && role != "assistant" {
+			continue
+		}
+		normalized = append(normalized, services.ArticleAssistantMessage{
+			Role:    role,
+			Content: truncateRunes(content, 1600),
+		})
+	}
+
+	if len(normalized) > 12 {
+		normalized = normalized[len(normalized)-12:]
+	}
+	return normalized
+}
+
+func truncateRunes(text string, max int) string {
+	if max <= 0 {
+		return ""
+	}
+	runes := []rune(strings.TrimSpace(text))
+	if len(runes) <= max {
+		return string(runes)
+	}
+	return string(runes[:max]) + "\n\n[内容已截断]"
 }
 
 type sentenceAnalysis struct {

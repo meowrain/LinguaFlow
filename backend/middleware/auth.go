@@ -1,7 +1,8 @@
 package middleware
 
 import (
-	"gugudu-backend/config"
+	"gugudu-backend/database"
+	"gugudu-backend/models"
 	"net/http"
 	"strings"
 
@@ -17,8 +18,8 @@ type Claims struct {
 
 var jwtSecret []byte
 
-func InitJWT(cfg *config.Config) {
-	jwtSecret = []byte(cfg.JWT.Secret)
+func InitJWT(secret string) {
+	jwtSecret = []byte(secret)
 }
 
 func SignToken(claims jwt.Claims) (string, error) {
@@ -91,6 +92,40 @@ func OptionalAuth() gin.HandlerFunc {
 			c.Set("username", claims.Username)
 		}
 
+		c.Next()
+	}
+}
+
+func AdminRequired() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		userIDValue, exists := c.Get("user_id")
+		if !exists {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
+			c.Abort()
+			return
+		}
+
+		userID, ok := userIDValue.(uint)
+		if !ok {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user context"})
+			c.Abort()
+			return
+		}
+
+		var user models.User
+		if err := database.DB.First(&user, userID).Error; err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+			c.Abort()
+			return
+		}
+
+		if !user.IsAdmin {
+			c.JSON(http.StatusForbidden, gin.H{"error": "Admin access required"})
+			c.Abort()
+			return
+		}
+
+		c.Set("admin_user", user)
 		c.Next()
 	}
 }
