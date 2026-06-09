@@ -13,6 +13,14 @@ import (
 	"sort"
 	"strings"
 	"time"
+	"unicode"
+)
+
+const (
+	maxSubtitleDurationSeconds = 7
+	maxSubtitleRunes           = 220
+	maxSubtitleWords           = 32
+	targetSubtitleWords        = 24
 )
 
 type TranscribeOptions struct {
@@ -171,12 +179,16 @@ func (t *OpenAITranscriber) Transcribe(ctx context.Context, audioPath string, op
 	return &TranscriptionResult{
 		Language: parsed.Language,
 		Duration: parsed.Duration,
-		Segments: CleanTranscriptionSegments(segments),
+		Segments: CleanTranscriptionSegmentsWithDuration(segments, parsed.Duration),
 		RawJSON:  raw,
 	}, nil
 }
 
 func CleanTranscriptionSegments(input []TranscriptionSegment) []TranscriptionSegment {
+	return CleanTranscriptionSegmentsWithDuration(input, 0)
+}
+
+func CleanTranscriptionSegmentsWithDuration(input []TranscriptionSegment, fallbackDuration float64) []TranscriptionSegment {
 	segments := make([]TranscriptionSegment, 0, len(input))
 	for _, segment := range input {
 		segment.Text = strings.Join(strings.Fields(strings.TrimSpace(segment.Text)), " ")
@@ -192,17 +204,83 @@ func CleanTranscriptionSegments(input []TranscriptionSegment) []TranscriptionSeg
 		segments = append(segments, segment)
 	}
 
+	if len(segments) == 1 && fallbackDuration > segments[0].EndSeconds {
+		textIsLong := len([]rune(segments[0].Text)) > maxSubtitleRunes || len(strings.Fields(segments[0].Text)) > maxSubtitleWords
+		if textIsLong || segments[0].EndSeconds <= 2 {
+			segments[0].EndSeconds = fallbackDuration
+		}
+	}
+
 	sort.SliceStable(segments, func(i, j int) bool {
 		return segments[i].StartSeconds < segments[j].StartSeconds
 	})
 
+	if hasCompressedTimeline(segments, fallbackDuration) {
+		segments = redistributeSegmentsAcrossDuration(segments, fallbackDuration)
+	}
+
 	return splitLongSegments(segments)
+}
+
+func hasCompressedTimeline(segments []TranscriptionSegment, fallbackDuration float64) bool {
+	if fallbackDuration < 30 || len(segments) == 0 {
+		return false
+	}
+
+	minStart := segments[0].StartSeconds
+	maxEnd := segments[0].EndSeconds
+	totalWords := 0
+	for _, segment := range segments {
+		if segment.StartSeconds < minStart {
+			minStart = segment.StartSeconds
+		}
+		if segment.EndSeconds > maxEnd {
+			maxEnd = segment.EndSeconds
+		}
+		totalWords += len(strings.Fields(segment.Text))
+	}
+
+	span := maxEnd - minStart
+	if totalWords < 25 {
+		return false
+	}
+	return span <= 5 || span < fallbackDuration*0.05
+}
+
+func redistributeSegmentsAcrossDuration(segments []TranscriptionSegment, duration float64) []TranscriptionSegment {
+	totalRunes := 0
+	for _, segment := range segments {
+		totalRunes += len([]rune(segment.Text))
+	}
+	if totalRunes == 0 || duration <= 0 {
+		return segments
+	}
+
+	redistributed := make([]TranscriptionSegment, 0, len(segments))
+	cursor := 0.0
+	for index, segment := range segments {
+		ratio := float64(len([]rune(segment.Text))) / float64(totalRunes)
+		end := cursor + duration*ratio
+		if index == len(segments)-1 {
+			end = duration
+		}
+		if end <= cursor {
+			end = cursor + 1
+		}
+		segment.StartSeconds = cursor
+		segment.EndSeconds = end
+		redistributed = append(redistributed, segment)
+		cursor = end
+	}
+	return redistributed
 }
 
 func splitLongSegments(input []TranscriptionSegment) []TranscriptionSegment {
 	var output []TranscriptionSegment
 	for _, segment := range input {
-		if segment.EndSeconds-segment.StartSeconds <= 20 && len([]rune(segment.Text)) <= 260 {
+		if segment.EndSeconds-segment.StartSeconds <= maxSubtitleDurationSeconds &&
+			len([]rune(segment.Text)) <= maxSubtitleRunes &&
+			len(strings.Fields(segment.Text)) <= maxSubtitleWords {
 			output = append(output, segment)
 			continue
 		}
@@ -248,10 +326,10 @@ func splitSentenceParts(text string) []string {
 	start := 0
 	runes := []rune(text)
 	for i, r := range runes {
-		if strings.ContainsRune(".?!;:", r) && i+1-start > 20 {
+		if strings.ContainsRune(".?!;:。？！；：", r) && i+1-start > 20 {
 			part := strings.TrimSpace(string(runes[start : i+1]))
 			if part != "" {
-				parts = append(parts, part)
+				parts = append(parts, splitOversizedSubtitlePart(part)...)
 			}
 			start = i + 1
 		}
@@ -259,10 +337,106 @@ func splitSentenceParts(text string) []string {
 	if start < len(runes) {
 		part := strings.TrimSpace(string(runes[start:]))
 		if part != "" {
-			parts = append(parts, part)
+			parts = append(parts, splitOversizedSubtitlePart(part)...)
 		}
 	}
+	if len(parts) <= 1 {
+		return splitOversizedSubtitlePart(text)
+	}
 	return parts
+}
+
+func splitOversizedSubtitlePart(text string) []string {
+	text = strings.TrimSpace(text)
+	if text == "" {
+		return nil
+	}
+	words := strings.Fields(text)
+	if len(words) > maxSubtitleWords {
+		return splitWordsIntoSubtitleParts(words)
+	}
+	if len([]rune(text)) > maxSubtitleRunes {
+		return splitRunesIntoSubtitleParts(text)
+	}
+	return []string{text}
+}
+
+func splitWordsIntoSubtitleParts(words []string) []string {
+	parts := make([]string, 0, (len(words)+targetSubtitleWords-1)/targetSubtitleWords)
+	for start := 0; start < len(words); {
+		end := findNaturalWordBoundary(words, start)
+		if remaining := len(words) - end; remaining > 0 && remaining < 8 {
+			end = len(words)
+		}
+		if end-start > maxSubtitleWords {
+			end = start + maxSubtitleWords
+		}
+		parts = append(parts, strings.Join(words[start:end], " "))
+		start = end
+	}
+	return parts
+}
+
+func findNaturalWordBoundary(words []string, start int) int {
+	minEnd := minInt(len(words), start+targetSubtitleWords)
+	maxEnd := minInt(len(words), start+maxSubtitleWords)
+	for index := minEnd; index < maxEnd; index++ {
+		previous := strings.ToLower(words[index-1])
+		current := strings.ToLower(words[index])
+		if isLikelyPhraseBoundary(previous, current) {
+			return index
+		}
+	}
+	return minEnd
+}
+
+func isLikelyPhraseBoundary(previous, current string) bool {
+	if current == "" {
+		return true
+	}
+	if strings.ContainsRune(",.?!;:", lastRuneOf(previous)) {
+		return true
+	}
+	switch current {
+	case "and", "but", "so", "because", "when", "while", "if", "then", "now", "today", "there",
+		"we", "i", "you", "they", "he", "she", "it", "this", "that", "these", "those":
+		return true
+	default:
+		return false
+	}
+}
+
+func minInt(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
+func splitRunesIntoSubtitleParts(text string) []string {
+	runes := []rune(text)
+	parts := make([]string, 0, (len(runes)+maxSubtitleRunes-1)/maxSubtitleRunes)
+	for start := 0; start < len(runes); {
+		end := start + maxSubtitleRunes
+		if end > len(runes) {
+			end = len(runes)
+		}
+		parts = append(parts, strings.TrimSpace(string(runes[start:end])))
+		start = end
+	}
+	return parts
+}
+
+func lastRuneOf(text string) rune {
+	var last rune
+	for _, r := range text {
+		last = r
+	}
+	return last
+}
+
+func isSubtitleBreakRune(r rune) bool {
+	return strings.ContainsRune(",，、", r) || (unicode.IsPunct(r) && !strings.ContainsRune("'’)]}", r))
 }
 
 func confidenceFromLogProb(avgLogProb float64) float64 {

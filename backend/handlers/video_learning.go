@@ -84,6 +84,7 @@ func InitVideoLearningService(cfg config.VideoLearningConfig, fallbackAPIKey str
 			videoLearningCfg.TranscriptionModel = "whisper-1"
 		}
 	}
+	videoLearningCfg.TranscriptionModel = normalizeTranscriptionModel(provider, videoLearningCfg.TranscriptionModel)
 	if videoLearningCfg.MaxAudioUploadMB <= 0 {
 		if provider == "funasr" || provider == "local" {
 			videoLearningCfg.MaxAudioUploadMB = 500
@@ -105,6 +106,40 @@ func InitVideoLearningService(cfg config.VideoLearningConfig, fallbackAPIKey str
 		videoLearningCfg.ProcessingTimeoutSeconds,
 		videoLearningCfg.MaxAudioUploadMB,
 	)
+}
+
+func normalizeTranscriptionModel(provider, model string) string {
+	model = strings.TrimSpace(model)
+	if !isFunASRTranscriptionProvider(provider) || model == "" {
+		return model
+	}
+
+	normalizedPath := filepath.ToSlash(model)
+	lowerModel := strings.ToLower(normalizedPath)
+	if lowerModel == "sensevoicesmall" || strings.HasSuffix(lowerModel, "/sensevoicesmall") {
+		return "sensevoice"
+	}
+
+	if !strings.Contains(normalizedPath, "/") {
+		return model
+	}
+
+	base := strings.ToLower(filepath.Base(normalizedPath))
+	switch base {
+	case "sensevoice", "sensevoicesmall":
+		return "sensevoice"
+	case "paraformer":
+		return "paraformer"
+	case "fun-asr-nano", "funasrnano":
+		return "fun-asr-nano"
+	default:
+		return "sensevoice"
+	}
+}
+
+func isFunASRTranscriptionProvider(provider string) bool {
+	provider = strings.TrimSpace(strings.ToLower(provider))
+	return provider == "funasr" || provider == "local"
 }
 
 func ListVideoLessons(c *gin.Context) {
@@ -591,7 +626,7 @@ func processVideoLessonJob(lessonID, jobID uint) {
 		if err := tx.Where("video_lesson_id = ?", lesson.ID).Delete(&models.VideoSubtitle{}).Error; err != nil {
 			return err
 		}
-		subtitles := buildSubtitleModels(lesson.ID, result.Segments, subtitleSourceAuto)
+		subtitles := buildSubtitleModelsWithDuration(lesson.ID, result.Segments, subtitleSourceAuto, firstPositiveFloat(result.Duration, probe.DurationSeconds))
 		if err := tx.Create(&subtitles).Error; err != nil {
 			return err
 		}
@@ -747,7 +782,11 @@ func replaceVideoSubtitles(lessonID uint, segments []services.TranscriptionSegme
 }
 
 func buildSubtitleModels(lessonID uint, segments []services.TranscriptionSegment, source string) []models.VideoSubtitle {
-	cleaned := services.CleanTranscriptionSegments(segments)
+	return buildSubtitleModelsWithDuration(lessonID, segments, source, 0)
+}
+
+func buildSubtitleModelsWithDuration(lessonID uint, segments []services.TranscriptionSegment, source string, fallbackDuration float64) []models.VideoSubtitle {
+	cleaned := services.CleanTranscriptionSegmentsWithDuration(segments, fallbackDuration)
 	subtitles := make([]models.VideoSubtitle, 0, len(cleaned))
 	for index, segment := range cleaned {
 		subtitles = append(subtitles, models.VideoSubtitle{

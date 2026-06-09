@@ -51,5 +51,5 @@ Then set backend config:
 transcription_provider = "funasr"
 transcription_base_url = "http://localhost:8899/v1"
 transcription_api_key = ""
-transcription_model = "../local-asr/funasr/models/SenseVoiceSmall"
+transcription_model = "sensevoice"
 ```

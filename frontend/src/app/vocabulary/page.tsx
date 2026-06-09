@@ -2,43 +2,52 @@
 
 import { FormEvent, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { format } from 'date-fns';
+import {
+  AlertTriangle,
+  BookOpen,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  Headphones,
+  Keyboard,
+  Layers,
+  ListChecks,
+  Loader2,
+  Network,
+  RotateCcw,
+  Search,
+  Trash2,
+  Volume2,
+  XCircle,
+} from 'lucide-react';
 import { vocabularyAPI } from '@/lib/api';
 import {
-  KnowledgeGraphNode,
   Vocabulary,
   VocabularyAnswerResult,
   VocabularyExercise,
   VocabularyExerciseType,
   VocabularyKnowledgeGraph,
 } from '@/types';
-import {
-  BookOpen,
-  Check,
-  CheckCircle2,
-  CircleDot,
-  GitBranch,
-  Headphones,
-  Keyboard,
-  Layers,
-  List,
-  Loader2,
-  Network,
-  RotateCcw,
-  Trash2,
-  TriangleAlert,
-  XCircle,
-} from 'lucide-react';
-import { format } from 'date-fns';
 
-type VocabularyFilter = 'due' | 'weak' | 'all' | 'learning' | 'learned';
-type ViewMode = 'cards' | 'list' | 'graph';
+type VocabularyFilter = 'due' | 'weak' | 'learning' | 'learned' | 'all';
+type ReviewRating = 'forgot' | 'hard' | 'good';
 
 const exerciseLabels: Record<VocabularyExerciseType, string> = {
   en_to_zh_choice: '英译中选择',
   zh_to_en_spelling: '中译英拼写',
   context_fill_blank: '原文填空',
   audio_word_choice: '听音辨词',
-  sentence_meaning_choice: '例句中选义',
+  sentence_meaning_choice: '例句选义',
+};
+
+const filterLabels: Record<VocabularyFilter, string> = {
+  due: '今日',
+  weak: '薄弱',
+  learning: '学习中',
+  learned: '已掌握',
+  all: '全部',
 };
 
 function isDue(item: Vocabulary) {
@@ -51,77 +60,67 @@ function speakWord(text: string) {
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'en-US';
-  utterance.rate = 0.85;
+  utterance.rate = 0.86;
   window.speechSynthesis.speak(utterance);
 }
 
-const graphTypeLabels: Record<KnowledgeGraphNode['type'], string> = {
-  word: '单词',
-  meaning: '释义',
-  definition: '解释',
-  context: '语境',
-  example: '例句',
-  article: '文章',
-  topic: '主题',
-  grammar: '语法',
-  weakness: '薄弱点',
-  review: '复习',
-};
-
-const graphTypeClasses: Record<KnowledgeGraphNode['type'], string> = {
-  word: 'border-blue-500/70 bg-blue-500/15 text-blue-100',
-  meaning: 'border-emerald-500/60 bg-emerald-500/10 text-emerald-100',
-  definition: 'border-cyan-500/60 bg-cyan-500/10 text-cyan-100',
-  context: 'border-violet-500/60 bg-violet-500/10 text-violet-100',
-  example: 'border-fuchsia-500/50 bg-fuchsia-500/10 text-fuchsia-100',
-  article: 'border-amber-500/60 bg-amber-500/10 text-amber-100',
-  topic: 'border-sky-500/50 bg-sky-500/10 text-sky-100',
-  grammar: 'border-indigo-500/60 bg-indigo-500/10 text-indigo-100',
-  weakness: 'border-red-500/60 bg-red-500/10 text-red-100',
-  review: 'border-lime-500/50 bg-lime-500/10 text-lime-100',
-};
-
-function nodeSizeClass(node: KnowledgeGraphNode) {
-  if (node.weight >= 90) return 'min-h-32 sm:col-span-2';
-  if (node.weight >= 75) return 'min-h-28';
-  return 'min-h-24';
+function formatDate(value?: string) {
+  if (!value) return '未安排';
+  return format(new Date(value), 'MM-dd');
 }
 
-function masteryClass(mastery?: number) {
-  if (mastery === undefined) return 'bg-gray-700';
-  if (mastery >= 75) return 'bg-green-500';
-  if (mastery >= 45) return 'bg-amber-500';
-  return 'bg-red-500';
+function masteryPercent(word: Vocabulary) {
+  if (word.is_learned) return 100;
+  const reviewScore = Math.min(word.review_count * 18, 72);
+  const forgottenPenalty = Math.min(word.forgotten_count * 16, 48);
+  const easeBonus = Math.max(0, Math.min(Math.round((word.review_ease - 1.3) * 16), 20));
+  return Math.max(8, Math.min(96, reviewScore + easeBonus - forgottenPenalty));
+}
+
+function getFilterCount(filter: VocabularyFilter, vocabulary: Vocabulary[]) {
+  if (filter === 'due') return vocabulary.filter((item) => !item.is_learned || isDue(item)).length;
+  if (filter === 'weak') return vocabulary.filter((item) => item.forgotten_count > 0).length;
+  if (filter === 'learning') return vocabulary.filter((item) => !item.is_learned).length;
+  if (filter === 'learned') return vocabulary.filter((item) => item.is_learned).length;
+  return vocabulary.length;
+}
+
+function vocabularySort(a: Vocabulary, b: Vocabulary) {
+  const aDue = !a.is_learned || isDue(a);
+  const bDue = !b.is_learned || isDue(b);
+  if (aDue !== bDue) return aDue ? -1 : 1;
+  if (b.forgotten_count !== a.forgotten_count) return b.forgotten_count - a.forgotten_count;
+  return new Date(b.last_review || b.updated_at).getTime() - new Date(a.last_review || a.updated_at).getTime();
 }
 
 function VocabularyContent() {
   const searchParams = useSearchParams();
+  const initialFilter: VocabularyFilter = searchParams.get('weak') === 'true' ? 'weak' : 'due';
   const [vocabulary, setVocabulary] = useState<Vocabulary[]>([]);
   const [exercises, setExercises] = useState<VocabularyExercise[]>([]);
   const [loading, setLoading] = useState(true);
-  const [exerciseLoading, setExerciseLoading] = useState(false);
-  const [filter, setFilter] = useState<VocabularyFilter>(
-    searchParams.get('weak') === 'true' ? 'weak' : 'due'
-  );
-  const [viewMode, setViewMode] = useState<ViewMode>(
-    searchParams.get('mode') === 'review' ? 'cards' : 'list'
-  );
-  const [reviewingId, setReviewingId] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [graphLoadingId, setGraphLoadingId] = useState<number | null>(null);
-  const [knowledgeGraph, setKnowledgeGraph] = useState<VocabularyKnowledgeGraph | null>(null);
-  const [graphError, setGraphError] = useState('');
-  const graphRequestRef = useRef(0);
+  const [exerciseLoading, setExerciseLoading] = useState(true);
+  const [filter, setFilter] = useState<VocabularyFilter>(initialFilter);
+  const [searchTerm, setSearchTerm] = useState('');
   const [cardIndex, setCardIndex] = useState(0);
   const [answer, setAnswer] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const [answerResult, setAnswerResult] = useState<VocabularyAnswerResult | null>(null);
+  const [reviewingId, setReviewingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [selectedWordId, setSelectedWordId] = useState<number | null>(null);
+  const [graphLoadingId, setGraphLoadingId] = useState<number | null>(null);
+  const [knowledgeGraph, setKnowledgeGraph] = useState<VocabularyKnowledgeGraph | null>(null);
+  const [graphError, setGraphError] = useState('');
+  const graphRequestRef = useRef(0);
 
   const fetchVocabulary = useCallback(async () => {
     try {
       setLoading(true);
       const response = await vocabularyAPI.getVocabulary();
-      setVocabulary(response.data.data);
+      const nextVocabulary = (response.data.data || []) as Vocabulary[];
+      setVocabulary(nextVocabulary);
+      setSelectedWordId((current) => current ?? nextVocabulary[0]?.id ?? null);
     } catch (error) {
       console.error('Failed to fetch vocabulary:', error);
     } finally {
@@ -129,7 +128,7 @@ function VocabularyContent() {
     }
   }, []);
 
-  const fetchExercises = useCallback(async (nextFilter: VocabularyFilter = 'due') => {
+  const fetchExercises = useCallback(async (nextFilter: VocabularyFilter) => {
     try {
       setExerciseLoading(true);
       const response = await vocabularyAPI.getReviewExercises({
@@ -150,124 +149,65 @@ function VocabularyContent() {
   }, []);
 
   useEffect(() => {
-    const initialFilter = searchParams.get('weak') === 'true' ? 'weak' : 'due';
+    const nextFilter: VocabularyFilter = searchParams.get('weak') === 'true' ? 'weak' : 'due';
+    setFilter(nextFilter);
     fetchVocabulary();
-    fetchExercises(initialFilter);
+    fetchExercises(nextFilter);
   }, [fetchExercises, fetchVocabulary, searchParams]);
 
+  const stats = useMemo(() => {
+    const total = vocabulary.length;
+    const due = getFilterCount('due', vocabulary);
+    const weak = getFilterCount('weak', vocabulary);
+    const learned = getFilterCount('learned', vocabulary);
+    const averageMastery = total
+      ? Math.round(vocabulary.reduce((sum, word) => sum + masteryPercent(word), 0) / total)
+      : 0;
+
+    return { total, due, weak, learned, averageMastery };
+  }, [vocabulary]);
+
   const filteredVocabulary = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+
     return vocabulary
       .filter((item) => {
-        if (filter === 'due') return !item.is_learned || isDue(item);
-        if (filter === 'weak') return item.forgotten_count > 0;
-        if (filter === 'learning') return !item.is_learned;
-        if (filter === 'learned') return item.is_learned;
-        return true;
+        if (filter === 'due' && item.is_learned && !isDue(item)) return false;
+        if (filter === 'weak' && item.forgotten_count <= 0) return false;
+        if (filter === 'learning' && item.is_learned) return false;
+        if (filter === 'learned' && !item.is_learned) return false;
+        if (!query) return true;
+        return [item.word, item.translation, item.definition, item.context]
+          .filter(Boolean)
+          .some((value) => value?.toLowerCase().includes(query));
       })
-      .sort((a, b) => {
-        if (filter !== 'weak') return 0;
-        if (b.forgotten_count !== a.forgotten_count) {
-          return b.forgotten_count - a.forgotten_count;
-        }
-        return new Date(b.last_review || b.updated_at).getTime() - new Date(a.last_review || a.updated_at).getTime();
-      });
-  }, [filter, vocabulary]);
+      .sort(vocabularySort);
+  }, [filter, searchTerm, vocabulary]);
 
-  const dueCount = vocabulary.filter((item) => !item.is_learned || isDue(item)).length;
-  const weakCount = vocabulary.filter((item) => item.forgotten_count > 0).length;
   const activeExercise = exercises[cardIndex];
   const activeVocabulary = activeExercise
     ? vocabulary.find((item) => item.id === activeExercise.vocabulary_id)
     : undefined;
+  const selectedWord =
+    vocabulary.find((item) => item.id === selectedWordId) || filteredVocabulary[0] || vocabulary[0];
+  const canSubmit = Boolean((activeExercise?.options?.length ? selectedOption : answer).trim()) && !answerResult;
+
+  const resetCardState = () => {
+    setAnswer('');
+    setSelectedOption('');
+    setAnswerResult(null);
+  };
 
   const changeFilter = (nextFilter: VocabularyFilter) => {
     setFilter(nextFilter);
+    resetCardState();
     setCardIndex(0);
-    setAnswer('');
-    setSelectedOption('');
-    setAnswerResult(null);
-    if (viewMode === 'cards') {
-      fetchExercises(nextFilter);
-    }
+    fetchExercises(nextFilter);
   };
 
-  const changeViewMode = (nextMode: ViewMode) => {
-    setViewMode(nextMode);
-    setAnswer('');
-    setSelectedOption('');
-    setAnswerResult(null);
-    if (nextMode === 'cards') {
-      fetchExercises(filter);
-    }
-  };
-
-  const openKnowledgeGraph = async (id: number) => {
-    const requestID = graphRequestRef.current + 1;
-    graphRequestRef.current = requestID;
-    try {
-      setViewMode('graph');
-      setGraphLoadingId(id);
-      setGraphError('');
-      const response = await vocabularyAPI.getKnowledgeGraph(id);
-      if (graphRequestRef.current !== requestID) return;
-      setKnowledgeGraph(response.data.data);
-    } catch (error) {
-      if (graphRequestRef.current !== requestID) return;
-      console.error('Failed to fetch knowledge graph:', error);
-      setGraphError('知识图谱加载失败');
-    } finally {
-      if (graphRequestRef.current === requestID) {
-        setGraphLoadingId(null);
-      }
-    }
-  };
-
-  const handleMarkLearned = async (id: number) => {
-    try {
-      const response = await vocabularyAPI.markLearned(id);
-      setVocabulary((prev) =>
-        prev.map((item) => (item.id === id ? response.data.data : item))
-      );
-    } catch (error) {
-      console.error('Failed to mark as learned:', error);
-    }
-  };
-
-  const handleReview = async (id: number, rating: 'forgot' | 'hard' | 'good') => {
-    try {
-      setReviewingId(id);
-      const response = await vocabularyAPI.reviewWord(id, rating);
-      setVocabulary((prev) =>
-        prev.map((item) => (item.id === id ? response.data.data : item))
-      );
-    } catch (error) {
-      console.error('Failed to review word:', error);
-    } finally {
-      setReviewingId(null);
-    }
-  };
-
-  const handleDeleteWord = async (item: Vocabulary) => {
-    if (typeof window !== 'undefined' && !window.confirm(`确定从生词本删除「${item.word}」吗？`)) {
-      return;
-    }
-
-    try {
-      setDeletingId(item.id);
-      await vocabularyAPI.deleteWord(item.id);
-      const nextExercises = exercises.filter((exercise) => exercise.vocabulary_id !== item.id);
-      setVocabulary((prev) => prev.filter((word) => word.id !== item.id));
-      setExercises(nextExercises);
-      setCardIndex((current) => Math.max(0, Math.min(current, nextExercises.length - 1)));
-      if (knowledgeGraph?.focus?.metadata?.vocabulary_id === item.id) {
-        setKnowledgeGraph(null);
-        setGraphError('');
-      }
-    } catch (error) {
-      console.error('Failed to delete word:', error);
-    } finally {
-      setDeletingId(null);
-    }
+  const updateVocabularyItem = (nextWord: Vocabulary) => {
+    setVocabulary((prev) => prev.map((item) => (item.id === nextWord.id ? nextWord : item)));
+    setSelectedWordId(nextWord.id);
   };
 
   const submitExerciseAnswer = async (event?: FormEvent) => {
@@ -285,9 +225,7 @@ function VocabularyContent() {
       });
       const result = response.data as VocabularyAnswerResult;
       setAnswerResult(result);
-      setVocabulary((prev) =>
-        prev.map((item) => (item.id === activeExercise.vocabulary_id ? result.data : item))
-      );
+      updateVocabularyItem(result.data);
     } catch (error) {
       console.error('Failed to submit review answer:', error);
     } finally {
@@ -302,13 +240,73 @@ function VocabularyContent() {
       if (nextLength === 0) return 0;
       return Math.min(current, nextLength - 1);
     });
-    setAnswer('');
-    setSelectedOption('');
-    setAnswerResult(null);
+    resetCardState();
   };
 
-  const answerSubmitted = Boolean(answerResult);
-  const canSubmit = Boolean((activeExercise?.options?.length ? selectedOption : answer).trim()) && !answerSubmitted;
+  const handleReview = async (id: number, rating: ReviewRating) => {
+    try {
+      setReviewingId(id);
+      const response = await vocabularyAPI.reviewWord(id, rating);
+      updateVocabularyItem(response.data.data as Vocabulary);
+    } catch (error) {
+      console.error('Failed to review word:', error);
+    } finally {
+      setReviewingId(null);
+    }
+  };
+
+  const handleMarkLearned = async (id: number) => {
+    try {
+      setReviewingId(id);
+      const response = await vocabularyAPI.markLearned(id);
+      updateVocabularyItem(response.data.data as Vocabulary);
+    } catch (error) {
+      console.error('Failed to mark word as learned:', error);
+    } finally {
+      setReviewingId(null);
+    }
+  };
+
+  const handleDeleteWord = async (word: Vocabulary) => {
+    if (typeof window !== 'undefined' && !window.confirm(`确定删除「${word.word}」吗？`)) return;
+
+    try {
+      setDeletingId(word.id);
+      await vocabularyAPI.deleteWord(word.id);
+      setVocabulary((prev) => prev.filter((item) => item.id !== word.id));
+      setExercises((prev) => prev.filter((item) => item.vocabulary_id !== word.id));
+      if (selectedWordId === word.id) {
+        setSelectedWordId(null);
+        setKnowledgeGraph(null);
+      }
+    } catch (error) {
+      console.error('Failed to delete word:', error);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const openKnowledgeGraph = async (id: number) => {
+    const requestID = graphRequestRef.current + 1;
+    graphRequestRef.current = requestID;
+
+    try {
+      setSelectedWordId(id);
+      setGraphLoadingId(id);
+      setGraphError('');
+      const response = await vocabularyAPI.getKnowledgeGraph(id);
+      if (graphRequestRef.current !== requestID) return;
+      setKnowledgeGraph(response.data.data);
+    } catch (error) {
+      if (graphRequestRef.current !== requestID) return;
+      console.error('Failed to fetch knowledge graph:', error);
+      setGraphError('图谱加载失败');
+    } finally {
+      if (graphRequestRef.current === requestID) {
+        setGraphLoadingId(null);
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -319,152 +317,139 @@ function VocabularyContent() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8">
-        <h1 className="mb-2 text-3xl font-bold">我的生词本</h1>
-        <p className="text-gray-400">
-          已收藏 {vocabulary.length} 个单词，已掌握 {vocabulary.filter((v) => v.is_learned).length} 个，
-          今日待复习 {dueCount} 个，薄弱词 {weakCount} 个
-        </p>
-      </div>
-
-      <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          {[
-            ['due', `今日复习 (${dueCount})`],
-            ['weak', `薄弱词 (${weakCount})`],
-            ['all', `全部 (${vocabulary.length})`],
-            ['learning', `学习中 (${vocabulary.filter((v) => !v.is_learned).length})`],
-            ['learned', `已掌握 (${vocabulary.filter((v) => v.is_learned).length})`],
-          ].map(([key, label]) => (
-            <button
-              key={key}
-              type="button"
-              onClick={() => changeFilter(key as VocabularyFilter)}
-              className={`rounded-lg px-4 py-2 transition-colors ${
-                filter === key
-                  ? key === 'weak'
-                    ? 'bg-amber-600 text-white'
-                    : 'bg-blue-600 text-white'
-                  : 'bg-gray-800 hover:bg-gray-700'
-              }`}
-            >
-              {label}
-            </button>
-          ))}
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <section className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-md border border-gray-800 bg-gray-900/70 p-4">
+          <div className="mb-3 flex items-center justify-between text-gray-400">
+            <span className="text-sm font-semibold">今日待复习</span>
+            <Clock className="h-4 w-4 text-blue-300" />
+          </div>
+          <p className="text-3xl font-black text-gray-100">{stats.due}</p>
+          <p className="mt-1 text-xs text-gray-500">当前队列 {exercises.length} 题</p>
         </div>
-
-        <div className="inline-flex w-fit rounded-lg border border-gray-800 bg-gray-900/50 p-1">
-          <button
-            type="button"
-            onClick={() => changeViewMode('cards')}
-            className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-              viewMode === 'cards'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-            }`}
-          >
-            <Layers className="h-4 w-4" />
-            客观练习
-          </button>
-          <button
-            type="button"
-            onClick={() => changeViewMode('list')}
-            className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-              viewMode === 'list'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-            }`}
-          >
-            <List className="h-4 w-4" />
-            列表
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              const first = filteredVocabulary[0];
-              const currentID = knowledgeGraph?.focus?.metadata?.vocabulary_id;
-              const currentInFilter = filteredVocabulary.some((item) => item.id === currentID);
-              setViewMode('graph');
-              if (first && (!knowledgeGraph || !currentInFilter)) {
-                openKnowledgeGraph(first.id);
-              }
-            }}
-            className={`inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
-              viewMode === 'graph'
-                ? 'bg-blue-600 text-white'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-            }`}
-          >
-            <Network className="h-4 w-4" />
-            图谱
-          </button>
+        <div className="rounded-md border border-gray-800 bg-gray-900/70 p-4">
+          <div className="mb-3 flex items-center justify-between text-gray-400">
+            <span className="text-sm font-semibold">薄弱词</span>
+            <AlertTriangle className="h-4 w-4 text-amber-300" />
+          </div>
+          <p className="text-3xl font-black text-gray-100">{stats.weak}</p>
+          <p className="mt-1 text-xs text-gray-500">按遗忘次数优先</p>
         </div>
-      </div>
+        <div className="rounded-md border border-gray-800 bg-gray-900/70 p-4">
+          <div className="mb-3 flex items-center justify-between text-gray-400">
+            <span className="text-sm font-semibold">已掌握</span>
+            <CheckCircle2 className="h-4 w-4 text-emerald-300" />
+          </div>
+          <p className="text-3xl font-black text-gray-100">{stats.learned}</p>
+          <p className="mt-1 text-xs text-gray-500">共 {stats.total} 个单词</p>
+        </div>
+        <div className="rounded-md border border-gray-800 bg-gray-900/70 p-4">
+          <div className="mb-3 flex items-center justify-between text-gray-400">
+            <span className="text-sm font-semibold">平均熟悉度</span>
+            <Layers className="h-4 w-4 text-violet-300" />
+          </div>
+          <p className="text-3xl font-black text-gray-100">{stats.averageMastery}%</p>
+          <div className="mt-3 h-2 rounded-full bg-gray-800">
+            <div className="h-full rounded-full bg-emerald-500" style={{ width: `${stats.averageMastery}%` }} />
+          </div>
+        </div>
+      </section>
 
-      {viewMode === 'cards' ? (
-        <div className="mx-auto max-w-3xl">
-          {exerciseLoading ? (
-            <div className="flex min-h-80 items-center justify-center rounded-lg border border-gray-800 bg-gray-900/60">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-            </div>
-          ) : !activeExercise ? (
-            <div className="py-16 text-center">
-              <BookOpen className="mx-auto mb-4 h-16 w-16 text-gray-700" />
-              <p className="text-gray-500">当前筛选没有待练习生词</p>
-            </div>
-          ) : (
-            <>
-              <div className="mb-4 flex items-center justify-between text-sm text-gray-500">
-                <span>
-                  第 {cardIndex + 1} / {exercises.length} 题
-                </span>
-                <span>{exerciseLabels[activeExercise.type]}</span>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <main className="space-y-5">
+          <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4 sm:p-5">
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-blue-300">
+                  <ListChecks className="h-4 w-4" />
+                  复习卡片
+                </div>
+                <h1 className="mt-1 text-2xl font-black text-gray-100 sm:text-3xl">生词复习</h1>
               </div>
+              <div className="flex flex-wrap gap-2">
+                {(Object.keys(filterLabels) as VocabularyFilter[]).map((key) => (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => changeFilter(key)}
+                    className={`rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                      filter === key
+                        ? 'bg-blue-600 text-white'
+                        : 'border border-gray-800 bg-gray-950/40 text-gray-300 hover:border-blue-500/70'
+                    }`}
+                  >
+                    {filterLabels[key]} {getFilterCount(key, vocabulary)}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-              <form onSubmit={submitExerciseAnswer} className="rounded-lg border border-gray-800 bg-gray-900/60 p-6 sm:p-8">
-                <div className="mb-6 flex items-start justify-between gap-4">
-                  <div>
-                    <p className="mb-2 text-sm font-semibold text-blue-300">{activeExercise.prompt}</p>
-                    {activeExercise.type === 'en_to_zh_choice' ? (
-                      <h2 className="text-4xl font-black text-gray-100">{activeExercise.word}</h2>
-                    ) : (
-                      <h2 className="text-2xl font-black text-gray-100">{exerciseLabels[activeExercise.type]}</h2>
-                    )}
+            {exerciseLoading ? (
+              <div className="flex min-h-96 items-center justify-center rounded-md border border-gray-800 bg-gray-950/40">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+              </div>
+            ) : !activeExercise ? (
+              <div className="flex min-h-96 flex-col items-center justify-center rounded-md border border-gray-800 bg-gray-950/40 px-4 text-center">
+                <BookOpen className="mb-4 h-14 w-14 text-gray-700" />
+                <p className="text-lg font-semibold text-gray-300">这个筛选下没有待练习题</p>
+                <p className="mt-2 text-sm text-gray-500">可以切到全部或薄弱词继续复习。</p>
+              </div>
+            ) : (
+              <form onSubmit={submitExerciseAnswer} className="rounded-md border border-gray-800 bg-gray-950/50 p-4 sm:p-6">
+                <div className="mb-5 flex flex-col gap-4 border-b border-gray-800 pb-5 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <span className="rounded-full bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-200">
+                        {exerciseLabels[activeExercise.type]}
+                      </span>
+                      <span className="text-xs font-semibold text-gray-500">
+                        {cardIndex + 1} / {exercises.length}
+                      </span>
+                      {activeVocabulary?.forgotten_count ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-3 py-1 text-xs font-bold text-amber-200">
+                          <AlertTriangle className="h-3 w-3" />
+                          忘记 {activeVocabulary.forgotten_count} 次
+                        </span>
+                      ) : null}
+                    </div>
+                    <p className="text-sm font-semibold leading-6 text-gray-400">{activeExercise.prompt}</p>
+                    <h2 className="mt-3 break-words text-4xl font-black text-gray-100 sm:text-5xl">
+                      {activeExercise.type === 'en_to_zh_choice' ? activeExercise.word : activeVocabulary?.word || activeExercise.word}
+                    </h2>
                     {activeVocabulary?.phonetic && (
-                      <p className="mt-2 text-sm text-gray-500">{activeVocabulary.phonetic}</p>
+                      <p className="mt-2 text-sm font-semibold text-gray-500">{activeVocabulary.phonetic}</p>
                     )}
                   </div>
-                  {activeVocabulary?.forgotten_count ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-3 py-1 text-sm font-semibold text-amber-300">
-                      <TriangleAlert className="h-4 w-4" />
-                      忘记 {activeVocabulary.forgotten_count} 次
-                    </span>
-                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => speakWord(activeExercise.audio_text || activeExercise.word)}
+                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md border border-gray-700 px-3 text-sm font-semibold text-gray-200 transition-colors hover:border-blue-500 hover:text-blue-200"
+                    title="播放发音"
+                  >
+                    <Volume2 className="h-4 w-4" />
+                    发音
+                  </button>
                 </div>
+
+                {activeExercise.context && (
+                  <div className="mb-5 rounded-md border border-gray-800 bg-gray-900/70 p-4">
+                    <p className="text-sm leading-7 text-gray-300">{activeExercise.context}</p>
+                  </div>
+                )}
 
                 {activeExercise.type === 'audio_word_choice' && (
                   <button
                     type="button"
                     onClick={() => speakWord(activeExercise.audio_text || activeExercise.word)}
-                    className="mb-5 inline-flex items-center gap-2 rounded-md border border-blue-500/60 px-4 py-2 text-sm font-semibold text-blue-200 transition-colors hover:bg-blue-500/10"
+                    className="mb-5 inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500"
                   >
                     <Headphones className="h-4 w-4" />
-                    播放发音
+                    播放听力
                   </button>
                 )}
 
-                {activeExercise.context && (
-                  <div className="mb-6 rounded-lg border border-gray-800 bg-gray-950/60 p-4">
-                    <p className="text-xs font-semibold text-gray-500">
-                      {activeExercise.type === 'sentence_meaning_choice' ? '例句' : '原文语境'}
-                    </p>
-                    <p className="mt-2 text-base leading-8 text-gray-300">{activeExercise.context}</p>
-                  </div>
-                )}
-
                 {activeExercise.options?.length ? (
-                  <div className="grid gap-3">
+                  <div className="grid gap-3 sm:grid-cols-2">
                     {activeExercise.options.map((option) => {
                       const isSelected = selectedOption === option;
                       const isCorrect = answerResult?.correct_answer === option;
@@ -473,16 +458,16 @@ function VocabularyContent() {
                         <button
                           key={option}
                           type="button"
-                          onClick={() => !answerSubmitted && setSelectedOption(option)}
-                          disabled={answerSubmitted}
-                          className={`min-h-12 rounded-md border px-4 py-3 text-left text-sm font-semibold transition-colors ${
-                            isCorrect && answerSubmitted
-                              ? 'border-green-500 bg-green-500/10 text-green-200'
+                          onClick={() => !answerResult && setSelectedOption(option)}
+                          disabled={Boolean(answerResult)}
+                          className={`min-h-14 rounded-md border px-4 py-3 text-left text-sm font-semibold leading-6 transition-colors ${
+                            isCorrect && answerResult
+                              ? 'border-emerald-500 bg-emerald-500/10 text-emerald-100'
                               : isWrongSelection
-                                ? 'border-red-500 bg-red-500/10 text-red-200'
+                                ? 'border-red-500 bg-red-500/10 text-red-100'
                                 : isSelected
                                   ? 'border-blue-500 bg-blue-500/10 text-blue-100'
-                                  : 'border-gray-700 bg-gray-950/40 text-gray-300 hover:border-blue-500'
+                                  : 'border-gray-700 bg-gray-900/80 text-gray-300 hover:border-blue-500/80'
                           }`}
                         >
                           {option}
@@ -499,311 +484,344 @@ function VocabularyContent() {
                     <input
                       value={answer}
                       onChange={(event) => setAnswer(event.target.value)}
-                      disabled={answerSubmitted}
+                      disabled={Boolean(answerResult)}
                       placeholder={activeExercise.placeholder || '输入英文单词'}
-                      className="w-full rounded-md border border-gray-700 bg-gray-950 px-4 py-3 text-lg text-gray-100 outline-none transition-colors focus:border-blue-500 disabled:opacity-70"
+                      className="h-12 w-full rounded-md border border-gray-700 bg-gray-900 px-4 text-lg font-semibold text-gray-100 outline-none transition-colors placeholder:text-gray-600 focus:border-blue-500 disabled:opacity-70"
                     />
                   </label>
                 )}
 
                 {answerResult && (
                   <div
-                    className={`mt-5 rounded-lg border p-4 ${
+                    className={`mt-5 rounded-md border p-4 ${
                       answerResult.correct
-                        ? 'border-green-500/40 bg-green-500/10 text-green-100'
-                        : 'border-red-500/40 bg-red-500/10 text-red-100'
+                        ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-100'
+                        : 'border-red-500/50 bg-red-500/10 text-red-100'
                     }`}
                   >
-                    <p className="flex items-center gap-2 font-semibold">
+                    <p className="flex items-center gap-2 font-bold">
                       {answerResult.correct ? <CheckCircle2 className="h-5 w-5" /> : <XCircle className="h-5 w-5" />}
-                      {answerResult.correct ? '回答正确' : '回答错误'}
+                      {answerResult.message || (answerResult.correct ? '回答正确' : '回答错误')}
                     </p>
                     <p className="mt-2 text-sm opacity-90">正确答案：{answerResult.correct_answer}</p>
                   </div>
                 )}
 
                 <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCardIndex((current) => Math.max(0, current - 1));
-                      setAnswer('');
-                      setSelectedOption('');
-                      setAnswerResult(null);
-                    }}
-                    disabled={cardIndex === 0 || answerSubmitted}
-                    className="rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-800 disabled:opacity-40"
-                  >
-                    上一题
-                  </button>
-
-                  <div className="flex flex-wrap items-center gap-2">
-                    {!answerSubmitted ? (
-                      <button
-                        type="submit"
-                        disabled={!canSubmit || reviewingId === activeExercise.vocabulary_id}
-                        className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
-                      >
-                        {reviewingId === activeExercise.vocabulary_id && <Loader2 className="h-4 w-4 animate-spin" />}
-                        提交答案
-                      </button>
-                    ) : (
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCardIndex((current) => Math.max(0, current - 1));
+                        resetCardState();
+                      }}
+                      disabled={cardIndex === 0 || Boolean(answerResult)}
+                      className="rounded-md border border-gray-700 px-3 py-2 text-sm font-semibold text-gray-300 transition-colors hover:bg-gray-800 disabled:opacity-40"
+                    >
+                      上一题
+                    </button>
+                    {activeVocabulary && (
                       <button
                         type="button"
-                        onClick={goToNextExercise}
-                        className="rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-green-500"
+                        onClick={() => handleReview(activeVocabulary.id, 'forgot')}
+                        disabled={reviewingId === activeVocabulary.id}
+                        className="inline-flex items-center gap-2 rounded-md border border-amber-600/70 px-3 py-2 text-sm font-semibold text-amber-200 transition-colors hover:bg-amber-500/10 disabled:opacity-50"
                       >
-                        下一题
+                        <RotateCcw className="h-4 w-4" />
+                        忘记
                       </button>
                     )}
                   </div>
+
+                  {!answerResult ? (
+                    <button
+                      type="submit"
+                      disabled={!canSubmit || reviewingId === activeExercise.vocabulary_id}
+                      className="inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
+                    >
+                      {reviewingId === activeExercise.vocabulary_id && <Loader2 className="h-4 w-4 animate-spin" />}
+                      提交
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={goToNextExercise}
+                      className="inline-flex items-center justify-center gap-2 rounded-md bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-emerald-500"
+                    >
+                      下一题
+                      <ChevronRight className="h-4 w-4" />
+                    </button>
+                  )}
                 </div>
               </form>
-            </>
-          )}
-        </div>
-      ) : viewMode === 'graph' ? (
-        <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
-          <div className="rounded-lg border border-gray-800 bg-gray-900/50 p-4">
-            <div className="mb-4 flex items-center gap-2">
-              <Network className="h-5 w-5 text-blue-300" />
-              <h2 className="text-lg font-bold">生词图谱</h2>
-            </div>
-            <div className="space-y-2">
-              {filteredVocabulary.slice(0, 24).map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => openKnowledgeGraph(item.id)}
-                  className={`flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left transition-colors ${
-                    knowledgeGraph?.focus?.metadata?.vocabulary_id === item.id
-                      ? 'border-blue-500 bg-blue-500/10 text-blue-100'
-                      : 'border-gray-800 bg-gray-950/30 text-gray-300 hover:border-blue-500/70'
-                  }`}
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">{item.word}</span>
-                    <span className="block truncate text-xs text-gray-500">
-                      {item.translation || item.context || '暂无释义'}
-                    </span>
-                  </span>
-                  {graphLoadingId === item.id ? (
-                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-blue-400" />
-                  ) : (
-                    <CircleDot className="h-4 w-4 shrink-0 text-gray-600" />
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
+            )}
+          </section>
 
-          <div className="rounded-lg border border-gray-800 bg-gray-900/50 p-4 sm:p-5">
-            {graphLoadingId && !knowledgeGraph ? (
-              <div className="flex min-h-96 items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+          <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4 sm:p-5">
+            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-400">
+                  <BookOpen className="h-4 w-4" />
+                  生词列表
+                </div>
+                <p className="mt-1 text-sm text-gray-500">当前显示 {filteredVocabulary.length} 个</p>
               </div>
-            ) : graphError ? (
-              <div className="py-16 text-center text-red-300">{graphError}</div>
-            ) : !knowledgeGraph ? (
-              <div className="py-16 text-center">
-                <Network className="mx-auto mb-4 h-16 w-16 text-gray-700" />
-                <p className="text-gray-500">选择一个单词查看它的知识图谱</p>
+              <label className="relative w-full md:w-80">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                <input
+                  value={searchTerm}
+                  onChange={(event) => setSearchTerm(event.target.value)}
+                  placeholder="搜索单词、释义、语境"
+                  className="h-10 w-full rounded-md border border-gray-700 bg-gray-950 pl-9 pr-3 text-sm text-gray-100 outline-none transition-colors placeholder:text-gray-600 focus:border-blue-500"
+                />
+              </label>
+            </div>
+
+            {filteredVocabulary.length === 0 ? (
+              <div className="flex min-h-56 flex-col items-center justify-center rounded-md border border-gray-800 bg-gray-950/40 text-center">
+                <BookOpen className="mb-3 h-12 w-12 text-gray-700" />
+                <p className="text-gray-500">没有匹配的生词</p>
               </div>
             ) : (
-              <>
-                <div className="mb-5 flex flex-col gap-4 border-b border-gray-800 pb-5 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <p className="mb-2 text-sm font-semibold text-blue-300">当前中心词</p>
-                    <h2 className="text-3xl font-black text-gray-100">{knowledgeGraph.focus?.label || '学习图谱'}</h2>
-                    {knowledgeGraph.focus?.description && (
-                      <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-400">
-                        {knowledgeGraph.focus.description}
-                      </p>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-3 gap-2 text-center text-xs text-gray-400 sm:min-w-64">
-                    <div className="rounded-md border border-gray-800 bg-gray-950/40 p-2">
-                      <p className="text-lg font-bold text-gray-100">{knowledgeGraph.stats.related_words}</p>
-                      <p>相关词</p>
-                    </div>
-                    <div className="rounded-md border border-gray-800 bg-gray-950/40 p-2">
-                      <p className="text-lg font-bold text-gray-100">{knowledgeGraph.stats.articles}</p>
-                      <p>文章</p>
-                    </div>
-                    <div className="rounded-md border border-gray-800 bg-gray-950/40 p-2">
-                      <p className="text-lg font-bold text-gray-100">{knowledgeGraph.stats.topics}</p>
-                      <p>主题</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                  {knowledgeGraph.nodes.map((node) => (
+              <div className="overflow-hidden rounded-md border border-gray-800">
+                {filteredVocabulary.map((word) => {
+                  const mastery = masteryPercent(word);
+                  const isSelected = selectedWord?.id === word.id;
+                  return (
                     <div
-                      key={node.id}
-                      className={`flex flex-col justify-between rounded-lg border p-4 ${graphTypeClasses[node.type]} ${nodeSizeClass(node)}`}
+                      key={word.id}
+                      className={`grid gap-4 border-b border-gray-800 p-4 last:border-b-0 lg:grid-cols-[minmax(180px,260px)_1fr_auto] ${
+                        isSelected ? 'bg-blue-500/5' : 'bg-gray-950/30'
+                      }`}
                     >
-                      <div>
-                        <div className="mb-3 flex items-start justify-between gap-3">
-                          <span className="rounded-full bg-black/20 px-2 py-1 text-xs font-semibold">
-                            {graphTypeLabels[node.type]}
-                          </span>
-                          {node.mastery !== undefined && (
-                            <span className="flex items-center gap-1 text-xs font-semibold">
-                              <span className={`h-2 w-2 rounded-full ${masteryClass(node.mastery)}`} />
-                              {node.mastery}
-                            </span>
-                          )}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedWordId(word.id)}
+                        className="min-w-0 text-left"
+                      >
+                        <div className="flex items-center gap-2">
+                          <h3 className="break-words text-lg font-black text-gray-100">{word.word}</h3>
+                          {word.is_learned && <Check className="h-4 w-4 shrink-0 text-emerald-300" />}
                         </div>
-                        <h3 className="break-words text-lg font-bold leading-6">{node.label}</h3>
-                        {node.description && (
-                          <p className="mt-2 line-clamp-4 text-sm leading-6 opacity-80">{node.description}</p>
+                        {word.phonetic && <p className="mt-1 text-xs font-semibold text-gray-500">{word.phonetic}</p>}
+                        <div className="mt-3 h-1.5 rounded-full bg-gray-800">
+                          <div className="h-full rounded-full bg-emerald-500" style={{ width: `${mastery}%` }} />
+                        </div>
+                      </button>
+
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold leading-6 text-gray-300">
+                          {word.translation || word.definition || '暂无释义'}
+                        </p>
+                        {word.context && (
+                          <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-500">{word.context}</p>
                         )}
+                        <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold text-gray-500">
+                          <span>复习 {word.review_count} 次</span>
+                          <span>忘记 {word.forgotten_count} 次</span>
+                          <span>下次 {formatDate(word.next_review_at)}</span>
+                        </div>
                       </div>
-                      {node.metadata?.slug && (
-                        <a
-                          href={`/articles/${node.metadata.slug}`}
-                          className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold underline-offset-4 hover:underline"
-                        >
-                          <BookOpen className="h-3 w-3" />
-                          打开文章
-                        </a>
-                      )}
-                    </div>
-                  ))}
-                </div>
 
-                {knowledgeGraph.edges.length > 0 && (
-                  <div className="mt-5 rounded-lg border border-gray-800 bg-gray-950/40 p-4">
-                    <div className="mb-3 flex items-center gap-2">
-                      <GitBranch className="h-4 w-4 text-gray-400" />
-                      <h3 className="text-sm font-bold text-gray-300">关系</h3>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {knowledgeGraph.edges.slice(0, 18).map((edge) => (
-                        <span
-                          key={edge.id}
-                          className="rounded-full border border-gray-700 bg-gray-900 px-3 py-1 text-xs text-gray-300"
+                      <div className="flex flex-wrap items-center gap-2 lg:justify-end">
+                        <button
+                          type="button"
+                          onClick={() => speakWord(word.word)}
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-700 text-gray-300 transition-colors hover:border-blue-500 hover:text-blue-200"
+                          title="播放发音"
                         >
-                          {edge.label}
-                        </span>
-                      ))}
+                          <Volume2 className="h-4 w-4" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleReview(word.id, 'hard')}
+                          disabled={reviewingId === word.id || deletingId === word.id}
+                          className="rounded-md border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 transition-colors hover:bg-gray-800 disabled:opacity-50"
+                        >
+                          模糊
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleReview(word.id, 'good')}
+                          disabled={reviewingId === word.id || deletingId === word.id}
+                          className="rounded-md bg-emerald-600 px-3 py-2 text-xs font-bold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50"
+                        >
+                          记得
+                        </button>
+                        {!word.is_learned && (
+                          <button
+                            type="button"
+                            onClick={() => handleMarkLearned(word.id)}
+                            disabled={reviewingId === word.id || deletingId === word.id}
+                            className="rounded-md border border-emerald-600/70 px-3 py-2 text-xs font-bold text-emerald-200 transition-colors hover:bg-emerald-500/10 disabled:opacity-50"
+                          >
+                            掌握
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteWord(word)}
+                          disabled={reviewingId === word.id || deletingId === word.id}
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-red-500/50 text-red-200 transition-colors hover:bg-red-500/10 disabled:opacity-50"
+                          title="删除"
+                        >
+                          {deletingId === word.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      ) : filteredVocabulary.length === 0 ? (
-        <div className="py-16 text-center">
-          <BookOpen className="mx-auto mb-4 h-16 w-16 text-gray-700" />
-          <p className="text-gray-500">暂无生词</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {filteredVocabulary.map((item) => (
-            <div key={item.id} className="rounded-lg border border-gray-800 bg-gray-900/50 p-5">
-              <div className="mb-3 flex items-start justify-between">
-                <div className="flex-1">
-                  <h3 className="mb-1 text-xl font-bold">{item.word}</h3>
-                  {item.phonetic && <p className="text-sm text-gray-500">{item.phonetic}</p>}
-                  <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500">
-                    <span>
-                      复习 {item.review_count} 次
-                      {item.next_review_at
-                        ? ` · 下次 ${format(new Date(item.next_review_at), 'yyyy-MM-dd')}`
-                        : ' · 尚未安排'}
-                    </span>
-                    {item.forgotten_count > 0 && (
-                      <span className="inline-flex items-center gap-1 text-amber-300">
-                        <TriangleAlert className="h-3 w-3" />
-                        忘记 {item.forgotten_count} 次
-                      </span>
-                    )}
-                  </div>
-                </div>
-                {item.is_learned && (
-                  <span className="flex items-center space-x-1 text-sm text-green-400">
-                    <Check className="h-4 w-4" />
-                    <span>已掌握</span>
-                  </span>
-                )}
+                  );
+                })}
               </div>
+            )}
+          </section>
+        </main>
 
-              {item.translation && <p className="mb-3 text-gray-300">{item.translation}</p>}
-
-              {item.context && (
-                <div className="mb-3 rounded bg-gray-800/50 p-3 text-sm">
-                  <p className="text-gray-400">{item.context}</p>
-                </div>
-              )}
-
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>添加于 {format(new Date(item.created_at), 'yyyy-MM-dd')}</span>
-                <div className="flex flex-wrap items-center justify-end gap-2">
+        <aside className="space-y-5 xl:sticky xl:top-20 xl:self-start">
+          <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold text-gray-300">
+                <ListChecks className="h-4 w-4 text-blue-300" />
+                复习队列
+              </div>
+              {exerciseLoading && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
+            </div>
+            {exercises.length === 0 ? (
+              <p className="rounded-md border border-gray-800 bg-gray-950/40 p-4 text-sm text-gray-500">
+                队列为空
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {exercises.slice(0, 12).map((exercise, index) => (
                   <button
-                    onClick={() => openKnowledgeGraph(item.id)}
-                    disabled={graphLoadingId === item.id}
-                    className="inline-flex items-center gap-1 rounded bg-blue-600 px-2 py-1 text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
+                    key={`${exercise.vocabulary_id}-${exercise.type}-${index}`}
+                    type="button"
+                    onClick={() => {
+                      setCardIndex(index);
+                      resetCardState();
+                    }}
+                    className={`flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left transition-colors ${
+                      index === cardIndex
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-100'
+                        : 'border-gray-800 bg-gray-950/30 text-gray-300 hover:border-blue-500/60'
+                    }`}
                   >
-                    {graphLoadingId === item.id ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <Network className="h-3 w-3" />
-                    )}
-                    图谱
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-bold">{exercise.word}</span>
+                      <span className="block text-xs text-gray-500">{exerciseLabels[exercise.type]}</span>
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-gray-500" />
                   </button>
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 text-sm font-semibold text-gray-300">
+                  <Network className="h-4 w-4 text-violet-300" />
+                  单词详情
+                </div>
+                {selectedWord && <h2 className="mt-1 truncate text-2xl font-black text-gray-100">{selectedWord.word}</h2>}
+              </div>
+              {selectedWord && (
+                <button
+                  type="button"
+                  onClick={() => openKnowledgeGraph(selectedWord.id)}
+                  disabled={graphLoadingId === selectedWord.id}
+                  className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-gray-700 text-gray-300 transition-colors hover:border-violet-500 hover:text-violet-200 disabled:opacity-50"
+                  title="加载图谱"
+                >
+                  {graphLoadingId === selectedWord.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Network className="h-4 w-4" />}
+                </button>
+              )}
+            </div>
+
+            {!selectedWord ? (
+              <p className="rounded-md border border-gray-800 bg-gray-950/40 p-4 text-sm text-gray-500">
+                选择一个单词查看详情
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-md border border-gray-800 bg-gray-950/40 p-4">
+                  {selectedWord.phonetic && <p className="text-sm font-semibold text-gray-500">{selectedWord.phonetic}</p>}
+                  <p className="mt-2 text-sm leading-6 text-gray-300">
+                    {selectedWord.translation || selectedWord.definition || '暂无释义'}
+                  </p>
+                  {selectedWord.context && (
+                    <p className="mt-3 border-l-2 border-gray-700 pl-3 text-sm leading-6 text-gray-500">
+                      {selectedWord.context}
+                    </p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 text-center text-xs text-gray-500">
+                  <div className="rounded-md border border-gray-800 bg-gray-950/40 p-3">
+                    <p className="text-lg font-black text-gray-100">{selectedWord.review_count}</p>
+                    <p>复习</p>
+                  </div>
+                  <div className="rounded-md border border-gray-800 bg-gray-950/40 p-3">
+                    <p className="text-lg font-black text-gray-100">{selectedWord.forgotten_count}</p>
+                    <p>忘记</p>
+                  </div>
+                  <div className="rounded-md border border-gray-800 bg-gray-950/40 p-3">
+                    <p className="text-lg font-black text-gray-100">{formatDate(selectedWord.next_review_at)}</p>
+                    <p>下次</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2">
                   <button
-                    onClick={() => handleReview(item.id, 'forgot')}
-                    disabled={reviewingId === item.id || deletingId === item.id}
-                    className="inline-flex items-center gap-1 rounded bg-gray-700 px-2 py-1 text-white transition-colors hover:bg-gray-600 disabled:opacity-50"
+                    type="button"
+                    onClick={() => handleReview(selectedWord.id, 'forgot')}
+                    disabled={reviewingId === selectedWord.id}
+                    className="rounded-md border border-amber-600/70 px-3 py-2 text-sm font-bold text-amber-200 transition-colors hover:bg-amber-500/10 disabled:opacity-50"
                   >
-                    <RotateCcw className="h-3 w-3" />
                     忘记
                   </button>
                   <button
-                    onClick={() => handleReview(item.id, 'hard')}
-                    disabled={reviewingId === item.id || deletingId === item.id}
-                    className="rounded bg-yellow-600 px-2 py-1 text-white transition-colors hover:bg-yellow-500 disabled:opacity-50"
+                    type="button"
+                    onClick={() => handleReview(selectedWord.id, 'hard')}
+                    disabled={reviewingId === selectedWord.id}
+                    className="rounded-md border border-gray-700 px-3 py-2 text-sm font-bold text-gray-200 transition-colors hover:bg-gray-800 disabled:opacity-50"
                   >
                     模糊
                   </button>
                   <button
-                    onClick={() => handleReview(item.id, 'good')}
-                    disabled={reviewingId === item.id || deletingId === item.id}
-                    className="rounded bg-green-600 px-2 py-1 text-white transition-colors hover:bg-green-500 disabled:opacity-50"
+                    type="button"
+                    onClick={() => handleReview(selectedWord.id, 'good')}
+                    disabled={reviewingId === selectedWord.id}
+                    className="rounded-md bg-emerald-600 px-3 py-2 text-sm font-bold text-white transition-colors hover:bg-emerald-500 disabled:opacity-50"
                   >
                     记得
                   </button>
-                  {!item.is_learned && (
-                    <button
-                      onClick={() => handleMarkLearned(item.id)}
-                      disabled={deletingId === item.id}
-                      className="rounded bg-green-600 px-3 py-1 text-white transition-colors hover:bg-green-700 disabled:opacity-50"
-                    >
-                      标记已掌握
-                    </button>
-                  )}
-                  <button
-                    type="button"
-                    onClick={() => handleDeleteWord(item)}
-                    disabled={deletingId === item.id || reviewingId === item.id}
-                    className="inline-flex items-center gap-1 rounded border border-red-500/50 px-2 py-1 text-red-200 transition-colors hover:bg-red-500/10 disabled:opacity-50"
-                  >
-                    {deletingId === item.id ? (
-                      <Loader2 className="h-3 w-3 animate-spin" />
-                    ) : (
-                      <Trash2 className="h-3 w-3" />
-                    )}
-                    删除
-                  </button>
                 </div>
+
+                {graphError && <p className="text-sm text-red-300">{graphError}</p>}
+                {knowledgeGraph?.focus?.metadata?.vocabulary_id === selectedWord.id && (
+                  <div className="rounded-md border border-gray-800 bg-gray-950/40 p-4">
+                    <div className="mb-3 flex items-center justify-between text-xs font-semibold text-gray-500">
+                      <span>相关节点</span>
+                      <span>{knowledgeGraph.stats.total_nodes}</span>
+                    </div>
+                    <div className="space-y-2">
+                      {knowledgeGraph.nodes.slice(0, 6).map((node) => (
+                        <div key={node.id} className="rounded-md border border-gray-800 bg-gray-900/80 p-3">
+                          <p className="text-sm font-bold text-gray-200">{node.label}</p>
+                          {node.description && (
+                            <p className="mt-1 line-clamp-2 text-xs leading-5 text-gray-500">{node.description}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            )}
+          </section>
+        </aside>
+      </div>
     </div>
   );
 }

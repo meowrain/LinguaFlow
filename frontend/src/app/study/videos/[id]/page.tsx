@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2 } from 'lucide-react';
@@ -9,6 +9,7 @@ import VideoStudyPlayer from '@/components/video-learning/VideoStudyPlayer';
 import TranslationTooltip from '@/components/TranslationTooltip';
 import { isProcessingStatus } from '@/components/video-learning/VideoLessonCard';
 import { videoLessonAPI } from '@/lib/api';
+import { normalizeVideoSubtitlesForPlayback } from '@/lib/videoSubtitles';
 import { useAuthStore } from '@/store/authStore';
 import { VideoLesson, VideoSubtitle } from '@/types';
 
@@ -20,6 +21,7 @@ export default function VideoLessonDetailPage() {
   const [lesson, setLesson] = useState<VideoLesson | null>(null);
   const [subtitles, setSubtitles] = useState<VideoSubtitle[]>([]);
   const [currentTime, setCurrentTime] = useState(0);
+  const seekVideoRef = useRef<((seconds: number) => void) | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [tooltip, setTooltip] = useState<{
@@ -78,21 +80,27 @@ export default function VideoLessonDetailPage() {
     return () => window.clearInterval(timer);
   }, [fetchDetail, lesson]);
 
-  const activeSubtitle = useMemo(
-    () =>
-      subtitles.find(
-        (subtitle) => currentTime >= subtitle.start_seconds && currentTime < subtitle.end_seconds
-      ),
-    [currentTime, subtitles]
+  const playbackSubtitles = useMemo(
+    () => normalizeVideoSubtitlesForPlayback(subtitles, lesson?.duration_seconds || 0),
+    [lesson?.duration_seconds, subtitles]
   );
 
-  const handleSeek = (seconds: number) => {
-    const video = document.querySelector<HTMLVideoElement>('video');
-    if (!video) return;
-    video.currentTime = seconds;
-    video.play().catch(() => undefined);
+  const activeSubtitle = useMemo(
+    () =>
+      playbackSubtitles.find(
+        (subtitle) => currentTime >= subtitle.start_seconds && currentTime < subtitle.end_seconds
+      ),
+    [currentTime, playbackSubtitles]
+  );
+
+  const handleSeek = useCallback((seconds: number) => {
+    seekVideoRef.current?.(seconds);
     setCurrentTime(seconds);
-  };
+  }, []);
+
+  const handleSeekReady = useCallback((seek: (seconds: number) => void) => {
+    seekVideoRef.current = seek;
+  }, []);
 
   if (!mounted || loading) {
     return (
@@ -127,9 +135,10 @@ export default function VideoLessonDetailPage() {
         <div className="space-y-5">
           <VideoStudyPlayer
             lesson={lesson}
-            subtitles={subtitles}
+            subtitles={playbackSubtitles}
             currentTime={currentTime}
             onTimeChange={setCurrentTime}
+            onSeekReady={handleSeekReady}
             onLessonChange={setLesson}
             onSubtitlesChange={setSubtitles}
           />
@@ -148,7 +157,7 @@ export default function VideoLessonDetailPage() {
         <div className="min-h-[560px] lg:h-[calc(100vh-150px)]">
           <SubtitleTimeline
             lessonId={lesson.id}
-            subtitles={subtitles}
+            subtitles={playbackSubtitles}
             activeSubtitleId={activeSubtitle?.id}
             onSeek={handleSeek}
             onSubtitlesChange={setSubtitles}

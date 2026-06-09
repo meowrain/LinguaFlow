@@ -3,16 +3,17 @@
 import { FormEvent, MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Edit3, Languages, Loader2, Plus, Save, Trash2, X } from 'lucide-react';
 import { translationAPI, videoLessonAPI } from '@/lib/api';
+import { PlaybackVideoSubtitle } from '@/lib/videoSubtitles';
 import { VideoSubtitle } from '@/types';
 import { formatDuration } from './VideoLessonCard';
 
 interface SubtitleTimelineProps {
   lessonId: number;
-  subtitles: VideoSubtitle[];
+  subtitles: PlaybackVideoSubtitle[];
   activeSubtitleId?: number;
   onSeek: (seconds: number) => void;
   onSubtitlesChange: (subtitles: VideoSubtitle[]) => void;
-  onWordClick: (word: string, subtitle: VideoSubtitle, position: { x: number; y: number }) => void;
+  onWordClick: (word: string, subtitle: PlaybackVideoSubtitle, position: { x: number; y: number }) => void;
 }
 
 type SubtitleDisplayMode = 'english' | 'chinese' | 'bilingual';
@@ -25,7 +26,7 @@ export default function SubtitleTimeline({
   onSubtitlesChange,
   onWordClick,
 }: SubtitleTimelineProps) {
-  const activeRef = useRef<HTMLButtonElement | null>(null);
+  const activeRef = useRef<HTMLDivElement | null>(null);
   const [mode, setMode] = useState<SubtitleDisplayMode>('bilingual');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [savingId, setSavingId] = useState<number | null>(null);
@@ -119,7 +120,7 @@ export default function SubtitleTimeline({
     }
   };
 
-  const handleWordClick = (event: MouseEvent<HTMLButtonElement>, word: string, subtitle: VideoSubtitle) => {
+  const handleWordClick = (event: MouseEvent<HTMLButtonElement>, word: string, subtitle: PlaybackVideoSubtitle) => {
     event.stopPropagation();
     const clean = word.replace(/^[^A-Za-z']+|[^A-Za-z']+$/g, '');
     if (!clean || clean.length < 2) return;
@@ -130,7 +131,7 @@ export default function SubtitleTimeline({
     });
   };
 
-  const renderWords = (subtitle: VideoSubtitle) => {
+  const renderWords = (subtitle: PlaybackVideoSubtitle) => {
     return subtitle.text.split(/(\s+)/).map((part, index) => {
       if (/^\s+$/.test(part)) return part;
       const hasWord = /[A-Za-z]/.test(part);
@@ -256,15 +257,23 @@ export default function SubtitleTimeline({
             {subtitles.map((subtitle) => {
               const active = subtitle.id === activeSubtitleId;
               const editing = subtitle.id === editingId;
+              const generated = Boolean(subtitle.playback_generated);
               return (
                 <div key={subtitle.id}>
                   {editing ? (
                     renderForm()
                   ) : (
-                    <button
+                    <div
                       ref={active ? activeRef : null}
-                      type="button"
+                      role="button"
+                      tabIndex={0}
                       onClick={() => onSeek(subtitle.start_seconds)}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault();
+                          onSeek(subtitle.start_seconds);
+                        }
+                      }}
                       className={`w-full rounded-lg border p-3 text-left transition ${
                         active
                           ? 'border-blue-500 bg-blue-500/15'
@@ -283,47 +292,49 @@ export default function SubtitleTimeline({
                       {mode !== 'english' && subtitle.translation && (
                         <p className="mt-2 text-sm leading-6 text-gray-400">{subtitle.translation}</p>
                       )}
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            startEdit(subtitle);
-                          }}
-                          className="inline-flex items-center gap-1 rounded-md border border-gray-700 px-2 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800"
-                        >
-                          <Edit3 className="h-3.5 w-3.5" />
-                          编辑
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleTranslate(subtitle);
-                          }}
-                          disabled={translatingId === subtitle.id}
-                          className="inline-flex items-center gap-1 rounded-md border border-gray-700 px-2 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800 disabled:opacity-50"
-                        >
-                          {translatingId === subtitle.id ? (
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                          ) : (
-                            <Languages className="h-3.5 w-3.5" />
-                          )}
-                          翻译
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleDelete(subtitle);
-                          }}
-                          className="inline-flex items-center gap-1 rounded-md border border-red-500/40 px-2 py-1 text-xs font-semibold text-red-200 hover:bg-red-500/10"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                          删除
-                        </button>
-                      </div>
-                    </button>
+                      {!generated && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              startEdit(subtitle);
+                            }}
+                            className="inline-flex items-center gap-1 rounded-md border border-gray-700 px-2 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800"
+                          >
+                            <Edit3 className="h-3.5 w-3.5" />
+                            编辑
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleTranslate(subtitle);
+                            }}
+                            disabled={translatingId === subtitle.id}
+                            className="inline-flex items-center gap-1 rounded-md border border-gray-700 px-2 py-1 text-xs font-semibold text-gray-300 hover:bg-gray-800 disabled:opacity-50"
+                          >
+                            {translatingId === subtitle.id ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : (
+                              <Languages className="h-3.5 w-3.5" />
+                            )}
+                            翻译
+                          </button>
+                          <button
+                            type="button"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleDelete(subtitle);
+                            }}
+                            className="inline-flex items-center gap-1 rounded-md border border-red-500/40 px-2 py-1 text-xs font-semibold text-red-200 hover:bg-red-500/10"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            删除
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   )}
                 </div>
               );

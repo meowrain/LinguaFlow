@@ -75,6 +75,29 @@ a {
   padding: 0.04rem 0.14rem;
 }
 
+.video-learning-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+}
+
+.video-learning-player video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-learning-player video::cue {
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.45;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.95);
+}
+
 /* 划词翻译气泡 */
 .translation-tooltip {
   position: absolute;
