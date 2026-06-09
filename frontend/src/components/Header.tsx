@@ -33,6 +33,7 @@ export default function Header() {
     { name: '每日学习', path: '/study' },
     { name: '最近更新', path: '/latest' },
     { name: '全部外刊', path: '/journals' },
+    { name: 'AO3 同人', path: '/ao3' },
     { name: '复习', path: '/vocabulary' },
   ];
 
@@ -84,9 +85,9 @@ export default function Header() {
             <ThemeToggle />
 
             {/* Search */}
-            <button className="p-2 text-gray-600 transition-colors hover:text-gray-950 dark:text-gray-300 dark:hover:text-white">
+            <Link href="/ao3" className="p-2 text-gray-600 transition-colors hover:text-gray-950 dark:text-gray-300 dark:hover:text-white">
               <Search className="w-6 h-6" />
-            </button>
+            </Link>
 
             {/* User section */}
             {isAuthenticated && user ? (

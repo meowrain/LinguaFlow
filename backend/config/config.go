@@ -18,6 +18,7 @@ type Config struct {
 	AI          AIConfig          `toml:"ai"`
 	TTS         TTSConfig         `toml:"tts"`
 	RSS         RSSConfig         `toml:"rss"`
+	AO3         AO3Config         `toml:"ao3"`
 }
 
 type TranslationConfig struct {
@@ -69,6 +70,11 @@ type RSSFeedConfig struct {
 	Tags         string `toml:"tags"`
 	MaxItems     int    `toml:"max_items"`
 	Enabled      bool   `toml:"enabled"`
+}
+
+type AO3Config struct {
+	Proxy                 string `toml:"proxy"`
+	RequestTimeoutSeconds int    `toml:"request_timeout_seconds"`
 }
 
 type DatabaseConfig struct {

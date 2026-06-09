@@ -64,6 +64,11 @@ user_agent = "GuGuDu RSS Importer/1.0"
 request_timeout_seconds = 15
 max_items_per_feed = 10
 
+[ao3]
+# Optional. AO3 can use a different local proxy/rule than RSS imports.
+proxy = "http://127.0.0.1:7897"
+request_timeout_seconds = 45
+
 [[rss.feeds]]
 name = "VOA Learning English - Science & Technology"
 url = "https://learningenglish.voanews.com/api/zmg_pl-vomx-tpeymtm"

@@ -242,3 +242,64 @@ html:not(.dark) .hover\:text-white:hover {
   border-radius: 8px;
   margin: 1.5rem 0;
 }
+
+/* AO3 公开作品阅读样式 */
+.ao3-work-content {
+  overflow-wrap: break-word;
+}
+
+.ao3-work-content .chapter {
+  margin-bottom: 3rem;
+}
+
+.ao3-work-content h2,
+.ao3-work-content h3,
+.ao3-work-content h4 {
+  color: var(--foreground);
+  font-weight: 800;
+  line-height: 1.3;
+  margin: 2rem 0 1rem;
+}
+
+.ao3-work-content h2 {
+  font-size: 1.75rem;
+}
+
+.ao3-work-content h3 {
+  font-size: 1.35rem;
+}
+
+.ao3-work-content p {
+  margin-bottom: 1.25rem;
+}
+
+.ao3-work-content a {
+  color: #047857;
+  font-weight: 600;
+}
+
+.dark .ao3-work-content a {
+  color: #6ee7b7;
+}
+
+.ao3-work-content blockquote {
+  border-left: 4px solid #10b981;
+  color: var(--muted);
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+}
+
+.ao3-work-content hr {
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.ao3-work-content ul,
+.ao3-work-content ol {
+  margin: 0 0 1.25rem 1.5rem;
+}
+
+.ao3-work-content li {
+  margin-bottom: 0.4rem;
+}

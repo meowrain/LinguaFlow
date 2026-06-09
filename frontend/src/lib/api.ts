@@ -108,6 +108,13 @@ export const rssAPI = {
   importFeeds: () => api.post('/admin/rss/import'),
 };
 
+export const ao3API = {
+  search: (params: { q: string; page?: number }) =>
+    api.get('/ao3/search', { params }),
+  getWork: (id: string) =>
+    api.get(`/ao3/works/${id}`),
+};
+
 export const adminArticleAPI = {
   getArticles: (params?: {
     page?: number;

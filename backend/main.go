@@ -64,6 +64,10 @@ func main() {
 		cfg.TTS.MaxInputLength,
 	)
 	handlers.InitRSSImportService(database.DB, cfg.RSS)
+	handlers.InitAO3Service(
+		firstNonEmpty(cfg.AO3.Proxy, cfg.RSS.Proxy),
+		firstPositive(cfg.AO3.RequestTimeoutSeconds, cfg.RSS.RequestTimeoutSeconds),
+	)
 
 	// 创建 Gin 路由
 	r := gin.Default()
@@ -105,6 +109,13 @@ func main() {
 
 		// RSS 来源
 		api.GET("/rss/feeds", handlers.GetRSSFeeds)
+
+		// AO3 公开搜索与阅读代理（非官方，仅解析公开 HTML）
+		ao3 := api.Group("/ao3")
+		{
+			ao3.GET("/search", handlers.SearchAO3Works)
+			ao3.GET("/works/:id", handlers.GetAO3Work)
+		}
 
 		// 翻译服务（无需登录）
 		api.POST("/translate", handlers.Translate)
@@ -215,6 +226,15 @@ func firstNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func firstPositive(values ...int) int {
+	for _, value := range values {
+		if value > 0 {
+			return value
+		}
+	}
+	return 0
 }
 
 func buildAllowOriginFunc(configured string) func(string) bool {

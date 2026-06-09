@@ -234,6 +234,60 @@ export interface RSSImportReport {
   imported_at: string;
 }
 
+export interface AO3WorkSummary {
+  id: string;
+  title: string;
+  authors: string[];
+  summary: string;
+  fandoms: string[];
+  rating: string;
+  warnings: string[];
+  categories: string[];
+  relationships: string[];
+  characters: string[];
+  tags: string[];
+  language: string;
+  words: string;
+  chapters: string;
+  comments: string;
+  kudos: string;
+  bookmarks: string;
+  hits: string;
+  updated_at: string;
+  url: string;
+  ao3_path: string;
+}
+
+export interface AO3SearchResponse {
+  query: string;
+  page: number;
+  works: AO3WorkSummary[];
+  has_next: boolean;
+  source_url: string;
+  disclaimer: string;
+}
+
+export interface AO3Chapter {
+  id: string;
+  index: number;
+  title: string;
+  summary: string;
+  notes: string;
+  content_html: string;
+  content_text: string;
+  paragraphs: string[];
+}
+
+export interface AO3Work extends Omit<AO3WorkSummary, 'comments' | 'kudos' | 'bookmarks' | 'hits' | 'ao3_path'> {
+  notes: string;
+  published_at: string;
+  content_html: string;
+  content_text: string;
+  paragraphs: string[];
+  chapters_data: AO3Chapter[];
+  disclaimer: string;
+}
+
 export interface PaginationInfo {
   page: number;
   page_size: number;

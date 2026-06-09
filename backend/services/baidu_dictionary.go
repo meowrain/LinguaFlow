@@ -46,15 +46,7 @@ type baiduDictionaryResponse struct {
 
 type baiduInnerDictionary struct {
 	WordResult struct {
-		EDict struct {
-			Item []struct {
-				Pos     string `json:"pos"`
-				TRGroup []struct {
-					TR      []string `json:"tr"`
-					Example []string `json:"example"`
-				} `json:"tr_group"`
-			} `json:"item"`
-		} `json:"edict"`
+		EDict       baiduEDict `json:"edict"`
 		SimpleMeans struct {
 			WordName  string   `json:"word_name"`
 			WordMeans []string `json:"word_means"`
@@ -69,6 +61,74 @@ type baiduInnerDictionary struct {
 			} `json:"symbols"`
 		} `json:"simple_means"`
 	} `json:"word_result"`
+}
+
+type baiduEDict struct {
+	Item []baiduEDictItem `json:"item"`
+}
+
+type baiduEDictItem struct {
+	Pos     string              `json:"pos"`
+	TRGroup []baiduEDictTRGroup `json:"tr_group"`
+}
+
+type baiduEDictTRGroup struct {
+	TR      baiduTextList `json:"tr"`
+	Example baiduTextList `json:"example"`
+}
+
+type baiduTextList []string
+
+func (e *baiduEDict) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if bytes.Equal(data, []byte(`null`)) || len(data) == 0 {
+		return nil
+	}
+
+	var encoded string
+	if err := json.Unmarshal(data, &encoded); err == nil {
+		encoded = strings.TrimSpace(encoded)
+		if encoded == "" {
+			return nil
+		}
+		data = []byte(encoded)
+	}
+
+	type alias baiduEDict
+	var parsed alias
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		return nil
+	}
+	*e = baiduEDict(parsed)
+	return nil
+}
+
+func (l *baiduTextList) UnmarshalJSON(data []byte) error {
+	data = bytes.TrimSpace(data)
+	if bytes.Equal(data, []byte(`""`)) || bytes.Equal(data, []byte(`null`)) || len(data) == 0 {
+		return nil
+	}
+
+	var one string
+	if err := json.Unmarshal(data, &one); err == nil {
+		if one != "" {
+			*l = append(*l, one)
+		}
+		return nil
+	}
+
+	var many []interface{}
+	if err := json.Unmarshal(data, &many); err != nil {
+		return err
+	}
+	for _, item := range many {
+		for _, text := range baiduTextValues(item) {
+			if text != "" {
+				*l = append(*l, text)
+			}
+		}
+	}
+	return nil
 }
 
 func NewBaiduDictionaryService(apiKey, secretKey string) *BaiduDictionaryService {
@@ -278,4 +338,28 @@ func firstBaiduNonEmpty(values ...string) string {
 		}
 	}
 	return ""
+}
+
+func baiduTextValues(value interface{}) []string {
+	switch typed := value.(type) {
+	case string:
+		if typed == "" {
+			return nil
+		}
+		return []string{typed}
+	case map[string]interface{}:
+		values := make([]string, 0, len(typed))
+		for _, key := range []string{"tr", "tran", "dst", "mean", "meaning", "example"} {
+			values = append(values, baiduTextValues(typed[key])...)
+		}
+		return values
+	case []interface{}:
+		values := make([]string, 0, len(typed))
+		for _, item := range typed {
+			values = append(values, baiduTextValues(item)...)
+		}
+		return values
+	default:
+		return nil
+	}
 }
