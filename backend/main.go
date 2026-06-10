@@ -68,10 +68,6 @@ func main() {
 		firstNonEmpty(cfg.AO3.Proxy, cfg.RSS.Proxy),
 		firstPositive(cfg.AO3.RequestTimeoutSeconds, cfg.RSS.RequestTimeoutSeconds),
 	)
-	handlers.InitVideoLearningService(
-		cfg.Video,
-		firstNonEmpty(cfg.Video.TranscriptionAPIKey, cfg.AI.APIKey, cfg.TTS.APIKey),
-	)
 
 	// 创建 Gin 路由
 	r := gin.Default()
@@ -183,23 +179,6 @@ func main() {
 			protected.GET("/study/today", handlers.GetStudyToday)
 			protected.GET("/study/diagnostics", handlers.GetStudyDiagnostics)
 			protected.PUT("/study/goal", handlers.UpdateStudyGoal)
-
-			// 视频学习
-			videos := protected.Group("/video-lessons")
-			{
-				videos.GET("", handlers.ListVideoLessons)
-				videos.POST("", handlers.CreateVideoLesson)
-				videos.GET("/:id", handlers.GetVideoLesson)
-				videos.DELETE("/:id", handlers.DeleteVideoLesson)
-				videos.POST("/:id/process", handlers.ProcessVideoLesson)
-				videos.PATCH("/:id/progress", handlers.UpdateVideoLessonProgress)
-				videos.GET("/:id/subtitles", handlers.ListVideoSubtitles)
-				videos.POST("/:id/subtitles", handlers.CreateVideoSubtitle)
-				videos.POST("/:id/subtitles/import", handlers.ImportVideoSubtitles)
-				videos.POST("/:id/subtitles/reorder", handlers.ReorderVideoSubtitles)
-				videos.PUT("/:id/subtitles/:subtitle_id", handlers.UpdateVideoSubtitle)
-				videos.DELETE("/:id/subtitles/:subtitle_id", handlers.DeleteVideoSubtitle)
-			}
 
 			// 学习知识图谱
 			protected.GET("/knowledge-graph/overview", handlers.GetKnowledgeGraphOverview)

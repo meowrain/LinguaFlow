@@ -37,7 +37,6 @@ type User struct {
 	StudyGoal      *StudyGoal      `gorm:"foreignKey:UserID" json:"study_goal,omitempty"`
 	StudyRecords   []StudyRecord   `gorm:"foreignKey:UserID" json:"study_records,omitempty"`
 	KnowledgeNodes []KnowledgeNode `gorm:"foreignKey:UserID" json:"knowledge_nodes,omitempty"`
-	VideoLessons   []VideoLesson   `gorm:"foreignKey:UserID" json:"video_lessons,omitempty"`
 }
 
 // Category 分类
@@ -359,80 +358,6 @@ type UserKnowledgeState struct {
 
 	User User          `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Node KnowledgeNode `gorm:"foreignKey:NodeID" json:"node,omitempty"`
-}
-
-// VideoLesson 用户视频学习资料
-type VideoLesson struct {
-	ID        uint           `gorm:"primarykey" json:"id"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-
-	UserID uint `gorm:"not null;index:idx_user_video_created,priority:1;index:idx_user_video_status,priority:1" json:"user_id"`
-
-	Title       string `gorm:"size:300;not null" json:"title"`
-	Description string `gorm:"type:text" json:"description"`
-	Source      string `gorm:"size:100" json:"source"`
-	SourceURL   string `gorm:"size:1000" json:"source_url"`
-
-	OriginalFilename string `gorm:"size:500" json:"original_filename"`
-	VideoPath        string `gorm:"size:1000;not null" json:"video_path"`
-	AudioPath        string `gorm:"size:1000" json:"audio_path"`
-	TranscriptPath   string `gorm:"size:1000" json:"transcript_path"`
-
-	DurationSeconds float64 `gorm:"default:0" json:"duration_seconds"`
-	FileSizeBytes   int64   `gorm:"default:0" json:"file_size_bytes"`
-	MimeType        string  `gorm:"size:100" json:"mime_type"`
-
-	Language string `gorm:"size:20;default:'en'" json:"language"`
-	Status   string `gorm:"size:30;default:'uploaded';index;index:idx_user_video_status,priority:2" json:"status"`
-	Progress int    `gorm:"default:0" json:"progress"`
-	Error    string `gorm:"type:text" json:"error"`
-
-	LastPositionSeconds float64    `gorm:"default:0" json:"last_position_seconds"`
-	CompletedAt         *time.Time `json:"completed_at"`
-
-	User      User                 `gorm:"foreignKey:UserID" json:"user,omitempty"`
-	Subtitles []VideoSubtitle      `gorm:"foreignKey:VideoLessonID" json:"subtitles,omitempty"`
-	Jobs      []VideoProcessingJob `gorm:"foreignKey:VideoLessonID" json:"jobs,omitempty"`
-}
-
-// VideoSubtitle 视频字幕句子
-type VideoSubtitle struct {
-	ID        uint           `gorm:"primarykey" json:"id"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-
-	VideoLessonID uint `gorm:"not null;index:idx_video_subtitle_order,priority:1;index" json:"video_lesson_id"`
-	SortOrder     int  `gorm:"not null;index:idx_video_subtitle_order,priority:2" json:"sort_order"`
-
-	StartSeconds float64 `gorm:"not null;index" json:"start_seconds"`
-	EndSeconds   float64 `gorm:"not null" json:"end_seconds"`
-	Text         string  `gorm:"type:text;not null" json:"text"`
-	Translation  string  `gorm:"type:text" json:"translation"`
-
-	Confidence float64 `gorm:"default:0" json:"confidence"`
-	Source     string  `gorm:"size:30;default:'auto'" json:"source"`
-
-	VideoLesson VideoLesson `gorm:"foreignKey:VideoLessonID" json:"video_lesson,omitempty"`
-}
-
-// VideoProcessingJob 视频异步处理任务
-type VideoProcessingJob struct {
-	ID        uint           `gorm:"primarykey" json:"id"`
-	CreatedAt time.Time      `json:"created_at"`
-	UpdatedAt time.Time      `json:"updated_at"`
-	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
-
-	VideoLessonID uint       `gorm:"not null;index" json:"video_lesson_id"`
-	Status        string     `gorm:"size:30;default:'queued';index" json:"status"`
-	Attempts      int        `gorm:"default:0" json:"attempts"`
-	LastError     string     `gorm:"type:text" json:"last_error"`
-	StartedAt     *time.Time `json:"started_at"`
-	FinishedAt    *time.Time `json:"finished_at"`
-
-	VideoLesson VideoLesson `gorm:"foreignKey:VideoLessonID" json:"video_lesson,omitempty"`
 }
 
 // TranslationCache 翻译缓存

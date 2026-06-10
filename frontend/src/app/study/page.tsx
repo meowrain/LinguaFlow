@@ -11,7 +11,6 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  FileVideo,
   FilePenLine,
   Flame,
   Languages,
@@ -260,13 +259,6 @@ export default function StudyPage() {
             >
               <Network className="h-4 w-4" />
               查看图谱
-            </Link>
-            <Link
-              href="/study/videos"
-              className="inline-flex items-center gap-2 rounded-md border border-gray-700 px-4 py-2 text-sm font-semibold text-gray-300 hover:bg-gray-900"
-            >
-              <FileVideo className="h-4 w-4" />
-              视频学习
             </Link>
             <Link
               href={continueReading[0]?.article?.slug ? `/articles/${continueReading[0].article.slug}` : '/latest'}

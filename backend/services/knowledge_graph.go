@@ -371,9 +371,9 @@ func (s *KnowledgeGraphService) SyncVocabulary(userID uint, vocab models.Vocabul
 			Type:               KnowledgeNodeWeakness,
 			Label:              fmt.Sprintf("忘记 %d 次", vocab.ForgottenCount),
 			Description:        "这个词需要优先复习",
-			Weight:             minInt(100, 52+vocab.ForgottenCount*12),
+			Weight:             min(100, 52+vocab.ForgottenCount*12),
 			SourceVocabularyID: &vocab.ID,
-			Familiarity:        maxInt(0, 45-vocab.ForgottenCount*10),
+			Familiarity:        max(0, 45-vocab.ForgottenCount*10),
 			MistakeCount:       vocab.ForgottenCount,
 			StateSource:        "weak_signal",
 		})
@@ -847,7 +847,7 @@ func (s *KnowledgeGraphService) GetLearningPaths(
 }
 
 func (s *KnowledgeGraphService) GetTopicClusters(userID uint, topTopics []KnowledgeGraphNodeDTO) ([]KnowledgeGraphTopicCluster, error) {
-	clusters := make([]KnowledgeGraphTopicCluster, 0, minInt(len(topTopics), 6))
+	clusters := make([]KnowledgeGraphTopicCluster, 0, min(len(topTopics), 6))
 	for index, topicDTO := range topTopics {
 		if index >= 6 {
 			break

@@ -249,39 +249,4 @@ export const studyAPI = {
   }) => api.put('/study/goal', data),
 };
 
-export const videoLessonAPI = {
-  list: (params?: { page?: number; page_size?: number; status?: string; search?: string }) =>
-    api.get('/video-lessons', { params }),
-  create: (data: FormData) =>
-    postForm('/video-lessons', data),
-  get: (id: number) =>
-    api.get(`/video-lessons/${id}`),
-  remove: (id: number) =>
-    api.delete(`/video-lessons/${id}`),
-  process: (id: number) =>
-    api.post(`/video-lessons/${id}/process`),
-  updateProgress: (id: number, data: { last_position_seconds: number; completed?: boolean; watched_seconds?: number }) =>
-    api.patch(`/video-lessons/${id}/progress`, data),
-  getSubtitles: (id: number) =>
-    api.get(`/video-lessons/${id}/subtitles`),
-  createSubtitle: (id: number, data: {
-    start_seconds: number;
-    end_seconds: number;
-    text: string;
-    translation?: string;
-  }) => api.post(`/video-lessons/${id}/subtitles`, data),
-  updateSubtitle: (id: number, subtitleId: number, data: {
-    start_seconds?: number;
-    end_seconds?: number;
-    text?: string;
-    translation?: string;
-  }) => api.put(`/video-lessons/${id}/subtitles/${subtitleId}`, data),
-  deleteSubtitle: (id: number, subtitleId: number) =>
-    api.delete(`/video-lessons/${id}/subtitles/${subtitleId}`),
-  reorderSubtitles: (id: number) =>
-    api.post(`/video-lessons/${id}/subtitles/reorder`),
-  importSubtitles: (id: number, data: FormData) =>
-    postForm(`/video-lessons/${id}/subtitles/import`, data),
-};
-
 export default api;
