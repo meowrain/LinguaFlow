@@ -582,6 +582,7 @@ export default function ArticlePage() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const ttsRequestIdRef = useRef(0);
   const ttsQueueIndexRef = useRef<number | null>(null);
+  const ttsPrefetchCacheRef = useRef<Map<string, string>>(new Map());
   const assistantEndRef = useRef<HTMLDivElement | null>(null);
   const loadedPracticeRef = useRef('');
 
@@ -1380,6 +1381,7 @@ export default function ArticlePage() {
     audioRef.current?.pause();
     audioRef.current = null;
     window.speechSynthesis?.cancel();
+    ttsPrefetchCacheRef.current.clear();
     resetTTSState();
   };
 
@@ -1467,17 +1469,24 @@ export default function ArticlePage() {
         throw new Error('not authenticated');
       }
 
-      const response = await ttsAPI.generateSpeech({
-        text: item.text,
-        voice: ttsVoice,
-        speed: ttsRate,
-        format: 'wav',
-      });
-      if (ttsRequestIdRef.current !== requestId) {
-        return;
+      const cacheKey = `${item.key}__${ttsVoice}__${ttsRate}`;
+      let audioUrl = ttsPrefetchCacheRef.current.get(cacheKey);
+
+      if (audioUrl) {
+        ttsPrefetchCacheRef.current.delete(cacheKey);
+      } else {
+        const response = await ttsAPI.generateSpeech({
+          text: item.text,
+          voice: ttsVoice,
+          speed: ttsRate,
+          format: 'wav',
+        });
+        if (ttsRequestIdRef.current !== requestId) {
+          return;
+        }
+        audioUrl = resolveAPIAssetURL(response.data.data.audio_url);
       }
 
-      const audioUrl = resolveAPIAssetURL(response.data.data.audio_url);
       const audio = new Audio(audioUrl);
       if (ttsRequestIdRef.current !== requestId) {
         audio.pause();
@@ -1497,6 +1506,15 @@ export default function ArticlePage() {
       setTtsPlayingKey(item.key);
       setTtsPaused(false);
       await audio.play();
+
+      // 当前句开始播放后，立即预取后续句子，消除切换间隔
+      if (queueIndex !== null) {
+        for (let i = 1; i <= 2; i++) {
+          const nextItem = sentenceQueue[queueIndex + i];
+          if (!nextItem) break;
+          prefetchTTSItem(nextItem, ttsVoice, ttsRate, requestId);
+        }
+      }
     } catch (err: any) {
       if (ttsRequestIdRef.current !== requestId) {
         return;
@@ -1522,6 +1540,29 @@ export default function ArticlePage() {
       },
       startIndex
     );
+  };
+
+  const prefetchTTSItem = (
+    item: { key: string; text: string },
+    voice: string,
+    speed: number,
+    requestId: number
+  ) => {
+    const cacheKey = `${item.key}__${voice}__${speed}`;
+    if (ttsPrefetchCacheRef.current.has(cacheKey)) return;
+
+    ttsAPI
+      .generateSpeech({ text: item.text, voice, speed, format: 'wav' })
+      .then((response) => {
+        if (ttsRequestIdRef.current !== requestId) return;
+        ttsPrefetchCacheRef.current.set(
+          cacheKey,
+          resolveAPIAssetURL(response.data.data.audio_url)
+        );
+      })
+      .catch(() => {
+        /* 预取失败不影响主流程，播放到该句时会重新请求 */
+      });
   };
 
   const handleReadParagraph = (index: number, paragraph: string) => {
