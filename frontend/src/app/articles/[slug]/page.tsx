@@ -1022,9 +1022,9 @@ export default function ArticlePage() {
     paragraph: string
   ) => {
     markReadingActive();
-    // Clear previous native selection (from a prior word click) so we can detect
-    // drag-selections in handleTextSelection on the next mouseup
-    window.getSelection()?.removeAllRanges();
+    // If there's a drag-selection, it's handled by handleTextSelection (mouseup) — skip
+    const selected = window.getSelection()?.toString().trim();
+    if (selected) return;
 
     const match = getWordMatchFromPoint(event.clientX, event.clientY);
     if (!match) return;
@@ -1072,7 +1072,6 @@ export default function ArticlePage() {
           paragraphIndex,
         });
         closeAnalysis();
-        applyHighlight(range);
         return;
       }
 
@@ -1083,7 +1082,6 @@ export default function ArticlePage() {
         x: rect.left + rect.width / 2,
         y: rect.top - 12 + window.scrollY,
       });
-      applyHighlight(range);
       setShowTranslation(true);
     });
   };
