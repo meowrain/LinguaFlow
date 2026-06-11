@@ -1803,7 +1803,11 @@ export default function ArticlePage() {
             <span>{article.category?.name || '外刊精选'}</span>
           </div>
 
-          <h1 className="mb-4 text-4xl font-black leading-tight text-gray-100 md:text-5xl">
+          <h1
+            onClick={(event) => handleParagraphClick(event, article.title)}
+            onMouseUp={() => handleTextSelection(article.title, -1)}
+            className="mb-4 cursor-text text-4xl font-black leading-tight text-gray-100 md:text-5xl"
+          >
             {article.title}
           </h1>
 
@@ -1813,7 +1817,11 @@ export default function ArticlePage() {
             </h2>
           )}
 
-          <p className="mb-7 text-lg leading-8 text-gray-400">
+          <p
+            onClick={(event) => handleParagraphClick(event, article.summary || '')}
+            onMouseUp={() => handleTextSelection(article.summary || '', -2)}
+            className="mb-7 cursor-text text-lg leading-8 text-gray-400"
+          >
             {article.summary_cn || article.summary}
           </p>
 
