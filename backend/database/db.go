@@ -56,6 +56,7 @@ func InitDB(cfg *config.Config) error {
 		&models.KnowledgeNode{},
 		&models.KnowledgeEdge{},
 		&models.UserKnowledgeState{},
+		&models.FavoriteFolder{},
 	); err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)
 	}

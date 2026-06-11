@@ -210,9 +210,11 @@ type Subscription struct {
 
 	UserID    uint `gorm:"not null;index" json:"user_id"`
 	ArticleID uint `gorm:"not null;index" json:"article_id"`
+	FolderID  uint `gorm:"not null;index" json:"folder_id"`
 
-	User    User    `gorm:"foreignKey:UserID" json:"user,omitempty"`
-	Article Article `gorm:"foreignKey:ArticleID" json:"article,omitempty"`
+	User    User           `gorm:"foreignKey:UserID" json:"user,omitempty"`
+	Article Article        `gorm:"foreignKey:ArticleID" json:"article,omitempty"`
+	Folder  FavoriteFolder `gorm:"foreignKey:FolderID" json:"folder,omitempty"`
 }
 
 // ReadHistory 阅读历史
