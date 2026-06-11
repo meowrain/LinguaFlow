@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import NavigationProgress from '@/components/NavigationProgress';
 
 export const metadata: Metadata = {
   title: 'LinguaFlow - 英语学习平台',
@@ -33,6 +34,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <NavigationProgress />
         <ThemeProvider>
           <Header />
           <main className="min-h-screen">{children}</main>

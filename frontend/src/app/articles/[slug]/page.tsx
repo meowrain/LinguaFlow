@@ -44,6 +44,8 @@ import {
   Vocabulary,
 } from '@/types';
 import TranslationTooltip from '@/components/TranslationTooltip';
+import ArticleLearningPanel from '@/components/ArticleLearningPanel';
+import Toast from '@/components/Toast';
 
 const difficultyLabels = {
   easy: '简单',
@@ -522,6 +524,7 @@ export default function ArticlePage() {
   const [progressCheckpoint, setProgressCheckpoint] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [shareToast, setShareToast] = useState('');
   const [paragraphTranslations, setParagraphTranslations] = useState<
     Record<number, { loading: boolean; text?: string; error?: string }>
   >({});
@@ -960,12 +963,30 @@ export default function ArticlePage() {
     if (!article) return;
 
     const url = window.location.href;
+
     if (navigator.share) {
-      await navigator.share({ title: article.title, url });
+      try {
+        await navigator.share({ title: article.title, url });
+      } catch (err) {
+        // 用户取消分享对话框时不报错
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+        // 分享 API 失败时降级到剪贴板
+        try {
+          await navigator.clipboard.writeText(url);
+          setShareToast('链接已复制到剪贴板');
+        } catch {
+          setShareToast('分享失败，请手动复制链接');
+        }
+      }
       return;
     }
 
-    await navigator.clipboard.writeText(url);
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareToast('链接已复制到剪贴板');
+    } catch {
+      setShareToast('复制失败，请手动复制浏览器地址栏链接');
+    }
   };
 
   const openKnowledgeGraph = async () => {
@@ -1921,6 +1942,13 @@ export default function ArticlePage() {
           </div>
         )}
 
+        <ArticleLearningPanel
+          article={article}
+          paragraphs={englishParagraphs}
+          vocabularyByWord={vocabularyByWord}
+          isAuthenticated={isAuthenticated}
+        />
+
         <section className="mb-8 rounded-lg border border-gray-800 bg-gray-950/60 p-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -2735,6 +2763,7 @@ export default function ArticlePage() {
             </form>
           </aside>
       )}
+      {shareToast && <Toast message={shareToast} onClose={() => setShareToast('')} />}
     </>
   );
 }

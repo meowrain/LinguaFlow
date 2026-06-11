@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
 import {
@@ -10,6 +11,7 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
+  FileText,
   Headphones,
   Keyboard,
   Layers,
@@ -317,6 +319,15 @@ function VocabularyContent() {
       }
     }
   };
+
+  // Auto-load knowledge graph when a word is first selected
+  useEffect(() => {
+    if (!selectedWord) return;
+    if (knowledgeGraph?.focus?.metadata?.vocabulary_id === selectedWord.id) return;
+    if (graphLoadingId !== null) return;
+    openKnowledgeGraph(selectedWord.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedWord?.id]);
 
   if (loading) {
     return (
@@ -851,22 +862,99 @@ function VocabularyContent() {
                 </div>
 
                 {graphError && <p className="text-sm text-red-300">{graphError}</p>}
+                {graphLoadingId === selectedWord.id && (
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    加载知识图谱...
+                  </div>
+                )}
                 {knowledgeGraph?.focus?.metadata?.vocabulary_id === selectedWord.id && (
-                  <div className="rounded-md border border-gray-800 bg-gray-950/40 p-4">
-                    <div className="mb-3 flex items-center justify-between text-xs font-semibold text-gray-500">
-                      <span>相关节点</span>
-                      <span>{knowledgeGraph.stats.total_nodes}</span>
+                  <div className="space-y-3">
+                    {/* Graph overview header */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-violet-300">
+                        <Network className="h-3.5 w-3.5" />
+                        知识网络
+                      </div>
+                      <Link
+                        href="/knowledge-graph"
+                        className="text-[11px] font-semibold text-gray-500 hover:text-sky-400"
+                      >
+                        完整图谱 →
+                      </Link>
                     </div>
-                    <div className="space-y-2">
-                      {knowledgeGraph.nodes.slice(0, 6).map((node) => (
-                        <div key={node.id} className="rounded-md border border-gray-800 bg-gray-900/80 p-3">
-                          <p className="text-sm font-bold text-gray-200">{node.label}</p>
-                          {node.description && (
-                            <p className="mt-1 line-clamp-2 text-xs leading-5 text-gray-500">{node.description}</p>
-                          )}
+                    <div className="flex gap-2 text-[11px] text-gray-500">
+                      <span className="rounded bg-gray-800/70 px-1.5 py-0.5">
+                        {knowledgeGraph.stats.total_nodes} 节点
+                      </span>
+                      <span className="rounded bg-gray-800/70 px-1.5 py-0.5">
+                        {knowledgeGraph.stats.total_edges} 关系
+                      </span>
+                      <span className="rounded bg-gray-800/70 px-1.5 py-0.5">
+                        {knowledgeGraph.stats.related_words || 0} 词
+                      </span>
+                    </div>
+
+                    {/* Nodes grouped by type */}
+                    {(() => {
+                      const groups: Record<string, typeof knowledgeGraph.nodes> = {};
+                      const typeLabels: Record<string, string> = {
+                        word: '相关词',
+                        meaning: '释义',
+                        definition: '定义',
+                        context: '语境',
+                        example: '例句',
+                        article: '文章',
+                        topic: '主题',
+                        grammar: '语法',
+                        weakness: '薄弱点',
+                        review: '复习',
+                      };
+                      knowledgeGraph.nodes
+                        .filter((n) => n.type !== 'word' || n.id !== knowledgeGraph.focus?.id)
+                        .forEach((node) => {
+                          if (!groups[node.type]) groups[node.type] = [];
+                          if (groups[node.type].length < 5) groups[node.type].push(node);
+                        });
+
+                      return Object.entries(groups).map(([type, nodes]) => (
+                        <div key={type}>
+                          <div className="mb-1.5 flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-gray-500">
+                              {typeLabels[type] || type}
+                            </span>
+                            <span className="text-[10px] text-gray-600">{nodes.length}</span>
+                          </div>
+                          <div className="space-y-1">
+                            {nodes.map((node) => (
+                              <div
+                                key={node.id}
+                                className="rounded-md border border-gray-800 bg-gray-950/50 p-2"
+                              >
+                                <div className="flex items-center justify-between gap-2">
+                                  <p className="min-w-0 truncate text-sm font-bold text-gray-200">
+                                    {node.label}
+                                  </p>
+                                  {node.metadata?.slug && (
+                                    <Link
+                                      href={`/articles/${node.metadata.slug}`}
+                                      className="shrink-0 text-[10px] text-sky-400 hover:text-sky-300"
+                                    >
+                                      查看 →
+                                    </Link>
+                                  )}
+                                </div>
+                                {node.description && (
+                                  <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-gray-500">
+                                    {node.description}
+                                  </p>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                         </div>
-                      ))}
-                    </div>
+                      ));
+                    })()}
                   </div>
                 )}
               </div>
