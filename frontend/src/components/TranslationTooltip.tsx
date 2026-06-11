@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { translationAPI, vocabularyAPI } from '@/lib/api';
 import { Vocabulary } from '@/types';
-import { Bot, BookmarkCheck, BookmarkPlus, Loader2, RotateCcw, Volume2 } from 'lucide-react';
+import { Bot, BookmarkCheck, BookmarkPlus, Check, FileEdit, Loader2, RotateCcw, Volume2 } from 'lucide-react';
 import Toast from './Toast';
 
 type Accent = 'uk' | 'us';
@@ -53,10 +53,17 @@ export default function TranslationTooltip({
   const [reviewing, setReviewing] = useState(false);
   const [currentVocabulary, setCurrentVocabulary] = useState<Vocabulary | undefined>(existingVocabulary);
   const [toastMessage, setToastMessage] = useState('');
+  const [notesDraft, setNotesDraft] = useState('');
+  const [notesEditing, setNotesEditing] = useState(false);
+  const [notesSaving, setNotesSaving] = useState(false);
+  const [notesSaved, setNotesSaved] = useState(false);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrentVocabulary(existingVocabulary);
+    setNotesDraft(existingVocabulary?.notes || '');
+    setNotesEditing(false);
+    setNotesSaved(false);
   }, [existingVocabulary]);
 
   useEffect(() => {
@@ -260,6 +267,27 @@ export default function TranslationTooltip({
     }
   };
 
+  const saveTooltipNotes = async () => {
+    if (!currentVocabulary || notesSaving) return;
+    if (notesDraft === (currentVocabulary.notes || '')) {
+      setNotesEditing(false);
+      return;
+    }
+    try {
+      setNotesSaving(true);
+      const response = await vocabularyAPI.updateNotes(currentVocabulary.id, notesDraft);
+      const updated = response.data.data as Vocabulary;
+      setCurrentVocabulary(updated);
+      setNotesSaved(true);
+      setNotesEditing(false);
+      setTimeout(() => setNotesSaved(false), 2000);
+    } catch {
+      setToastMessage('笔记保存失败');
+    } finally {
+      setNotesSaving(false);
+    }
+  };
+
   return (
     <>
       {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
@@ -322,6 +350,72 @@ export default function TranslationTooltip({
                 {currentVocabulary.forgotten_count > 0
                   ? ` · 忘记 ${currentVocabulary.forgotten_count} 次`
                   : ''}
+            </div>
+          )}
+          {currentVocabulary && (
+            <div className="mt-2.5">
+              {notesEditing ? (
+                <div className="space-y-1.5">
+                  <textarea
+                    value={notesDraft}
+                    onChange={(event) => setNotesDraft(event.target.value)}
+                    onBlur={saveTooltipNotes}
+                    onKeyDown={(event) => {
+                      if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {
+                        event.preventDefault();
+                        saveTooltipNotes();
+                      }
+                      if (event.key === 'Escape') {
+                        setNotesDraft(currentVocabulary.notes || '');
+                        setNotesEditing(false);
+                      }
+                    }}
+                    autoFocus
+                    placeholder="记录用法、记忆技巧、易混点..."
+                    rows={3}
+                    className="w-full resize-none rounded border border-stone-200 bg-stone-50 px-2.5 py-2 text-xs leading-5 text-stone-800 outline-none focus:border-teal-500 dark:border-stone-700 dark:bg-stone-800/70 dark:text-stone-200 dark:focus:border-teal-500"
+                  />
+                  <div className="flex items-center justify-between text-[11px]">
+                    {notesSaving ? (
+                      <span className="flex items-center gap-1 text-stone-400">
+                        <Loader2 className="h-3 w-3 animate-spin" /> 保存中
+                      </span>
+                    ) : notesSaved ? (
+                      <span className="flex items-center gap-1 text-emerald-500">
+                        <Check className="h-3 w-3" /> 已保存
+                      </span>
+                    ) : (
+                      <span className="text-stone-400">Ctrl+Enter 保存 · Esc 取消</span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div
+                  onClick={() => {
+                    setNotesDraft(currentVocabulary.notes || '');
+                    setNotesEditing(true);
+                  }}
+                  className="cursor-pointer rounded border border-dashed border-stone-300 bg-stone-50/50 px-2.5 py-2 transition-colors hover:border-teal-400 hover:bg-teal-50/50 dark:border-stone-700 dark:bg-stone-800/30 dark:hover:border-teal-600 dark:hover:bg-teal-900/20"
+                >
+                  {currentVocabulary.notes ? (
+                    <>
+                      <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold text-teal-600 dark:text-teal-400">
+                        <FileEdit className="h-3 w-3" />
+                        我的笔记
+                      </div>
+                      <p className="whitespace-pre-wrap text-xs leading-5 text-stone-700 dark:text-stone-300">
+                        {currentVocabulary.notes}
+                      </p>
+                      <p className="mt-1 text-[11px] text-stone-400 dark:text-stone-500">点击编辑</p>
+                    </>
+                  ) : (
+                    <div className="flex items-center gap-1.5 text-xs text-stone-400 dark:text-stone-500">
+                      <FileEdit className="h-3 w-3" />
+                      写笔记...
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>
