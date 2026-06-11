@@ -164,6 +164,14 @@ func main() {
 			protected.GET("/subscriptions", handlers.GetMySubscriptions)
 			protected.POST("/subscriptions", handlers.AddSubscription)
 			protected.DELETE("/subscriptions/:article_id", handlers.RemoveSubscription)
+			protected.PUT("/subscriptions/move", handlers.MoveSubscription)
+
+			// 收藏夹管理
+			protected.GET("/favorite-folders", handlers.GetFavoriteFolders)
+			protected.POST("/favorite-folders", handlers.CreateFavoriteFolder)
+			protected.PUT("/favorite-folders/:id", handlers.UpdateFavoriteFolder)
+			protected.DELETE("/favorite-folders/:id", handlers.DeleteFavoriteFolder)
+			protected.PUT("/favorite-folders-sort", handlers.UpdateFolderSort)
 
 			// 阅读历史
 			protected.GET("/history", handlers.GetReadHistory)

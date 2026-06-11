@@ -12,10 +12,17 @@ import (
 func GetMySubscriptions(c *gin.Context) {
 	userID, _ := c.Get("user_id")
 
+	query := database.DB.Where("user_id = ?", userID)
+
+	if folderID := c.Query("folder_id"); folderID != "" {
+		query = query.Where("folder_id = ?", folderID)
+	}
+
 	var subscriptions []models.Subscription
-	if err := database.DB.Where("user_id = ?", userID).
+	if err := query.
 		Preload("Article").
 		Preload("Article.Category").
+		Preload("Folder").
 		Order("created_at DESC").
 		Find(&subscriptions).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -31,6 +38,7 @@ func AddSubscription(c *gin.Context) {
 
 	var req struct {
 		ArticleID uint `json:"article_id" binding:"required"`
+		FolderID  uint `json:"folder_id"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -53,9 +61,30 @@ func AddSubscription(c *gin.Context) {
 		return
 	}
 
+	// 确定收藏夹
+	folderID := req.FolderID
+	if folderID == 0 {
+		var defaultFolder models.FavoriteFolder
+		if err := database.DB.Where("user_id = ? AND is_default = ?", userID, true).
+			First(&defaultFolder).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "No default folder found"})
+			return
+		}
+		folderID = defaultFolder.ID
+	} else {
+		// 验证收藏夹属于当前用户
+		var folder models.FavoriteFolder
+		if err := database.DB.Where("id = ? AND user_id = ?", folderID, userID).
+			First(&folder).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Folder not found or access denied"})
+			return
+		}
+	}
+
 	subscription := models.Subscription{
 		UserID:    userID.(uint),
 		ArticleID: req.ArticleID,
+		FolderID:  folderID,
 	}
 
 	if err := database.DB.Create(&subscription).Error; err != nil {
@@ -67,6 +96,46 @@ func AddSubscription(c *gin.Context) {
 		"message": "Subscribed successfully",
 		"data":    subscription,
 	})
+}
+
+// MoveSubscription 移动订阅到其他收藏夹
+func MoveSubscription(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+
+	var req struct {
+		ArticleID  uint `json:"article_id" binding:"required"`
+		ToFolderID uint `json:"to_folder_id" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// 验证目标收藏夹属于当前用户
+	var folder models.FavoriteFolder
+	if err := database.DB.Where("id = ? AND user_id = ?", req.ToFolderID, userID).
+		First(&folder).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Target folder not found or access denied"})
+		return
+	}
+
+	// 更新订阅的收藏夹
+	result := database.DB.Model(&models.Subscription{}).
+		Where("user_id = ? AND article_id = ?", userID, req.ArticleID).
+		Update("folder_id", req.ToFolderID)
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Subscription not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Subscription moved successfully"})
 }
 
 // RemoveSubscription 取消订阅
