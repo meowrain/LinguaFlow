@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"encoding/json"
 	"gugudu-backend/database"
+	"gugudu-backend/models"
 	"gugudu-backend/services"
 	"net/http"
 
@@ -9,6 +11,46 @@ import (
 )
 
 var videoUnderstandingService *services.VideoUnderstandingService
+
+type videoUnderstandingResponse struct {
+	ID            uint                      `json:"id"`
+	VideoLessonID uint                      `json:"video_lesson_id"`
+	UserID        uint                      `json:"user_id"`
+	SummaryEN     string                    `json:"summary_en"`
+	SummaryCN     string                    `json:"summary_cn"`
+	KeyPoints     []services.KeyPoint       `json:"key_points"`
+	Vocabulary    []services.VocabItem      `json:"vocabulary"`
+	Topics        []string                  `json:"topics"`
+	StudyGuide    string                    `json:"study_guide"`
+	Provider      string                    `json:"provider"`
+	Model         string                    `json:"model"`
+	GeneratedAt   string                    `json:"generated_at"`
+	RefreshedAt   *string                   `json:"refreshed_at"`
+	TokensUsed    int                       `json:"tokens_used"`
+}
+
+func toUnderstandingResponse(u *models.VideoUnderstanding) *videoUnderstandingResponse {
+	resp := &videoUnderstandingResponse{
+		ID:            u.ID,
+		VideoLessonID: u.VideoLessonID,
+		UserID:        u.UserID,
+		SummaryEN:     u.SummaryEN,
+		SummaryCN:     u.SummaryCN,
+		StudyGuide:    u.StudyGuide,
+		Provider:      u.Provider,
+		Model:         u.Model,
+		GeneratedAt:   u.GeneratedAt.Format("2006-01-02T15:04:05Z07:00"),
+		TokensUsed:    u.TokensUsed,
+	}
+	if u.RefreshedAt != nil {
+		t := u.RefreshedAt.Format("2006-01-02T15:04:05Z07:00")
+		resp.RefreshedAt = &t
+	}
+	json.Unmarshal([]byte(u.KeyPoints), &resp.KeyPoints)
+	json.Unmarshal([]byte(u.Vocabulary), &resp.Vocabulary)
+	json.Unmarshal([]byte(u.Topics), &resp.Topics)
+	return resp
+}
 
 func InitVideoUnderstandingService(aiService *services.AIAnalysisService) {
 	if aiService != nil {
@@ -75,7 +117,7 @@ func GenerateVideoUnderstanding(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": understanding})
+	c.JSON(http.StatusOK, gin.H{"data": toUnderstandingResponse(understanding)})
 }
 
 func GetVideoUnderstanding(c *gin.Context) {
@@ -99,7 +141,7 @@ func GetVideoUnderstanding(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": understanding})
+	c.JSON(http.StatusOK, gin.H{"data": toUnderstandingResponse(understanding)})
 }
 
 func ChatWithVideo(c *gin.Context) {

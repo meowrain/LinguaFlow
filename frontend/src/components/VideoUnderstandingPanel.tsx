@@ -27,9 +27,6 @@ export default function VideoUnderstandingPanel({ lesson, onSeek }: Props) {
       setError('');
       const response = await videoLessonAPI.getUnderstanding(lesson.id);
       const data = response.data.data as VideoUnderstanding;
-      data.key_points = JSON.parse(data.key_points as any || '[]');
-      data.vocabulary = JSON.parse(data.vocabulary as any || '[]');
-      data.topics = JSON.parse(data.topics as any || '[]');
       setUnderstanding(data);
     } catch (err: any) {
       if (err.response?.status !== 404) {
@@ -64,9 +61,6 @@ export default function VideoUnderstandingPanel({ lesson, onSeek }: Props) {
         include_key_points: true,
       });
       const data = response.data.data as VideoUnderstanding;
-      data.key_points = JSON.parse(data.key_points as any || '[]');
-      data.vocabulary = JSON.parse(data.vocabulary as any || '[]');
-      data.topics = JSON.parse(data.topics as any || '[]');
       setUnderstanding(data);
     } catch (err: any) {
       setError(err.response?.data?.error || '生成失败');
