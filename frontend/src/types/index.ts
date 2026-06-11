@@ -389,11 +389,25 @@ export interface VideoConversationMessage {
   created_at: string;
 }
 
+export interface FavoriteFolder {
+  id: number;
+  user_id: number;
+  name: string;
+  icon: string;
+  sort_order: number;
+  is_default: boolean;
+  created_at: string;
+  updated_at: string;
+  article_count?: number;
+}
+
 export interface Subscription {
   id: number;
   user_id: number;
   article_id: number;
+  folder_id: number;
   article?: Article;
+  folder?: FavoriteFolder;
   created_at: string;
   updated_at: string;
 }

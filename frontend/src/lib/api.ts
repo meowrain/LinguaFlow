@@ -316,10 +316,25 @@ export const knowledgeGraphAPI = {
 // 订阅 API
 export const subscriptionAPI = {
   getSubscriptions: () => api.get('/subscriptions'),
-  addSubscription: (article_id: number) =>
-    api.post('/subscriptions', { article_id }),
+  addSubscription: (article_id: number, folder_id?: number) =>
+    api.post('/subscriptions', { article_id, folder_id }),
   removeSubscription: (article_id: number) =>
     api.delete(`/subscriptions/${article_id}`),
+  moveSubscription: (article_id: number, to_folder_id: number) =>
+    api.put('/subscriptions/move', { article_id, to_folder_id }),
+};
+
+// 收藏夹 API
+export const favoriteFolderAPI = {
+  getFolders: () => api.get('/favorite-folders'),
+  createFolder: (name: string, icon?: string) =>
+    api.post('/favorite-folders', { name, icon }),
+  updateFolder: (id: number, data: { name?: string; icon?: string }) =>
+    api.put(`/favorite-folders/${id}`, data),
+  deleteFolder: (id: number) =>
+    api.delete(`/favorite-folders/${id}`),
+  updateSort: (items: { id: number; sort_order: number }[]) =>
+    api.put('/favorite-folders-sort', { items }),
 };
 
 // 会员 API
