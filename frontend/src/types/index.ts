@@ -351,6 +351,43 @@ export interface VideoSubtitleTranslateResult {
   failed: number;
 }
 
+export interface VideoKeyPoint {
+  timestamp: number;
+  title: string;
+  content: string;
+}
+
+export interface VideoVocabulary {
+  word: string;
+  translation: string;
+  context: string;
+  timestamp: number;
+}
+
+export interface VideoUnderstanding {
+  id: number;
+  video_lesson_id: number;
+  user_id: number;
+  summary_en: string;
+  summary_cn: string;
+  key_points: VideoKeyPoint[];
+  vocabulary: VideoVocabulary[];
+  topics: string[];
+  study_guide: string;
+  provider: string;
+  model: string;
+  generated_at: string;
+  refreshed_at?: string;
+  tokens_used: number;
+}
+
+export interface VideoConversationMessage {
+  id: number;
+  role: 'user' | 'assistant';
+  content: string;
+  created_at: string;
+}
+
 export interface Subscription {
   id: number;
   user_id: number;

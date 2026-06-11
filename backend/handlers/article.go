@@ -37,6 +37,10 @@ func InitAIAnalysisService(enabled bool, baseURL, apiKey, model string, timeoutS
 	}
 }
 
+func GetAIAnalysisService() *services.AIAnalysisService {
+	return aiAnalysisService
+}
+
 // GetArticles 获取文章列表
 func GetArticles(c *gin.Context) {
 	var articles []models.Article

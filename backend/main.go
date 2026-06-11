@@ -70,6 +70,7 @@ func main() {
 	)
 	handlers.InitVideoLearningService(database.DB, cfg.VideoLearning)
 	handlers.LinkTranslationToVideoLearning()
+	handlers.InitVideoUnderstandingService(handlers.GetAIAnalysisService())
 
 	// 创建 Gin 路由
 	r := gin.Default()
@@ -189,6 +190,11 @@ func main() {
 				videoLessons.POST("/:id/subtitles/translate", handlers.TranslateVideoSubtitles)
 				videoLessons.PATCH("/:id/subtitles/:subtitle_id", handlers.UpdateVideoSubtitle)
 				videoLessons.POST("/:id/progress", handlers.UpdateVideoProgress)
+				videoLessons.POST("/:id/understanding", handlers.GenerateVideoUnderstanding)
+				videoLessons.GET("/:id/understanding", handlers.GetVideoUnderstanding)
+				videoLessons.POST("/:id/chat", handlers.ChatWithVideo)
+				videoLessons.GET("/:id/conversations", handlers.GetVideoConversations)
+				videoLessons.DELETE("/:id/conversations", handlers.ClearVideoConversations)
 			}
 
 			// 每日学习

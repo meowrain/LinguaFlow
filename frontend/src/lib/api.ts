@@ -200,6 +200,20 @@ export const videoLessonAPI = {
   ) => api.patch(`/video-lessons/${lessonId}/subtitles/${subtitleId}`, data),
   updateProgress: (id: number, data: { position_seconds: number; completed?: boolean }) =>
     api.post(`/video-lessons/${id}/progress`, data),
+  generateUnderstanding: (
+    id: number,
+    data?: { force?: boolean; include_vocabulary?: boolean; include_key_points?: boolean }
+  ) => api.post(`/video-lessons/${id}/understanding`, data),
+  getUnderstanding: (id: number) =>
+    api.get(`/video-lessons/${id}/understanding`),
+  chatWithVideo: (
+    id: number,
+    messages: Array<{ role: 'user' | 'assistant'; content: string }>
+  ) => api.post(`/video-lessons/${id}/chat`, { messages }),
+  getConversations: (id: number, limit = 50) =>
+    api.get(`/video-lessons/${id}/conversations`, { params: { limit } }),
+  clearConversations: (id: number) =>
+    api.delete(`/video-lessons/${id}/conversations`),
 };
 
 // 生词本 API

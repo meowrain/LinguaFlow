@@ -288,6 +288,49 @@ type VideoSubtitle struct {
 	VideoLesson VideoLesson `gorm:"foreignKey:VideoLessonID" json:"video_lesson,omitempty"`
 }
 
+// VideoUnderstanding 视频理解结果
+type VideoUnderstanding struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+
+	VideoLessonID uint `gorm:"not null;uniqueIndex:idx_video_understanding_user,priority:1;index" json:"video_lesson_id"`
+	UserID        uint `gorm:"not null;uniqueIndex:idx_video_understanding_user,priority:2;index" json:"user_id"`
+
+	SummaryEN   string `gorm:"type:text" json:"summary_en"`
+	SummaryCN   string `gorm:"type:text" json:"summary_cn"`
+	KeyPoints   string `gorm:"type:text" json:"key_points"`
+	Vocabulary  string `gorm:"type:text" json:"vocabulary"`
+	Topics      string `gorm:"type:text" json:"topics"`
+	StudyGuide  string `gorm:"type:text" json:"study_guide"`
+	Provider    string `gorm:"size:30;default:'openai'" json:"provider"`
+	Model       string `gorm:"size:100" json:"model"`
+	GeneratedAt time.Time `json:"generated_at"`
+	RefreshedAt *time.Time `json:"refreshed_at"`
+	TokensUsed  int        `gorm:"default:0" json:"tokens_used"`
+
+	VideoLesson VideoLesson `gorm:"foreignKey:VideoLessonID" json:"video_lesson,omitempty"`
+	User        User        `gorm:"foreignKey:UserID" json:"user,omitempty"`
+}
+
+// VideoConversation 视频 AI 对话记录
+type VideoConversation struct {
+	ID        uint           `gorm:"primarykey" json:"id"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+
+	VideoLessonID uint   `gorm:"not null;index:idx_video_conversation" json:"video_lesson_id"`
+	UserID        uint   `gorm:"not null;index:idx_video_conversation" json:"user_id"`
+	Role          string `gorm:"size:20;not null" json:"role"`
+	Content       string `gorm:"type:text;not null" json:"content"`
+	TokensUsed    int    `gorm:"default:0" json:"tokens_used"`
+
+	VideoLesson VideoLesson `gorm:"foreignKey:VideoLessonID" json:"video_lesson,omitempty"`
+	User        User        `gorm:"foreignKey:UserID" json:"user,omitempty"`
+}
+
 // Vocabulary 生词本
 type Vocabulary struct {
 	ID        uint           `gorm:"primarykey" json:"id"`

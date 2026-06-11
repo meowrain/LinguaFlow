@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Languages, Loader2, Pause, Play, RefreshCw, Repeat, SkipBack, SkipForward, Trash2, TriangleAlert } from 'lucide-react';
 import TranslationTooltip from '@/components/TranslationTooltip';
+import VideoUnderstandingPanel from '@/components/VideoUnderstandingPanel';
 import { resolveAPIAssetURL, videoLessonAPI } from '@/lib/api';
 import {
   findActiveSubtitle,
@@ -50,6 +51,7 @@ export default function VideoLessonPage() {
   const [loopSubtitle, setLoopSubtitle] = useState(false);
   const [subtitleMode, setSubtitleMode] = useState<SubtitleDisplayMode>('bilingual');
   const [translating, setTranslating] = useState(false);
+  const [activeView, setActiveView] = useState<'subtitles' | 'understanding'>('subtitles');
   const [tooltip, setTooltip] = useState<{
     word: string;
     context: string;
@@ -449,58 +451,90 @@ export default function VideoLessonPage() {
         </section>
 
         <aside className="min-h-[520px] rounded-lg border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-          <div className="border-b border-gray-200 p-4 dark:border-gray-800">
-            <div className="font-semibold text-gray-950 dark:text-white">字幕列表</div>
-            <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              点击字幕跳转，点击英文单词查词。
+          <div className="border-b border-gray-200 dark:border-gray-800">
+            <div className="flex">
+              <button
+                onClick={() => setActiveView('subtitles')}
+                className={`flex-1 px-4 py-3 text-sm font-medium ${
+                  activeView === 'subtitles'
+                    ? 'border-b-2 border-teal-600 text-teal-600'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
+              >
+                字幕列表
+              </button>
+              <button
+                onClick={() => setActiveView('understanding')}
+                className={`flex-1 px-4 py-3 text-sm font-medium ${
+                  activeView === 'understanding'
+                    ? 'border-b-2 border-teal-600 text-teal-600'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
+              >
+                视频理解
+              </button>
             </div>
           </div>
+
           <div className="max-h-[calc(100vh-220px)] overflow-y-auto p-2">
-            {subtitles.length === 0 ? (
-              <div className="p-4 text-sm text-gray-500 dark:text-gray-400">
-                {lesson.status === 'ready' ? '暂无字幕' : '字幕生成完成后会显示在这里。'}
-              </div>
-            ) : (
-              subtitles.map((subtitle, index) => {
-                const active = activeSubtitle?.id === subtitle.id;
-                return (
-                  <div
-                    key={subtitle.id}
-                    ref={active ? activeSubtitleRef : undefined}
-                    onClick={() => seekToSubtitle(subtitle)}
-                    className={`mb-1 cursor-pointer rounded-md px-3 py-2 transition-colors ${
-                      active
-                        ? 'bg-teal-600 text-white'
-                        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <div className={`mb-1 text-xs tabular-nums ${active ? 'text-teal-50' : 'text-gray-500 dark:text-gray-400'}`}>
-                      {String(index + 1).padStart(2, '0')} · {formatVideoTime(subtitle.start_seconds)} - {formatVideoTime(subtitle.end_seconds)}
-                    </div>
-                    <p className="leading-7">
-                      {splitSubtitleTokens(subtitle.text).map((token, tokenIndex) => {
-                        const word = normalizeSubtitleWord(token);
-                        if (!word) return <span key={`${subtitle.id}-${tokenIndex}`}>{token}</span>;
-                        return (
-                          <button
-                            key={`${subtitle.id}-${tokenIndex}`}
-                            type="button"
-                            onClick={(event) => handleWordClick(event, subtitle, token)}
-                            className={`rounded px-0.5 text-left hover:underline ${active ? 'hover:bg-white/15' : 'hover:bg-teal-500/10'}`}
-                          >
-                            {token}
-                          </button>
-                        );
-                      })}
-                    </p>
-                    {subtitle.translation && (
-                      <p className={`mt-1 text-sm leading-6 ${active ? 'text-teal-50' : 'text-gray-600 dark:text-gray-400'}`}>
-                        {subtitle.translation}
+            {activeView === 'subtitles' ? (
+              subtitles.length === 0 ? (
+                <div className="p-4 text-sm text-gray-500 dark:text-gray-400">
+                  {lesson.status === 'ready' ? '暂无字幕' : '字幕生成完成后会显示在这里。'}
+                </div>
+              ) : (
+                subtitles.map((subtitle, index) => {
+                  const active = activeSubtitle?.id === subtitle.id;
+                  return (
+                    <div
+                      key={subtitle.id}
+                      ref={active ? activeSubtitleRef : undefined}
+                      onClick={() => seekToSubtitle(subtitle)}
+                      className={`mb-1 cursor-pointer rounded-md px-3 py-2 transition-colors ${
+                        active
+                          ? 'bg-teal-600 text-white'
+                          : 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800'
+                      }`}
+                    >
+                      <div className={`mb-1 text-xs tabular-nums ${active ? 'text-teal-50' : 'text-gray-500 dark:text-gray-400'}`}>
+                        {String(index + 1).padStart(2, '0')} · {formatVideoTime(subtitle.start_seconds)} - {formatVideoTime(subtitle.end_seconds)}
+                      </div>
+                      <p className="leading-7">
+                        {splitSubtitleTokens(subtitle.text).map((token, tokenIndex) => {
+                          const word = normalizeSubtitleWord(token);
+                          if (!word) return <span key={`${subtitle.id}-${tokenIndex}`}>{token}</span>;
+                          return (
+                            <button
+                              key={`${subtitle.id}-${tokenIndex}`}
+                              type="button"
+                              onClick={(event) => handleWordClick(event, subtitle, token)}
+                              className={`rounded px-0.5 text-left hover:underline ${active ? 'hover:bg-white/15' : 'hover:bg-teal-500/10'}`}
+                            >
+                              {token}
+                            </button>
+                          );
+                        })}
                       </p>
-                    )}
-                  </div>
-                );
-              })
+                      {subtitle.translation && (
+                        <p className={`mt-1 text-sm leading-6 ${active ? 'text-teal-50' : 'text-gray-600 dark:text-gray-400'}`}>
+                          {subtitle.translation}
+                        </p>
+                      )}
+                    </div>
+                  );
+                })
+              )
+            ) : (
+              <VideoUnderstandingPanel
+                lesson={lesson}
+                onSeek={(seconds) => {
+                  const video = videoRef.current;
+                  if (video) {
+                    video.currentTime = seconds;
+                    video.play().catch(() => undefined);
+                  }
+                }}
+              />
             )}
           </div>
         </aside>
