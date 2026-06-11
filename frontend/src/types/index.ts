@@ -343,6 +343,14 @@ export interface VideoSubtitle {
   updated_at: string;
 }
 
+export type SubtitleDisplayMode = 'en' | 'zh' | 'bilingual' | 'off';
+
+export interface VideoSubtitleTranslateResult {
+  translated: number;
+  skipped: number;
+  failed: number;
+}
+
 export interface Subscription {
   id: number;
   user_id: number;

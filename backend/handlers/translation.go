@@ -105,6 +105,13 @@ func InitTranslationService(baiduAppID, baiduSecret, baiduDictAPIKey, baiduDictS
 	}
 }
 
+func LinkTranslationToVideoLearning() {
+	if videoLearningService != nil && translationService != nil {
+		videoLearningService.SetTranslationService(translationService)
+		fmt.Println("✓ 翻译服务已连接到视频学习模块")
+	}
+}
+
 // TranslateRequest 翻译请求
 type TranslateRequest struct {
 	Text       string `json:"text" binding:"required"`
@@ -239,7 +246,7 @@ func LookupWord(c *gin.Context) {
 	// 如果配置了词典服务，使用真实的词典服务
 	if dictionaryService != nil {
 		result, err := dictionaryService.LookupWord(word)
-		if err == nil {
+		if err == nil && result.Error == "" {
 			saveDictionaryCache(word, "dictionary", result)
 			recordArticleStudyEvent(c, services.StudyEventDictionary, articleID, word, result.Translation, contextText, map[string]any{
 				"provider": "dictionary",
@@ -250,9 +257,12 @@ func LookupWord(c *gin.Context) {
 		}
 		// 如果失败，记录错误并继续
 		errMsg := fmt.Sprintf("词典查询失败: %v", err)
+		if result != nil && result.Error != "" {
+			errMsg = fmt.Sprintf("词典查询失败: %s", result.Error)
+		}
 		fmt.Println(errMsg)
 
-		// 返回错误给前端
+		// 返回错误给前端（不缓存失败结果）
 		c.JSON(http.StatusOK, gin.H{
 			"data": map[string]interface{}{
 				"word":        word,
@@ -829,6 +839,11 @@ func getDictionaryCache(word string) (*services.DictionaryResult, bool) {
 		return nil, false
 	}
 
+	// 不返回包含错误的缓存结果
+	if cache.Error != "" {
+		return nil, false
+	}
+
 	result := &services.DictionaryResult{
 		Word:        cache.Word,
 		Phonetic:    cache.Phonetic,
@@ -848,6 +863,10 @@ func getDictionaryCache(word string) (*services.DictionaryResult, bool) {
 
 func saveDictionaryCache(word, provider string, result *services.DictionaryResult) {
 	if result == nil || word == "" {
+		return
+	}
+	// 不缓存包含错误的结果
+	if result.Error != "" {
 		return
 	}
 	ensureDictionarySpeechURLs(result)

@@ -28,9 +28,10 @@ import (
 var ErrVideoLessonProcessing = errors.New("video lesson is already processing")
 
 type VideoLearningService struct {
-	db     *gorm.DB
-	cfg    config.VideoLearningConfig
-	client *http.Client
+	db                 *gorm.DB
+	cfg                config.VideoLearningConfig
+	client             *http.Client
+	translationService *TranslationService
 }
 
 type VideoLessonCreateRequest struct {
@@ -44,6 +45,25 @@ type VideoLessonCreateRequest struct {
 type VideoProgressRequest struct {
 	PositionSeconds float64 `json:"position_seconds"`
 	Completed       bool    `json:"completed"`
+}
+
+type VideoSubtitleTranslateRequest struct {
+	TargetLang string `json:"target_lang"`
+	SourceLang string `json:"source_lang"`
+	Force      bool   `json:"force"`
+}
+
+type VideoSubtitleTranslateResult struct {
+	Translated int `json:"translated"`
+	Skipped    int `json:"skipped"`
+	Failed     int `json:"failed"`
+}
+
+type VideoSubtitleUpdateRequest struct {
+	StartSeconds *float64 `json:"start_seconds"`
+	EndSeconds   *float64 `json:"end_seconds"`
+	Text         *string  `json:"text"`
+	Translation  *string  `json:"translation"`
 }
 
 type Transcript struct {
@@ -110,12 +130,17 @@ func NewVideoLearningService(db *gorm.DB, cfg config.VideoLearningConfig) *Video
 	}
 
 	return &VideoLearningService{
-		db:  db,
-		cfg: cfg,
+		db:                 db,
+		cfg:                cfg,
+		translationService: nil,
 		client: &http.Client{
 			Timeout: time.Duration(cfg.ProcessingTimeoutSeconds) * time.Second,
 		},
 	}
+}
+
+func (s *VideoLearningService) SetTranslationService(ts *TranslationService) {
+	s.translationService = ts
 }
 
 func (s *VideoLearningService) IsConfigured() bool {
@@ -380,12 +405,123 @@ func (s *VideoLearningService) UpdateProgress(ctx context.Context, userID, lesso
 	return s.GetLesson(ctx, userID, lessonID)
 }
 
-func (s *VideoLearningService) VTT(ctx context.Context, userID, lessonID uint) (string, error) {
+func (s *VideoLearningService) VTT(ctx context.Context, userID, lessonID uint, track string) (string, error) {
 	subtitles, err := s.GetSubtitles(ctx, userID, lessonID)
 	if err != nil {
 		return "", err
 	}
-	return SubtitlesToVTT(subtitles), nil
+	return SubtitlesToVTT(subtitles, track), nil
+}
+
+func (s *VideoLearningService) TranslateSubtitles(ctx context.Context, userID, lessonID uint, req VideoSubtitleTranslateRequest) (*VideoSubtitleTranslateResult, error) {
+	if s.translationService == nil || len(s.translationService.providers) == 0 {
+		return nil, fmt.Errorf("翻译服务未配置")
+	}
+
+	lesson, err := s.GetLesson(ctx, userID, lessonID)
+	if err != nil {
+		return nil, err
+	}
+
+	if req.SourceLang == "" {
+		req.SourceLang = lesson.Language
+		if req.SourceLang == "" {
+			req.SourceLang = "en"
+		}
+	}
+
+	var subtitles []models.VideoSubtitle
+	query := s.db.WithContext(ctx).Where("video_lesson_id = ?", lessonID).Order("sort_order ASC")
+	if !req.Force {
+		query = query.Where("(translation = ? OR translation IS NULL)", "")
+	}
+	if err := query.Find(&subtitles).Error; err != nil {
+		return nil, err
+	}
+
+	result := &VideoSubtitleTranslateResult{}
+	batchSize := 20
+	for i := 0; i < len(subtitles); i += batchSize {
+		end := i + batchSize
+		if end > len(subtitles) {
+			end = len(subtitles)
+		}
+		batch := subtitles[i:end]
+
+		for j := range batch {
+			if strings.TrimSpace(batch[j].Text) == "" {
+				result.Skipped++
+				continue
+			}
+
+			translation, _, err := s.translationService.Translate(batch[j].Text, req.SourceLang, req.TargetLang)
+			if err != nil {
+				result.Failed++
+				continue
+			}
+
+			if err := s.db.WithContext(ctx).Model(&batch[j]).Update("translation", translation).Error; err != nil {
+				result.Failed++
+			} else {
+				result.Translated++
+			}
+		}
+	}
+
+	return result, nil
+}
+
+func (s *VideoLearningService) UpdateSubtitle(ctx context.Context, userID, lessonID, subtitleID uint, req VideoSubtitleUpdateRequest) (*models.VideoSubtitle, error) {
+	if _, err := s.GetLesson(ctx, userID, lessonID); err != nil {
+		return nil, err
+	}
+
+	var subtitle models.VideoSubtitle
+	if err := s.db.WithContext(ctx).Where("id = ? AND video_lesson_id = ?", subtitleID, lessonID).First(&subtitle).Error; err != nil {
+		return nil, err
+	}
+
+	updates := make(map[string]interface{})
+	if req.StartSeconds != nil {
+		if *req.StartSeconds < 0 {
+			return nil, fmt.Errorf("开始时间不能小于0")
+		}
+		updates["start_seconds"] = *req.StartSeconds
+	}
+	if req.EndSeconds != nil {
+		if *req.EndSeconds <= 0 {
+			return nil, fmt.Errorf("结束时间必须大于0")
+		}
+		updates["end_seconds"] = *req.EndSeconds
+	}
+	if req.StartSeconds != nil && req.EndSeconds != nil && *req.EndSeconds <= *req.StartSeconds {
+		return nil, fmt.Errorf("结束时间必须大于开始时间")
+	}
+	if req.Text != nil {
+		text := strings.TrimSpace(*req.Text)
+		if text == "" {
+			return nil, fmt.Errorf("字幕文本不能为空")
+		}
+		updates["text"] = text
+		updates["source"] = "edited"
+	}
+	if req.Translation != nil {
+		updates["translation"] = strings.TrimSpace(*req.Translation)
+		if subtitle.Source != "edited" {
+			updates["source"] = "edited"
+		}
+	}
+
+	if len(updates) > 0 {
+		if err := s.db.WithContext(ctx).Model(&subtitle).Updates(updates).Error; err != nil {
+			return nil, err
+		}
+	}
+
+	if err := s.db.WithContext(ctx).First(&subtitle, subtitleID).Error; err != nil {
+		return nil, err
+	}
+	return &subtitle, nil
 }
 
 func (s *VideoLearningService) updateLessonState(lessonID uint, status string, progress int, errorText string) {
@@ -636,11 +772,25 @@ func filterTranscriptHallucinations(segments []TranscriptSegment) []TranscriptSe
 	return filtered
 }
 
-func SubtitlesToVTT(subtitles []models.VideoSubtitle) string {
+func SubtitlesToVTT(subtitles []models.VideoSubtitle, track string) string {
 	var b strings.Builder
 	b.WriteString("WEBVTT\n\n")
 	for _, subtitle := range subtitles {
-		text := strings.ReplaceAll(subtitle.Text, "\n", " ")
+		var text string
+		switch track {
+		case "zh":
+			text = strings.TrimSpace(subtitle.Translation)
+			if text == "" {
+				text = strings.ReplaceAll(subtitle.Text, "\n", " ")
+			}
+		case "bilingual":
+			text = strings.ReplaceAll(subtitle.Text, "\n", " ")
+			if trans := strings.TrimSpace(subtitle.Translation); trans != "" {
+				text += "\n" + trans
+			}
+		default: // "en"
+			text = strings.ReplaceAll(subtitle.Text, "\n", " ")
+		}
 		b.WriteString(formatVTTTime(subtitle.StartSeconds))
 		b.WriteString(" --> ")
 		b.WriteString(formatVTTTime(subtitle.EndSeconds))

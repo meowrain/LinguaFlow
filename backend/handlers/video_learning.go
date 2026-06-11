@@ -191,7 +191,8 @@ func GetVideoSubtitlesVTT(c *gin.Context) {
 		return
 	}
 
-	vtt, err := service.VTT(c.Request.Context(), userID, lessonID)
+	track := c.DefaultQuery("track", "en")
+	vtt, err := service.VTT(c.Request.Context(), userID, lessonID, track)
 	if err != nil {
 		handleVideoNotFound(c, err)
 		return
@@ -266,6 +267,68 @@ func parsePositiveInt(value string, fallback int) int {
 		return fallback
 	}
 	return parsed
+}
+
+func TranslateVideoSubtitles(c *gin.Context) {
+	service, ok := requireVideoLearningService(c)
+	if !ok {
+		return
+	}
+	userID, ok := currentUserID(c)
+	if !ok {
+		return
+	}
+	lessonID, ok := parseUintParam(c, "id")
+	if !ok {
+		return
+	}
+
+	var req services.VideoSubtitleTranslateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		req.TargetLang = "zh"
+	}
+	if req.TargetLang == "" {
+		req.TargetLang = "zh"
+	}
+
+	result, err := service.TranslateSubtitles(c.Request.Context(), userID, lessonID, req)
+	if err != nil {
+		handleVideoNotFound(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func UpdateVideoSubtitle(c *gin.Context) {
+	service, ok := requireVideoLearningService(c)
+	if !ok {
+		return
+	}
+	userID, ok := currentUserID(c)
+	if !ok {
+		return
+	}
+	lessonID, ok := parseUintParam(c, "id")
+	if !ok {
+		return
+	}
+	subtitleID, ok := parseUintParam(c, "subtitle_id")
+	if !ok {
+		return
+	}
+
+	var req services.VideoSubtitleUpdateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "无效的字幕数据"})
+		return
+	}
+
+	subtitle, err := service.UpdateSubtitle(c.Request.Context(), userID, lessonID, subtitleID, req)
+	if err != nil {
+		handleVideoNotFound(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": subtitle})
 }
 
 func handleVideoNotFound(c *gin.Context, err error) {

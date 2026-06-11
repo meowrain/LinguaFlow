@@ -182,8 +182,22 @@ export const videoLessonAPI = {
     api.post(`/video-lessons/${id}/regenerate-subtitles`),
   getSubtitles: (id: number) =>
     api.get(`/video-lessons/${id}/subtitles`),
-  getSubtitleVTTURL: (id: number) =>
-    `${API_URL}/video-lessons/${id}/subtitles.vtt`,
+  getSubtitleVTTURL: (id: number, track: 'en' | 'zh' | 'bilingual' = 'en') =>
+    `${API_URL}/video-lessons/${id}/subtitles.vtt?track=${track}`,
+  translateSubtitles: (
+    id: number,
+    data: { target_lang?: string; source_lang?: string; force?: boolean }
+  ) => api.post(`/video-lessons/${id}/subtitles/translate`, data),
+  updateSubtitle: (
+    lessonId: number,
+    subtitleId: number,
+    data: {
+      start_seconds?: number;
+      end_seconds?: number;
+      text?: string;
+      translation?: string;
+    }
+  ) => api.patch(`/video-lessons/${lessonId}/subtitles/${subtitleId}`, data),
   updateProgress: (id: number, data: { position_seconds: number; completed?: boolean }) =>
     api.post(`/video-lessons/${id}/progress`, data),
 };

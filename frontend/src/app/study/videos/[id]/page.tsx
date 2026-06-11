@@ -3,7 +3,7 @@
 import { MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, Pause, Play, RefreshCw, Repeat, SkipBack, SkipForward, Trash2, TriangleAlert } from 'lucide-react';
+import { ArrowLeft, Languages, Loader2, Pause, Play, RefreshCw, Repeat, SkipBack, SkipForward, Trash2, TriangleAlert } from 'lucide-react';
 import TranslationTooltip from '@/components/TranslationTooltip';
 import { resolveAPIAssetURL, videoLessonAPI } from '@/lib/api';
 import {
@@ -14,7 +14,7 @@ import {
   splitSubtitleTokens,
 } from '@/lib/videoSubtitles';
 import { useAuthStore } from '@/store/authStore';
-import { VideoLesson, VideoSubtitle } from '@/types';
+import { SubtitleDisplayMode, VideoLesson, VideoSubtitle } from '@/types';
 
 const activeStatuses = ['uploaded', 'extracting_audio', 'transcribing', 'segmenting'];
 
@@ -48,6 +48,8 @@ export default function VideoLessonPage() {
   const [duration, setDuration] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [loopSubtitle, setLoopSubtitle] = useState(false);
+  const [subtitleMode, setSubtitleMode] = useState<SubtitleDisplayMode>('bilingual');
+  const [translating, setTranslating] = useState(false);
   const [tooltip, setTooltip] = useState<{
     word: string;
     context: string;
@@ -200,6 +202,22 @@ export default function VideoLessonPage() {
     }
   };
 
+  const handleTranslateSubtitles = async () => {
+    if (!lesson) return;
+
+    try {
+      setTranslating(true);
+      setError('');
+      await videoLessonAPI.translateSubtitles(lesson.id, { target_lang: 'zh' });
+      const subtitleResponse = await videoLessonAPI.getSubtitles(lessonId);
+      setSubtitles(subtitleResponse.data.data || []);
+    } catch (err: any) {
+      setError(err.response?.data?.error || '翻译失败');
+    } finally {
+      setTranslating(false);
+    }
+  };
+
   const handleWordClick = (event: MouseEvent<HTMLButtonElement>, subtitle: VideoSubtitle, token: string) => {
     event.stopPropagation();
     const word = normalizeSubtitleWord(token);
@@ -256,6 +274,16 @@ export default function VideoLessonPage() {
             <RefreshCw className="h-4 w-4" />
             刷新状态
           </button>
+          {lesson.status === 'ready' && subtitles.length > 0 && (
+            <button
+              onClick={handleTranslateSubtitles}
+              disabled={translating}
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-blue-300 px-3 text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-60 dark:border-blue-800 dark:text-blue-300 dark:hover:bg-blue-950/40"
+            >
+              {translating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Languages className="h-4 w-4" />}
+              生成双语字幕
+            </button>
+          )}
           <button
             onClick={handleRegenerateSubtitles}
             disabled={regenerating || activeStatuses.includes(lesson.status)}
@@ -326,10 +354,21 @@ export default function VideoLessonPage() {
               }}
             >
             </video>
-            {activeSubtitle && (
+            {activeSubtitle && subtitleMode !== 'off' && (
               <div className="pointer-events-none absolute inset-x-3 bottom-4 z-10 flex justify-center">
                 <div className="max-w-[92%] rounded-md bg-black/75 px-4 py-2 text-center text-lg font-semibold leading-7 text-white shadow-lg">
-                  {activeSubtitle.text}
+                  {subtitleMode === 'en' && <div>{activeSubtitle.text}</div>}
+                  {subtitleMode === 'zh' && (
+                    <div>{activeSubtitle.translation || activeSubtitle.text}</div>
+                  )}
+                  {subtitleMode === 'bilingual' && (
+                    <>
+                      <div>{activeSubtitle.text}</div>
+                      {activeSubtitle.translation && (
+                        <div className="mt-1 text-base text-gray-200">{activeSubtitle.translation}</div>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             )}
@@ -359,6 +398,40 @@ export default function VideoLessonPage() {
               <Repeat className="h-4 w-4" />
               单句循环
             </button>
+            <div className="flex items-center gap-1 rounded-md border border-gray-300 dark:border-gray-700">
+              <button
+                onClick={() => setSubtitleMode('en')}
+                className={`h-9 px-2 text-xs font-medium ${
+                  subtitleMode === 'en' ? 'bg-teal-600 text-white' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
+              >
+                英文
+              </button>
+              <button
+                onClick={() => setSubtitleMode('zh')}
+                className={`h-9 px-2 text-xs font-medium ${
+                  subtitleMode === 'zh' ? 'bg-teal-600 text-white' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
+              >
+                中文
+              </button>
+              <button
+                onClick={() => setSubtitleMode('bilingual')}
+                className={`h-9 px-2 text-xs font-medium ${
+                  subtitleMode === 'bilingual' ? 'bg-teal-600 text-white' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
+              >
+                双语
+              </button>
+              <button
+                onClick={() => setSubtitleMode('off')}
+                className={`h-9 px-2 text-xs font-medium ${
+                  subtitleMode === 'off' ? 'bg-gray-600 text-white' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800'
+                }`}
+              >
+                关闭
+              </button>
+            </div>
             <div className="ml-auto text-sm tabular-nums text-gray-500 dark:text-gray-400">
               {formatVideoTime(currentTime)} / {formatVideoTime(duration || lesson.duration_seconds)}
             </div>
@@ -368,6 +441,9 @@ export default function VideoLessonPage() {
             <div className="mt-4 rounded-lg border border-teal-500/30 bg-teal-500/10 p-4 dark:bg-teal-300/10">
               <div className="mb-1 text-xs font-medium text-teal-700 dark:text-teal-300">当前字幕</div>
               <p className="text-xl leading-9 text-gray-950 dark:text-white">{activeSubtitle.text}</p>
+              {activeSubtitle.translation && (
+                <p className="mt-2 text-base leading-7 text-gray-700 dark:text-gray-300">{activeSubtitle.translation}</p>
+              )}
             </div>
           )}
         </section>
@@ -417,6 +493,11 @@ export default function VideoLessonPage() {
                         );
                       })}
                     </p>
+                    {subtitle.translation && (
+                      <p className={`mt-1 text-sm leading-6 ${active ? 'text-teal-50' : 'text-gray-600 dark:text-gray-400'}`}>
+                        {subtitle.translation}
+                      </p>
+                    )}
                   </div>
                 );
               })

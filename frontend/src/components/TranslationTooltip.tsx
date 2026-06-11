@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { translationAPI, vocabularyAPI } from '@/lib/api';
 import { Vocabulary } from '@/types';
 import { Bot, BookmarkCheck, BookmarkPlus, Loader2, RotateCcw, Volume2 } from 'lucide-react';
+import Toast from './Toast';
 
 type Accent = 'uk' | 'us';
 
@@ -51,6 +52,7 @@ export default function TranslationTooltip({
   const [adding, setAdding] = useState(false);
   const [reviewing, setReviewing] = useState(false);
   const [currentVocabulary, setCurrentVocabulary] = useState<Vocabulary | undefined>(existingVocabulary);
+  const [toastMessage, setToastMessage] = useState('');
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -226,12 +228,12 @@ export default function TranslationTooltip({
       setCurrentVocabulary(vocabulary);
       onWordAdded?.(vocabulary.word.toLowerCase());
       onVocabularyReviewed?.(vocabulary);
-      alert('已添加到生词本');
+      setToastMessage('已添加到生词本');
     } catch (error: any) {
       if (error.response?.status === 401) {
-        alert('请先登录');
+        setToastMessage('请先登录');
       } else {
-        alert('添加失败');
+        setToastMessage('添加失败');
       }
     } finally {
       setAdding(false);
@@ -249,9 +251,9 @@ export default function TranslationTooltip({
       onVocabularyReviewed?.(reviewed);
     } catch (error: any) {
       if (error.response?.status === 401) {
-        alert('请先登录');
+        setToastMessage('请先登录');
       } else {
-        alert('复习记录失败');
+        setToastMessage('复习记录失败');
       }
     } finally {
       setReviewing(false);
@@ -259,14 +261,16 @@ export default function TranslationTooltip({
   };
 
   return (
-    <div
-      ref={tooltipRef}
-      className="translation-tooltip"
-      style={{
-        left: `${position.x}px`,
-        top: `${position.y}px`,
-      }}
-    >
+    <>
+      {toastMessage && <Toast message={toastMessage} onClose={() => setToastMessage('')} />}
+      <div
+        ref={tooltipRef}
+        className="translation-tooltip"
+        style={{
+          left: `${position.x}px`,
+          top: `${position.y}px`,
+        }}
+      >
       <div className="space-y-3">
         <div>
           <div className="mb-2.5 flex flex-wrap items-center gap-2">
@@ -421,5 +425,6 @@ export default function TranslationTooltip({
         )}
       </div>
     </div>
+    </>
   );
 }

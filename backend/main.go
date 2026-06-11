@@ -69,6 +69,7 @@ func main() {
 		firstPositive(cfg.AO3.RequestTimeoutSeconds, cfg.RSS.RequestTimeoutSeconds),
 	)
 	handlers.InitVideoLearningService(database.DB, cfg.VideoLearning)
+	handlers.LinkTranslationToVideoLearning()
 
 	// 创建 Gin 路由
 	r := gin.Default()
@@ -185,6 +186,8 @@ func main() {
 				videoLessons.POST("/:id/regenerate-subtitles", handlers.RegenerateVideoSubtitles)
 				videoLessons.GET("/:id/subtitles", handlers.GetVideoSubtitles)
 				videoLessons.GET("/:id/subtitles.vtt", handlers.GetVideoSubtitlesVTT)
+				videoLessons.POST("/:id/subtitles/translate", handlers.TranslateVideoSubtitles)
+				videoLessons.PATCH("/:id/subtitles/:subtitle_id", handlers.UpdateVideoSubtitle)
 				videoLessons.POST("/:id/progress", handlers.UpdateVideoProgress)
 			}
 

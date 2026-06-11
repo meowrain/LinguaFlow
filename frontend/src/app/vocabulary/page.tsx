@@ -22,7 +22,7 @@ import {
   Volume2,
   XCircle,
 } from 'lucide-react';
-import { vocabularyAPI } from '@/lib/api';
+import { translationAPI, vocabularyAPI } from '@/lib/api';
 import {
   Vocabulary,
   VocabularyAnswerResult,
@@ -55,13 +55,22 @@ function isDue(item: Vocabulary) {
   return new Date(item.next_review_at).getTime() <= Date.now();
 }
 
-function speakWord(text: string) {
-  if (typeof window === 'undefined' || !window.speechSynthesis || !text) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
-  utterance.rate = 0.86;
-  window.speechSynthesis.speak(utterance);
+async function speakWord(text: string, accent: 'uk' | 'us' = 'us') {
+  if (!text) return;
+  try {
+    const response = await translationAPI.lookupWord(text, {});
+    const data = response.data.data;
+    const audioUrl = accent === 'uk'
+      ? (data.uk_speech_url || data.speech_url)
+      : (data.us_speech_url || data.speech_url);
+    if (audioUrl) {
+      const audio = new Audio(audioUrl);
+      await audio.play();
+      return;
+    }
+  } catch (error) {
+    console.error('Dictionary audio failed:', error);
+  }
 }
 
 function formatDate(value?: string) {
@@ -112,6 +121,7 @@ function VocabularyContent() {
   const [graphLoadingId, setGraphLoadingId] = useState<number | null>(null);
   const [knowledgeGraph, setKnowledgeGraph] = useState<VocabularyKnowledgeGraph | null>(null);
   const [graphError, setGraphError] = useState('');
+  const [activeTab, setActiveTab] = useState<'review' | 'manage'>('review');
   const graphRequestRef = useRef(0);
 
   const fetchVocabulary = useCallback(async () => {
@@ -355,17 +365,35 @@ function VocabularyContent() {
         </div>
       </section>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="mb-6 flex gap-2 border-b border-gray-800">
+        <button
+          onClick={() => setActiveTab('review')}
+          className={`px-6 py-3 text-sm font-semibold transition-colors ${
+            activeTab === 'review'
+              ? 'border-b-2 border-blue-500 text-blue-300'
+              : 'text-gray-400 hover:text-gray-300'
+          }`}
+        >
+          生词复习
+        </button>
+        <button
+          onClick={() => setActiveTab('manage')}
+          className={`px-6 py-3 text-sm font-semibold transition-colors ${
+            activeTab === 'manage'
+              ? 'border-b-2 border-blue-500 text-blue-300'
+              : 'text-gray-400 hover:text-gray-300'
+          }`}
+        >
+          生词管理
+        </button>
+      </div>
+
+      {activeTab === 'review' ? (
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <main className="space-y-5">
           <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4 sm:p-5">
             <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-blue-300">
-                  <ListChecks className="h-4 w-4" />
-                  复习卡片
-                </div>
-                <h1 className="mt-1 text-2xl font-black text-gray-100 sm:text-3xl">生词复习</h1>
-              </div>
+              <h1 className="text-2xl font-black text-gray-100 sm:text-3xl">复习练习</h1>
               <div className="flex flex-wrap gap-2">
                 {(Object.keys(filterLabels) as VocabularyFilter[]).map((key) => (
                   <button
@@ -420,15 +448,26 @@ function VocabularyContent() {
                       <p className="mt-2 text-sm font-semibold text-gray-500">{activeVocabulary.phonetic}</p>
                     )}
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => speakWord(activeExercise.audio_text || activeExercise.word)}
-                    className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-md border border-gray-700 px-3 text-sm font-semibold text-gray-200 transition-colors hover:border-blue-500 hover:text-blue-200"
-                    title="播放发音"
-                  >
-                    <Volume2 className="h-4 w-4" />
-                    发音
-                  </button>
+                  <div className="flex shrink-0 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => speakWord(activeExercise.audio_text || activeExercise.word, 'uk')}
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-gray-700 px-3 text-sm font-semibold text-gray-200 transition-colors hover:border-blue-500 hover:text-blue-200"
+                      title="英音"
+                    >
+                      <Volume2 className="h-4 w-4" />
+                      英音
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => speakWord(activeExercise.audio_text || activeExercise.word, 'us')}
+                      className="inline-flex h-10 items-center justify-center gap-2 rounded-md border border-gray-700 px-3 text-sm font-semibold text-gray-200 transition-colors hover:border-blue-500 hover:text-blue-200"
+                      title="美音"
+                    >
+                      <Volume2 className="h-4 w-4" />
+                      美音
+                    </button>
+                  </div>
                 </div>
 
                 {activeExercise.context && (
@@ -556,14 +595,56 @@ function VocabularyContent() {
               </form>
             )}
           </section>
+        </main>
 
+        <aside className="space-y-5 xl:sticky xl:top-20 xl:self-start">
+          <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm font-semibold text-gray-300">
+                <ListChecks className="h-4 w-4 text-blue-300" />
+                复习队列
+              </div>
+              {exerciseLoading && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
+            </div>
+            {exercises.length === 0 ? (
+              <p className="rounded-md border border-gray-800 bg-gray-950/40 p-4 text-sm text-gray-500">
+                队列为空
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {exercises.slice(0, 12).map((exercise, index) => (
+                  <button
+                    key={`${exercise.vocabulary_id}-${exercise.type}-${index}`}
+                    type="button"
+                    onClick={() => {
+                      setCardIndex(index);
+                      resetCardState();
+                    }}
+                    className={`flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left transition-colors ${
+                      index === cardIndex
+                        ? 'border-blue-500 bg-blue-500/10 text-blue-100'
+                        : 'border-gray-800 bg-gray-950/30 text-gray-300 hover:border-blue-500/60'
+                    }`}
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate text-sm font-bold">{exercise.word}</span>
+                      <span className="block text-xs text-gray-500">{exerciseLabels[exercise.type]}</span>
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-gray-500" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </section>
+        </aside>
+        </div>
+      ) : (
+        <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <main>
           <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4 sm:p-5">
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <div className="flex items-center gap-2 text-sm font-semibold text-gray-400">
-                  <BookOpen className="h-4 w-4" />
-                  生词列表
-                </div>
+                <h2 className="text-2xl font-black text-gray-100">生词列表</h2>
                 <p className="mt-1 text-sm text-gray-500">当前显示 {filteredVocabulary.length} 个</p>
               </div>
               <label className="relative w-full md:w-80">
@@ -626,11 +707,21 @@ function VocabularyContent() {
                       <div className="flex flex-wrap items-center gap-2 lg:justify-end">
                         <button
                           type="button"
-                          onClick={() => speakWord(word.word)}
-                          className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-700 text-gray-300 transition-colors hover:border-blue-500 hover:text-blue-200"
-                          title="播放发音"
+                          onClick={() => speakWord(word.word, 'uk')}
+                          className="inline-flex h-9 items-center justify-center gap-1 rounded-md border border-gray-700 px-2 text-xs font-semibold text-gray-300 transition-colors hover:border-blue-500 hover:text-blue-200"
+                          title="英音"
                         >
-                          <Volume2 className="h-4 w-4" />
+                          <Volume2 className="h-3.5 w-3.5" />
+                          UK
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => speakWord(word.word, 'us')}
+                          className="inline-flex h-9 items-center justify-center gap-1 rounded-md border border-gray-700 px-2 text-xs font-semibold text-gray-300 transition-colors hover:border-blue-500 hover:text-blue-200"
+                          title="美音"
+                        >
+                          <Volume2 className="h-3.5 w-3.5" />
+                          US
                         </button>
                         <button
                           type="button"
@@ -677,45 +768,6 @@ function VocabularyContent() {
         </main>
 
         <aside className="space-y-5 xl:sticky xl:top-20 xl:self-start">
-          <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4">
-            <div className="mb-4 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-                <ListChecks className="h-4 w-4 text-blue-300" />
-                复习队列
-              </div>
-              {exerciseLoading && <Loader2 className="h-4 w-4 animate-spin text-blue-400" />}
-            </div>
-            {exercises.length === 0 ? (
-              <p className="rounded-md border border-gray-800 bg-gray-950/40 p-4 text-sm text-gray-500">
-                队列为空
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {exercises.slice(0, 12).map((exercise, index) => (
-                  <button
-                    key={`${exercise.vocabulary_id}-${exercise.type}-${index}`}
-                    type="button"
-                    onClick={() => {
-                      setCardIndex(index);
-                      resetCardState();
-                    }}
-                    className={`flex w-full items-center justify-between gap-3 rounded-md border px-3 py-2 text-left transition-colors ${
-                      index === cardIndex
-                        ? 'border-blue-500 bg-blue-500/10 text-blue-100'
-                        : 'border-gray-800 bg-gray-950/30 text-gray-300 hover:border-blue-500/60'
-                    }`}
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-bold">{exercise.word}</span>
-                      <span className="block text-xs text-gray-500">{exerciseLabels[exercise.type]}</span>
-                    </span>
-                    <ChevronRight className="h-4 w-4 shrink-0 text-gray-500" />
-                  </button>
-                ))}
-              </div>
-            )}
-          </section>
-
           <section className="rounded-md border border-gray-800 bg-gray-900/60 p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div className="min-w-0">
@@ -821,7 +873,8 @@ function VocabularyContent() {
             )}
           </section>
         </aside>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
