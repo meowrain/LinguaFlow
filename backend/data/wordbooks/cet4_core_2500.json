@@ -1,0 +1,727 @@
+{
+  "meta": {
+    "name": "CET-4 核心 2500 词",
+    "name_en": "CET-4 Core 2500",
+    "slug": "cet4-core-2500",
+    "category": "cet4",
+    "difficulty": "beginner",
+    "cefr_level": "A2-B1",
+    "version": "1.0.0",
+    "source": "教育部考试中心 CET-4 词汇大纲",
+    "license": "educational-use"
+  },
+  "units": [
+    {
+      "unit": 1,
+      "name": "List 1",
+      "entries": [
+        {
+          "word": "abandon",
+          "uk_phonetic": "/əˈbændən/",
+          "us_phonetic": "/əˈbændən/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to leave a place, thing, or person permanently"},
+            {"pos": "vt.", "definition": "to stop doing something before it is finished"},
+            {"pos": "n.", "definition": "complete freedom of behaviour"}
+          ],
+          "translation": "放弃;遗弃;放纵",
+          "examples": [
+            {"en": "He abandoned his wife and children.", "zh": "他抛弃了妻子和孩子。"},
+            {"en": "They had to abandon the car on the side of the road.", "zh": "他们不得不把车弃在路边。"}
+          ],
+          "collocations": ["abandon hope", "abandon a plan", "with abandon"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "abstract",
+          "uk_phonetic": "/ˈæbstrækt/",
+          "us_phonetic": "/ˈæbstrækt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "existing in thought or as an idea but not having a physical existence"},
+            {"pos": "adj.", "definition": "relating to art that does not represent real things"},
+            {"pos": "n.", "definition": "a short written summary of a longer text"}
+          ],
+          "translation": "抽象的;摘要",
+          "examples": [
+            {"en": "The idea is too abstract for young children.", "zh": "这个概念对幼儿来说太抽象了。"},
+            {"en": "Please write an abstract of the article.", "zh": "请写一篇这篇文章的摘要。"}
+          ],
+          "collocations": ["abstract concept", "abstract art", "in the abstract"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "academic",
+          "uk_phonetic": "/ˌækəˈdemɪk/",
+          "us_phonetic": "/ˌækəˈdemɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "relating to education and scholarship"},
+            {"pos": "adj.", "definition": "not having any practical purpose"},
+            {"pos": "n.", "definition": "a teacher or researcher at a university"}
+          ],
+          "translation": "学术的;学院的;学者",
+          "examples": [
+            {"en": "She had a brilliant academic career.", "zh": "她有辉煌的学术生涯。"},
+            {"en": "The debate is purely academic at this point.", "zh": "这场辩论在现阶段纯粹是学术性的。"}
+          ],
+          "collocations": ["academic performance", "academic research", "academic year"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "access",
+          "uk_phonetic": "/ˈækses/",
+          "us_phonetic": "/ˈækses/",
+          "definitions": [
+            {"pos": "n.", "definition": "the right or opportunity to use or benefit from something"},
+            {"pos": "n.", "definition": "a means of entering or approaching a place"},
+            {"pos": "vt.", "definition": "to obtain or retrieve information from a computer system"}
+          ],
+          "translation": "接近;进入;使用权",
+          "examples": [
+            {"en": "Students have access to the library 24 hours a day.", "zh": "学生可以24小时使用图书馆。"},
+            {"en": "You can access the data from any computer.", "zh": "你可以从任何电脑访问数据。"}
+          ],
+          "collocations": ["have access to", "gain access", "access to information"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "accommodate",
+          "uk_phonetic": "/əˈkɒmədeɪt/",
+          "us_phonetic": "/əˈkɑːmədeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to provide lodging or sufficient space for"},
+            {"pos": "vt.", "definition": "to fit in with the wishes or needs of someone"}
+          ],
+          "translation": "容纳;提供住宿;适应",
+          "examples": [
+            {"en": "The hotel can accommodate up to 500 guests.", "zh": "这家酒店最多可以容纳500位客人。"},
+            {"en": "We will try our best to accommodate your special needs.", "zh": "我们会尽量满足你的特殊需求。"}
+          ],
+          "collocations": ["accommodate guests", "accommodate needs", "accommodate changes"],
+          "frequency": 4,
+          "tags": ["中频"]
+        },
+        {
+          "word": "acquire",
+          "uk_phonetic": "/əˈkwaɪər/",
+          "us_phonetic": "/əˈkwaɪər/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to buy or obtain an asset or object for oneself"},
+            {"pos": "vt.", "definition": "to learn or develop a skill, habit, or quality"}
+          ],
+          "translation": "获得;取得;学到",
+          "examples": [
+            {"en": "She acquired a taste for expensive wine.", "zh": "她养成了对高档葡萄酒的爱好。"},
+            {"en": "The company acquired a smaller rival.", "zh": "公司收购了一家较小的竞争对手。"}
+          ],
+          "collocations": ["acquire knowledge", "acquire skills", "acquire a company"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "adapt",
+          "uk_phonetic": "/əˈdæpt/",
+          "us_phonetic": "/əˈdæpt/",
+          "definitions": [
+            {"pos": "v.", "definition": "to make suitable for a new use or purpose"},
+            {"pos": "v.", "definition": "to become adjusted to new conditions"}
+          ],
+          "translation": "适应;改编;改造",
+          "examples": [
+            {"en": "It took him a while to adapt to the new environment.", "zh": "他花了一段时间才适应新环境。"},
+            {"en": "The film was adapted from a best-selling novel.", "zh": "这部电影改编自一本畅销小说。"}
+          ],
+          "collocations": ["adapt to", "adapt from", "adapt oneself"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "adequate",
+          "uk_phonetic": "/ˈædɪkwət/",
+          "us_phonetic": "/ˈædɪkwət/",
+          "definitions": [
+            {"pos": "adj.", "definition": "satisfactory or acceptable in quality or quantity"},
+            {"pos": "adj.", "definition": "barely sufficient or suitable"}
+          ],
+          "translation": "足够的;合格的",
+          "examples": [
+            {"en": "We have adequate supplies for the trip.", "zh": "我们有足够的旅行补给。"},
+            {"en": "His performance was barely adequate.", "zh": "他的表现勉强合格。"}
+          ],
+          "collocations": ["adequate supply", "adequate preparation", "adequate funding"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "affect",
+          "uk_phonetic": "/əˈfekt/",
+          "us_phonetic": "/əˈfekt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to have an influence on or make a difference to"},
+            {"pos": "vt.", "definition": "to make someone feel a strong emotion"}
+          ],
+          "translation": "影响;感动;感染",
+          "examples": [
+            {"en": "The weather can affect your mood.", "zh": "天气会影响你的心情。"},
+            {"en": "She was deeply affected by the news.", "zh": "她被这个消息深深打动了。"}
+          ],
+          "collocations": ["affect deeply", "seriously affect", "directly affect"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "afford",
+          "uk_phonetic": "/əˈfɔːd/",
+          "us_phonetic": "/əˈfɔːrd/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to have enough money to pay for"},
+            {"pos": "vt.", "definition": "to be able to do something without adverse consequences"}
+          ],
+          "translation": "买得起;负担得起;提供",
+          "examples": [
+            {"en": "I can't afford to buy a new car.", "zh": "我买不起新车。"},
+            {"en": "We can't afford to waste any more time.", "zh": "我们再也浪费不起时间了。"}
+          ],
+          "collocations": ["afford to", "can afford", "afford the cost"],
+          "frequency": 2,
+          "tags": ["高频"]
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "name": "List 2",
+      "entries": [
+        {
+          "word": "aggressive",
+          "uk_phonetic": "/əˈɡresɪv/",
+          "us_phonetic": "/əˈɡresɪv/",
+          "definitions": [
+            {"pos": "adj.", "definition": "ready or likely to attack or confront"},
+            {"pos": "adj.", "definition": "pursuing one's aims and interests forcefully"}
+          ],
+          "translation": "好斗的;有进取心的;侵略的",
+          "examples": [
+            {"en": "He became aggressive when he was drunk.", "zh": "他喝醉后变得好斗。"},
+            {"en": "The company adopted an aggressive marketing strategy.", "zh": "公司采取了激进的营销策略。"}
+          ],
+          "collocations": ["aggressive behavior", "aggressive strategy", "highly aggressive"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "alternative",
+          "uk_phonetic": "/ɔːlˈtɜːnətɪv/",
+          "us_phonetic": "/ɔːlˈtɜːrnətɪv/",
+          "definitions": [
+            {"pos": "n.", "definition": "one of two or more available possibilities"},
+            {"pos": "adj.", "definition": "available as another possibility"}
+          ],
+          "translation": "替代品;可供选择的;非传统的",
+          "examples": [
+            {"en": "We have no alternative but to cancel the trip.", "zh": "我们别无选择只能取消旅行。"},
+            {"en": "Public transport is a good alternative to driving.", "zh": "公共交通是开车的好替代方式。"}
+          ],
+          "collocations": ["alternative method", "no alternative", "alternative energy"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "ambition",
+          "uk_phonetic": "/æmˈbɪʃn/",
+          "us_phonetic": "/æmˈbɪʃn/",
+          "definitions": [
+            {"pos": "n.", "definition": "a strong desire to do or achieve something"},
+            {"pos": "n.", "definition": "desire and determination to achieve success"}
+          ],
+          "translation": "雄心;抱负;野心",
+          "examples": [
+            {"en": "His ambition is to become a doctor.", "zh": "他的抱负是成为一名医生。"},
+            {"en": "She has plenty of ambition but lacks experience.", "zh": "她很有抱负但缺乏经验。"}
+          ],
+          "collocations": ["achieve one's ambition", "political ambition", "burning ambition"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "analyze",
+          "uk_phonetic": "/ˈænəlaɪz/",
+          "us_phonetic": "/ˈænəlaɪz/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to examine methodically and in detail"},
+            {"pos": "vt.", "definition": "to discover or reveal the nature of something by analysis"}
+          ],
+          "translation": "分析;解析",
+          "examples": [
+            {"en": "We need to analyze the data carefully.", "zh": "我们需要仔细分析数据。"},
+            {"en": "The report analyzes the causes of poverty.", "zh": "这份报告分析了贫困的原因。"}
+          ],
+          "collocations": ["analyze data", "carefully analyze", "analyze the results"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "annual",
+          "uk_phonetic": "/ˈænjuəl/",
+          "us_phonetic": "/ˈænjuəl/",
+          "definitions": [
+            {"pos": "adj.", "definition": "occurring once every year"},
+            {"pos": "n.", "definition": "a book or magazine published once a year"}
+          ],
+          "translation": "年度的;每年的;年刊",
+          "examples": [
+            {"en": "The company's annual profit was $2 million.", "zh": "公司年利润为200万美元。"},
+            {"en": "The annual meeting will be held in March.", "zh": "年会将在三月举行。"}
+          ],
+          "collocations": ["annual report", "annual meeting", "annual income"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "anticipate",
+          "uk_phonetic": "/ænˈtɪsɪpeɪt/",
+          "us_phonetic": "/ænˈtɪsɪpeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to regard as probable or expect"},
+            {"pos": "vt.", "definition": "to act in advance of"}
+          ],
+          "translation": "预期;期望;提前处理",
+          "examples": [
+            {"en": "We anticipate that sales will rise next year.", "zh": "我们预计明年销售额将上升。"},
+            {"en": "Try to anticipate problems before they occur.", "zh": "尽量在问题出现之前预防。"}
+          ],
+          "collocations": ["anticipate problems", "widely anticipated", "as anticipated"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "anxiety",
+          "uk_phonetic": "/æŋˈzaɪəti/",
+          "us_phonetic": "/æŋˈzaɪəti/",
+          "definitions": [
+            {"pos": "n.", "definition": "a feeling of worry, nervousness, or unease"},
+            {"pos": "n.", "definition": "a strong desire or concern to do something"}
+          ],
+          "translation": "焦虑;不安;渴望",
+          "examples": [
+            {"en": "She felt a lot of anxiety before the exam.", "zh": "考试前她感到非常焦虑。"},
+            {"en": "His anxiety to please everyone made him exhausted.", "zh": "他渴望取悦每个人使他筋疲力尽。"}
+          ],
+          "collocations": ["anxiety disorder", "feel anxiety", "cause anxiety"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "apparent",
+          "uk_phonetic": "/əˈpærənt/",
+          "us_phonetic": "/əˈpærənt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "clearly visible or understood"},
+            {"pos": "adj.", "definition": "seeming real or true, but not necessarily so"}
+          ],
+          "translation": "明显的;表面上的",
+          "examples": [
+            {"en": "It was apparent that she was not happy.", "zh": "很明显她不开心。"},
+            {"en": "His apparent confidence hid deep insecurities.", "zh": "他表面上的自信掩盖了深层的不安全感。"}
+          ],
+          "collocations": ["become apparent", "apparent reason", "for no apparent reason"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "appeal",
+          "uk_phonetic": "/əˈpiːl/",
+          "us_phonetic": "/əˈpiːl/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to make a serious or urgent request"},
+            {"pos": "n.", "definition": "the quality of being attractive or interesting"},
+            {"pos": "n.", "definition": "a formal request to a court for a decision to be changed"}
+          ],
+          "translation": "呼吁;吸引力;上诉",
+          "examples": [
+            {"en": "The charity appealed for donations.", "zh": "慈善机构呼吁捐款。"},
+            {"en": "The idea doesn't appeal to me.", "zh": "这个想法对我没有吸引力。"}
+          ],
+          "collocations": ["appeal to", "sex appeal", "file an appeal"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "appetite",
+          "uk_phonetic": "/ˈæpɪtaɪt/",
+          "us_phonetic": "/ˈæpɪtaɪt/",
+          "definitions": [
+            {"pos": "n.", "definition": "a natural desire to satisfy a bodily need for food"},
+            {"pos": "n.", "definition": "a strong desire or liking for something"}
+          ],
+          "translation": "食欲;欲望;胃口",
+          "examples": [
+            {"en": "Exercise gives you a good appetite.", "zh": "运动能让你胃口好。"},
+            {"en": "He has an appetite for adventure.", "zh": "他有冒险的欲望。"}
+          ],
+          "collocations": ["lose one's appetite", "good appetite", "appetite for risk"],
+          "frequency": 4,
+          "tags": ["中频"]
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "name": "List 3",
+      "entries": [
+        {
+          "word": "apply",
+          "uk_phonetic": "/əˈplaɪ/",
+          "us_phonetic": "/əˈplaɪ/",
+          "definitions": [
+            {"pos": "v.", "definition": "to make a formal application or request"},
+            {"pos": "vt.", "definition": "to put into operation or use"},
+            {"pos": "vi.", "definition": "to be relevant or appropriate"}
+          ],
+          "translation": "申请;应用;适用",
+          "examples": [
+            {"en": "She applied for a job at the bank.", "zh": "她申请了银行的工作。"},
+            {"en": "The same rules apply to everyone.", "zh": "同样的规则适用于所有人。"}
+          ],
+          "collocations": ["apply for", "apply to", "apply oneself"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "approach",
+          "uk_phonetic": "/əˈprəʊtʃ/",
+          "us_phonetic": "/əˈproʊtʃ/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to come near to in distance or time"},
+            {"pos": "n.", "definition": "a way of dealing with something"},
+            {"pos": "n.", "definition": "the act of coming near"}
+          ],
+          "translation": "接近;方法;途径",
+          "examples": [
+            {"en": "Winter is approaching.", "zh": "冬天快到了。"},
+            {"en": "We need a new approach to the problem.", "zh": "我们需要一种新的解决问题的方法。"}
+          ],
+          "collocations": ["approach to", "new approach", "practical approach"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "appropriate",
+          "uk_phonetic": "/əˈprəʊpriət/",
+          "us_phonetic": "/əˈproʊpriət/",
+          "definitions": [
+            {"pos": "adj.", "definition": "suitable or proper in the circumstances"},
+            {"pos": "vt.", "definition": "to take something for one's own use"}
+          ],
+          "translation": "合适的;恰当的;拨款",
+          "examples": [
+            {"en": "Jeans are not appropriate for a formal dinner.", "zh": "牛仔裤不适合正式晚宴。"},
+            {"en": "The government appropriated funds for education.", "zh": "政府拨款用于教育。"}
+          ],
+          "collocations": ["appropriate for", "appropriate action", "appropriate measures"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "approve",
+          "uk_phonetic": "/əˈpruːv/",
+          "us_phonetic": "/əˈpruːv/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to officially agree to or accept as satisfactory"},
+            {"pos": "vi.", "definition": "to believe that someone or something is good or acceptable"}
+          ],
+          "translation": "批准;赞成;认可",
+          "examples": [
+            {"en": "The committee approved the new plan.", "zh": "委员会批准了新计划。"},
+            {"en": "Her parents don't approve of her boyfriend.", "zh": "她的父母不赞成她的男朋友。"}
+          ],
+          "collocations": ["approve of", "approve a plan", "approve the budget"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "approximately",
+          "uk_phonetic": "/əˈprɒksɪmətli/",
+          "us_phonetic": "/əˈprɑːksɪmətli/",
+          "definitions": [
+            {"pos": "adv.", "definition": "used to show that something is almost, but not completely, accurate"}
+          ],
+          "translation": "大约;近似地",
+          "examples": [
+            {"en": "The journey takes approximately two hours.", "zh": "旅程大约需要两个小时。"},
+            {"en": "Approximately 500 people attended the event.", "zh": "大约500人参加了活动。"}
+          ],
+          "collocations": ["approximately equal", "approximately half"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "aspect",
+          "uk_phonetic": "/ˈæspekt/",
+          "us_phonetic": "/ˈæspekt/",
+          "definitions": [
+            {"pos": "n.", "definition": "a particular part or feature of something"},
+            {"pos": "n.", "definition": "the appearance or look of something"}
+          ],
+          "translation": "方面;外观;层面",
+          "examples": [
+            {"en": "We need to consider all aspects of the problem.", "zh": "我们需要考虑问题的所有方面。"},
+            {"en": "Climate change affects every aspect of our lives.", "zh": "气候变化影响我们生活的各个层面。"}
+          ],
+          "collocations": ["all aspects", "positive aspect", "negative aspect"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "assess",
+          "uk_phonetic": "/əˈses/",
+          "us_phonetic": "/əˈses/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to evaluate or estimate the nature, quality, or ability"},
+            {"pos": "vt.", "definition": "to determine the amount of a tax or fine"}
+          ],
+          "translation": "评估;评价;征税",
+          "examples": [
+            {"en": "The teacher will assess your progress at the end of the term.", "zh": "老师将在期末评估你的进步。"},
+            {"en": "Damage was assessed at $1 million.", "zh": "损失评估为100万美元。"}
+          ],
+          "collocations": ["assess the situation", "assess the damage", "assess risk"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "assign",
+          "uk_phonetic": "/əˈsaɪn/",
+          "us_phonetic": "/əˈsaɪn/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to allocate a task or duty to someone"},
+            {"pos": "vt.", "definition": "to transfer or ascribe rights or qualities"}
+          ],
+          "translation": "分配;指派;赋值",
+          "examples": [
+            {"en": "The teacher assigned homework to the students.", "zh": "老师给学生布置了作业。"},
+            {"en": "They assigned him to the project.", "zh": "他们把他分配到项目组。"}
+          ],
+          "collocations": ["assign tasks", "assign responsibility", "assign to"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "assist",
+          "uk_phonetic": "/əˈsɪst/",
+          "us_phonetic": "/əˈsɪst/",
+          "definitions": [
+            {"pos": "v.", "definition": "to help someone by doing a task or providing information"},
+            {"pos": "n.", "definition": "an act of helping"}
+          ],
+          "translation": "协助;帮助;辅助",
+          "examples": [
+            {"en": "The nurse assisted the doctor during the surgery.", "zh": "护士在手术中协助医生。"},
+            {"en": "Technology can assist in learning.", "zh": "技术可以辅助学习。"}
+          ],
+          "collocations": ["assist in", "assist with", "assist the doctor"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "associate",
+          "uk_phonetic": "/əˈsəʊʃieɪt/",
+          "us_phonetic": "/əˈsoʊʃieɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to connect someone or something in one's mind"},
+            {"pos": "vi.", "definition": "to spend time together"},
+            {"pos": "n.", "definition": "a partner or colleague in business"}
+          ],
+          "translation": "联想;交往;同事",
+          "examples": [
+            {"en": "Most people associate this brand with quality.", "zh": "大多数人把这个品牌和质量联系在一起。"},
+            {"en": "She is a business associate of mine.", "zh": "她是我的商业伙伴。"}
+          ],
+          "collocations": ["associate with", "business associate", "closely associated"],
+          "frequency": 2,
+          "tags": ["高频"]
+        }
+      ]
+    },
+    {
+      "unit": 4,
+      "name": "List 4",
+      "entries": [
+        {
+          "word": "assume",
+          "uk_phonetic": "/əˈsjuːm/",
+          "us_phonetic": "/əˈsuːm/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to suppose to be the case, without proof"},
+            {"pos": "vt.", "definition": "to take or begin to have power or responsibility"}
+          ],
+          "translation": "假设;承担;呈现",
+          "examples": [
+            {"en": "I assume you already know about the meeting.", "zh": "我猜你已经知道开会的事了。"},
+            {"en": "She assumed responsibility for the project.", "zh": "她承担了项目的责任。"}
+          ],
+          "collocations": ["assume responsibility", "let's assume", "assume control"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "attempt",
+          "uk_phonetic": "/əˈtempt/",
+          "us_phonetic": "/əˈtempt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to make an effort to achieve or complete"},
+            {"pos": "n.", "definition": "an act of trying to do something"}
+          ],
+          "translation": "尝试;企图;试图",
+          "examples": [
+            {"en": "He attempted to escape from prison.", "zh": "他企图越狱。"},
+            {"en": "It was her first attempt at climbing a mountain.", "zh": "那是她第一次尝试登山。"}
+          ],
+          "collocations": ["attempt to do", "make an attempt", "in an attempt"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "attract",
+          "uk_phonetic": "/əˈtrækt/",
+          "us_phonetic": "/əˈtrækt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to cause to come to a place or participate by offering something interesting"},
+            {"pos": "vt.", "definition": "to evoke interest or liking in someone"}
+          ],
+          "translation": "吸引;引起…的兴趣",
+          "examples": [
+            {"en": "The museum attracts millions of visitors each year.", "zh": "博物馆每年吸引数百万游客。"},
+            {"en": "Opposite poles attract each other.", "zh": "异性磁极互相吸引。"}
+          ],
+          "collocations": ["attract attention", "attract visitors", "attract investment"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "authority",
+          "uk_phonetic": "/ɔːˈθɒrəti/",
+          "us_phonetic": "/əˈθɔːrəti/",
+          "definitions": [
+            {"pos": "n.", "definition": "the power or right to give orders and enforce obedience"},
+            {"pos": "n.", "definition": "a person or organization having political or administrative power"},
+            {"pos": "n.", "definition": "an expert on a subject"}
+          ],
+          "translation": "权力;当局;权威",
+          "examples": [
+            {"en": "The local authorities are investigating the incident.", "zh": "当地当局正在调查此事件。"},
+            {"en": "She is an authority on ancient Chinese history.", "zh": "她是古代中国历史的权威。"}
+          ],
+          "collocations": ["local authority", "in authority", "authority on"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "available",
+          "uk_phonetic": "/əˈveɪləbl/",
+          "us_phonetic": "/əˈveɪləbl/",
+          "definitions": [
+            {"pos": "adj.", "definition": "able to be used or obtained"},
+            {"pos": "adj.", "definition": "not busy; free to do something"}
+          ],
+          "translation": "可获得的;可用的;有空的",
+          "examples": [
+            {"en": "Tickets are available online.", "zh": "门票可以在网上购买。"},
+            {"en": "Are you available for a meeting tomorrow?", "zh": "你明天有空开会吗？"}
+          ],
+          "collocations": ["readily available", "commercially available", "available online"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "aware",
+          "uk_phonetic": "/əˈweər/",
+          "us_phonetic": "/əˈwer/",
+          "definitions": [
+            {"pos": "adj.", "definition": "having knowledge or perception of a situation or fact"},
+            {"pos": "adj.", "definition": "having interest in and concern about a particular subject"}
+          ],
+          "translation": "意识到的;知道的;有意识的",
+          "examples": [
+            {"en": "Are you aware of the risks?", "zh": "你意识到这些风险了吗？"},
+            {"en": "She is very aware of current events.", "zh": "她非常关注时事。"}
+          ],
+          "collocations": ["become aware", "be aware of", "environmentally aware"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "barrier",
+          "uk_phonetic": "/ˈbæriər/",
+          "us_phonetic": "/ˈbæriər/",
+          "definitions": [
+            {"pos": "n.", "definition": "a fence or obstacle that prevents movement or access"},
+            {"pos": "n.", "definition": "a circumstance or obstacle that keeps people apart or prevents progress"}
+          ],
+          "translation": "障碍;屏障;屏障物",
+          "examples": [
+            {"en": "Language can be a barrier to communication.", "zh": "语言可能成为沟通的障碍。"},
+            {"en": "The police put up barriers to control the crowd.", "zh": "警方设置了路障来控制人群。"}
+          ],
+          "collocations": ["trade barrier", "language barrier", "barrier to entry"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "benefit",
+          "uk_phonetic": "/ˈbenɪfɪt/",
+          "us_phonetic": "/ˈbenɪfɪt/",
+          "definitions": [
+            {"pos": "n.", "definition": "an advantage or profit gained from something"},
+            {"pos": "v.", "definition": "to receive an advantage; to be helped by"}
+          ],
+          "translation": "利益;好处;有益于;受益",
+          "examples": [
+            {"en": "Exercise has many health benefits.", "zh": "运动有很多健康益处。"},
+            {"en": "Students will benefit from the new program.", "zh": "学生将从新项目中受益。"}
+          ],
+          "collocations": ["benefit from", "mutual benefit", "health benefit"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "blame",
+          "uk_phonetic": "/bleɪm/",
+          "us_phonetic": "/bleɪm/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to assign responsibility for a fault or wrong"},
+            {"pos": "n.", "definition": "responsibility for a fault or wrong"}
+          ],
+          "translation": "责备;怪罪;归咎于",
+          "examples": [
+            {"en": "Don't blame me for your mistakes.", "zh": "别把你的错误怪到我头上。"},
+            {"en": "She took the blame for the accident.", "zh": "她承担了事故的责任。"}
+          ],
+          "collocations": ["blame someone for", "take the blame", "put the blame on"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "boost",
+          "uk_phonetic": "/buːst/",
+          "us_phonetic": "/buːst/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to help or encourage to increase or improve"},
+            {"pos": "n.", "definition": "an act of helping or encouraging an increase or improvement"}
+          ],
+          "translation": "促进;增强;推动",
+          "examples": [
+            {"en": "The good news boosted our morale.", "zh": "好消息鼓舞了我们的士气。"},
+            {"en": "The tax cut gave a boost to the economy.", "zh": "减税提振了经济。"}
+          ],
+          "collocations": ["boost confidence", "boost sales", "boost the economy"],
+          "frequency": 2,
+          "tags": ["高频"]
+        }
+      ]
+    }
+  ]
+}

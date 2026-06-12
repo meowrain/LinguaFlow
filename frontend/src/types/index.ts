@@ -742,3 +742,179 @@ export interface AdminArticleInput {
   status?: 'draft' | 'published' | 'archived';
   is_featured?: boolean;
 }
+
+// ---------- 词书模块 ----------
+
+export interface WordBook {
+  id: number;
+  name: string;
+  name_en?: string;
+  slug: string;
+  description?: string;
+  cover_image?: string;
+  category: string;
+  difficulty: 'beginner' | 'medium' | 'advanced';
+  cefr_level?: string;
+  word_count: number;
+  unit_count: number;
+  is_published: boolean;
+  source?: string;
+  license?: string;
+  version?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WordBookEntry {
+  id: number;
+  word_book_id: number;
+  sort_order: number;
+  unit: number;
+  word: string;
+  phonetic?: string;
+  uk_phonetic?: string;
+  us_phonetic?: string;
+  definitions?: string;
+  translation?: string;
+  examples?: string;
+  collocations?: string;
+  frequency: number;
+  difficulty?: string;
+  tags?: string;
+}
+
+export interface UserWordBook {
+  id: number;
+  user_id: number;
+  word_book_id: number;
+  daily_new_words: number;
+  daily_review_words: number;
+  auto_play_audio: boolean;
+  current_unit: number;
+  learned_count: number;
+  mastered_count: number;
+  total_studied_days: number;
+  current_streak: number;
+  is_active: boolean;
+  started_at: string;
+  completed_at?: string | null;
+  last_studied_at?: string | null;
+  created_at: string;
+  updated_at: string;
+  word_book?: WordBook;
+}
+
+export interface UserWordBookProgress {
+  id: number;
+  user_id: number;
+  user_word_book_id: number;
+  word_book_entry_id: number;
+  vocabulary_id?: number | null;
+  status: 'new' | 'learning' | 'mastered' | 'skipped';
+  first_seen_at?: string | null;
+  last_review_at?: string | null;
+  review_count: number;
+  forgotten_count: number;
+  review_interval: number;
+  review_ease: number;
+  next_review_at?: string | null;
+  is_learned: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WordBookDailyRecord {
+  id: number;
+  user_word_book_id: number;
+  date: string;
+  new_learned: number;
+  new_total: number;
+  review_done: number;
+  review_total: number;
+  is_completed: boolean;
+  studied_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface WordBookDailyTaskNew {
+  entry_id: number;
+  word: string;
+  phonetic?: string;
+  uk_phonetic?: string;
+  us_phonetic?: string;
+  translation?: string;
+  definitions?: string;
+  examples?: string;
+  collocations?: string;
+  status: 'new';
+}
+
+export interface WordBookDailyTaskReview {
+  progress_id: number;
+  entry_id: number;
+  word: string;
+  translation?: string;
+  status: 'learning' | 'mastered';
+  review_count: number;
+  forgotten_count: number;
+  next_review_at?: string;
+}
+
+export interface DailyTasks {
+  date: string;
+  new_words: WordBookDailyTaskNew[];
+  review_words: WordBookDailyTaskReview[];
+  total_new: number;
+  total_review: number;
+  backlog_count: number;
+  new_word_quota: number;
+  plan: {
+    daily_new_words: number;
+    daily_review_words: number;
+  };
+}
+
+export interface WordBookStats {
+  total_entries: number;
+  new_count: number;
+  learning_count: number;
+  mastered_count: number;
+  skipped_count: number;
+  learned_pct: number;
+  mastered_pct: number;
+  estimated_days_remaining: number;
+  current_streak: number;
+  total_studied_days: number;
+  avg_daily_new: number;
+  avg_daily_review: number;
+  calendar: Array<{
+    date: string;
+    new_count: number;
+    review_count: number;
+    is_completed: boolean;
+  }>;
+}
+
+export interface WordBookProgressSnapshot {
+  progress_id: number;
+  status: 'new' | 'learning' | 'mastered' | 'skipped';
+  review_count: number;
+  forgotten_count: number;
+  review_interval: number;
+  review_ease: number;
+  next_review_at?: string;
+  last_review_at?: string;
+  first_seen_at?: string;
+}
+
+export interface WordBookEntryListResponse {
+  data: {
+    items: WordBookEntry[];
+    total: number;
+    page: number;
+    page_size: number;
+    total_pages: number;
+  };
+  user_progress: Record<string, WordBookProgressSnapshot>;
+}

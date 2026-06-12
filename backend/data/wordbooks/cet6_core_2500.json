@@ -1,0 +1,545 @@
+{
+  "meta": {
+    "name": "CET-6 核心 2500 词",
+    "name_en": "CET-6 Core 2500",
+    "slug": "cet6-core-2500",
+    "category": "cet6",
+    "difficulty": "medium",
+    "cefr_level": "B1-B2",
+    "version": "1.0.0",
+    "source": "教育部考试中心 CET-6 词汇大纲",
+    "license": "educational-use"
+  },
+  "units": [
+    {
+      "unit": 1,
+      "name": "List 1",
+      "entries": [
+        {
+          "word": "abolish",
+          "uk_phonetic": "/əˈbɒlɪʃ/",
+          "us_phonetic": "/əˈbɑːlɪʃ/",
+          "definitions": [
+            {"pos": "vt.", "definition": "formally put an end to a system, practice, or institution"},
+            {"pos": "vt.", "definition": "to do away with; to cancel"}
+          ],
+          "translation": "废除;废止;取消",
+          "examples": [
+            {"en": "Slavery was abolished in the 19th century.", "zh": "奴隶制在19世纪被废除。"},
+            {"en": "There are calls to abolish the death penalty.", "zh": "有人呼吁废除死刑。"}
+          ],
+          "collocations": ["abolish slavery", "abolish the death penalty", "abolish a law"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "absurd",
+          "uk_phonetic": "/əbˈsɜːd/",
+          "us_phonetic": "/əbˈsɜːrd/",
+          "definitions": [
+            {"pos": "adj.", "definition": "wildly unreasonable, illogical, or inappropriate"},
+            {"pos": "n.", "definition": "the quality of being absurd"}
+          ],
+          "translation": "荒谬的;荒唐的;可笑的",
+          "examples": [
+            {"en": "It's absurd to think that he would agree.", "zh": "认为他会同意是荒谬的。"},
+            {"en": "The whole situation is completely absurd.", "zh": "整个局面完全荒唐。"}
+          ],
+          "collocations": ["absurd idea", "absurd claim", "absurdly expensive"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "acknowledge",
+          "uk_phonetic": "/əkˈnɒlɪdʒ/",
+          "us_phonetic": "/əkˈnɑːlɪdʒ/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to accept or admit the existence or truth of"},
+            {"pos": "vt.", "definition": "to recognize the importance or quality of"},
+            {"pos": "vt.", "definition": "to show that you have noticed someone"}
+          ],
+          "translation": "承认;确认;致谢",
+          "examples": [
+            {"en": "He acknowledged that he had made a mistake.", "zh": "他承认自己犯了一个错误。"},
+            {"en": "She acknowledged the applause with a bow.", "zh": "她鞠躬致意以示答谢掌声。"}
+          ],
+          "collocations": ["widely acknowledged", "acknowledge the fact", "acknowledge receipt"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "advocate",
+          "uk_phonetic": "/ˈædvəkeɪt/",
+          "us_phonetic": "/ˈædvəkeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to publicly recommend or support"},
+            {"pos": "n.", "definition": "a person who publicly supports a particular cause or policy"}
+          ],
+          "translation": "提倡;倡导;倡导者",
+          "examples": [
+            {"en": "She advocates a healthy lifestyle.", "zh": "她提倡健康的生活方式。"},
+            {"en": "He is a strong advocate of environmental protection.", "zh": "他是环境保护的有力倡导者。"}
+          ],
+          "collocations": ["advocate for", "strong advocate", "advocate change"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "alleviate",
+          "uk_phonetic": "/əˈliːvieɪt/",
+          "us_phonetic": "/əˈliːvieɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to make suffering, deficiency, or a problem less severe"}
+          ],
+          "translation": "减轻;缓和;缓解",
+          "examples": [
+            {"en": "The medicine can alleviate the pain.", "zh": "这种药可以减轻疼痛。"},
+            {"en": "Measures were taken to alleviate traffic congestion.", "zh": "采取了措施来缓解交通拥堵。"}
+          ],
+          "collocations": ["alleviate pain", "alleviate poverty", "alleviate symptoms"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "ambiguous",
+          "uk_phonetic": "/æmˈbɪɡjuəs/",
+          "us_phonetic": "/æmˈbɪɡjuəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "open to more than one interpretation; not clear"},
+            {"pos": "adj.", "definition": "uncertain or inexact in nature"}
+          ],
+          "translation": "模棱两可的;含糊的;不明确的",
+          "examples": [
+            {"en": "His answer was deliberately ambiguous.", "zh": "他的回答故意含糊不清。"},
+            {"en": "The wording of the law is ambiguous.", "zh": "法律的措辞很模糊。"}
+          ],
+          "collocations": ["ambiguous statement", "ambiguous meaning", "morally ambiguous"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "analogy",
+          "uk_phonetic": "/əˈnælədʒi/",
+          "us_phonetic": "/əˈnælədʒi/",
+          "definitions": [
+            {"pos": "n.", "definition": "a comparison between things that have similar features"},
+            {"pos": "n.", "definition": "the process of arguing by analogy"}
+          ],
+          "translation": "类比;类推;相似之处",
+          "examples": [
+            {"en": "He drew an analogy between the human brain and a computer.", "zh": "他把人脑比作计算机。"},
+            {"en": "The analogy between music and painting is interesting.", "zh": "音乐和绘画之间的类比很有趣。"}
+          ],
+          "collocations": ["draw an analogy", "by analogy", "false analogy"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "anonymous",
+          "uk_phonetic": "/əˈnɒnɪməs/",
+          "us_phonetic": "/əˈnɑːnɪməs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "not identified by name; of unknown identity"},
+            {"pos": "adj.", "definition": "lacking distinctive features or characteristics"}
+          ],
+          "translation": "匿名的;无名的;无特色的",
+          "examples": [
+            {"en": "The donor wished to remain anonymous.", "zh": "捐赠者希望保持匿名。"},
+            {"en": "An anonymous letter was sent to the police.", "zh": "一封匿名信被寄给了警方。"}
+          ],
+          "collocations": ["anonymous source", "anonymous donation", "anonymous letter"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "appliance",
+          "uk_phonetic": "/əˈplaɪəns/",
+          "us_phonetic": "/əˈplaɪəns/",
+          "definitions": [
+            {"pos": "n.", "definition": "a device designed to perform a specific task"},
+            {"pos": "n.", "definition": "an electrical device for domestic use"}
+          ],
+          "translation": "器具;家电;装置",
+          "examples": [
+            {"en": "The store sells kitchen appliances.", "zh": "这家商店卖厨房电器。"},
+            {"en": "Modern appliances make housework easier.", "zh": "现代家电使家务更轻松。"}
+          ],
+          "collocations": ["kitchen appliance", "electrical appliance", "household appliance"],
+          "frequency": 3,
+          "tags": ["中频"]
+        },
+        {
+          "word": "arbitrary",
+          "uk_phonetic": "/ˈɑːbɪtrəri/",
+          "us_phonetic": "/ˈɑːrbɪtreri/",
+          "definitions": [
+            {"pos": "adj.", "definition": "based on random choice rather than any reason or system"},
+            {"pos": "adj.", "definition": "using unlimited power without considering the wishes of others"}
+          ],
+          "translation": "任意的;武断的;专断的",
+          "examples": [
+            {"en": "The decision seemed completely arbitrary.", "zh": "这个决定看起来完全是武断的。"},
+            {"en": "An arbitrary amount of information was selected.", "zh": "选择了任意数量的信息。"}
+          ],
+          "collocations": ["arbitrary decision", "arbitrary rules", "completely arbitrary"],
+          "frequency": 3,
+          "tags": ["高频"]
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "name": "List 2",
+      "entries": [
+        {
+          "word": "articulate",
+          "uk_phonetic": "/ɑːˈtɪkjuleɪt/",
+          "us_phonetic": "/ɑːrˈtɪkjuleɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to express an idea or feeling clearly"},
+            {"pos": "adj.", "definition": "having or showing the ability to speak fluently and clearly"}
+          ],
+          "translation": "清楚地表达;发音清晰的",
+          "examples": [
+            {"en": "She was articulate enough to express her opinions clearly.", "zh": "她表达能力足够好，能清楚地阐述自己的观点。"},
+            {"en": "He failed to articulate his concerns.", "zh": "他未能清楚表达自己的担忧。"}
+          ],
+          "collocations": ["articulate ideas", "highly articulate", "articulate clearly"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "authentic",
+          "uk_phonetic": "/ɔːˈθentɪk/",
+          "us_phonetic": "/ɔːˈθentɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "of undisputed origin; genuine"},
+            {"pos": "adj.", "definition": "accurately representing or imitating what is claimed"}
+          ],
+          "translation": "真正的;可信的;真实的",
+          "examples": [
+            {"en": "The painting has been confirmed as authentic.", "zh": "这幅画被确认为真迹。"},
+            {"en": "They serve authentic Italian food.", "zh": "他们提供正宗的意大利菜。"}
+          ],
+          "collocations": ["authentic experience", "authentic Italian", "authentic documents"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "biography",
+          "uk_phonetic": "/baɪˈɒɡrəfi/",
+          "us_phonetic": "/baɪˈɑːɡrəfi/",
+          "definitions": [
+            {"pos": "n.", "definition": "an account of someone's life written by someone else"},
+            {"pos": "n.", "definition": "a written account of the events in someone's life"}
+          ],
+          "translation": "传记;人物生平",
+          "examples": [
+            {"en": "I read a biography of Albert Einstein.", "zh": "我读了一本爱因斯坦的传记。"},
+            {"en": "His biography was published last year.", "zh": "他的传记去年出版了。"}
+          ],
+          "collocations": ["write a biography", "authorized biography", "short biography"],
+          "frequency": 3,
+          "tags": ["中频"]
+        },
+        {
+          "word": "catastrophe",
+          "uk_phonetic": "/kəˈtæstrəfi/",
+          "us_phonetic": "/kəˈtæstrəfi/",
+          "definitions": [
+            {"pos": "n.", "definition": "an event causing great and sudden damage or suffering"},
+            {"pos": "n.", "definition": "a sudden and complete disaster"}
+          ],
+          "translation": "大灾难;大祸;灾难性的失败",
+          "examples": [
+            {"en": "The oil spill was an environmental catastrophe.", "zh": "石油泄漏是一场环境灾难。"},
+            {"en": "The war was a catastrophe for the country.", "zh": "战争对这个国家来说是一场灾难。"}
+          ],
+          "collocations": ["environmental catastrophe", "natural catastrophe", "major catastrophe"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "chronic",
+          "uk_phonetic": "/ˈkrɒnɪk/",
+          "us_phonetic": "/ˈkrɑːnɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "persisting for a long time or constantly recurring"},
+            {"pos": "adj.", "definition": "having an illness that persists for a long time"}
+          ],
+          "translation": "慢性的;长期的;积习难改的",
+          "examples": [
+            {"en": "He suffers from chronic back pain.", "zh": "他患有慢性背痛。"},
+            {"en": "Chronic unemployment is a serious problem.", "zh": "长期失业是一个严重的问题。"}
+          ],
+          "collocations": ["chronic disease", "chronic pain", "chronic shortage"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "coherent",
+          "uk_phonetic": "/kəʊˈhɪərənt/",
+          "us_phonetic": "/koʊˈhɪrənt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "logical and consistent; forming a unified whole"},
+            {"pos": "adj.", "definition": "able to speak clearly and logically"}
+          ],
+          "translation": "连贯的;一致的;条理清楚的",
+          "examples": [
+            {"en": "She gave a coherent account of the accident.", "zh": "她对事故作了条理清楚的叙述。"},
+            {"en": "The plan lacks a coherent strategy.", "zh": "这个计划缺乏连贯的战略。"}
+          ],
+          "collocations": ["coherent plan", "coherent argument", "coherent whole"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "comply",
+          "uk_phonetic": "/kəmˈplaɪ/",
+          "us_phonetic": "/kəmˈplaɪ/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to act in accordance with a wish, command, or rule"}
+          ],
+          "translation": "遵从;服从;顺从",
+          "examples": [
+            {"en": "You must comply with the rules.", "zh": "你必须遵守规则。"},
+            {"en": "The company failed to comply with safety regulations.", "zh": "该公司未能遵守安全法规。"}
+          ],
+          "collocations": ["comply with", "fully comply", "fail to comply"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "compromise",
+          "uk_phonetic": "/ˈkɒmprəmaɪz/",
+          "us_phonetic": "/ˈkɑːmprəmaɪz/",
+          "definitions": [
+            {"pos": "n.", "definition": "an agreement reached by each side making concessions"},
+            {"pos": "v.", "definition": "to settle a dispute by mutual concession"},
+            {"pos": "vt.", "definition": "to bring into danger or disrepute"}
+          ],
+          "translation": "妥协;折中;危害",
+          "examples": [
+            {"en": "They reached a compromise after long negotiations.", "zh": "经过长时间谈判他们达成了妥协。"},
+            {"en": "Security was compromised by the data breach.", "zh": "安全因数据泄露而受到损害。"}
+          ],
+          "collocations": ["reach a compromise", "compromise on", "compromise security"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "conceive",
+          "uk_phonetic": "/kənˈsiːv/",
+          "us_phonetic": "/kənˈsiːv/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to form or devise a plan or idea in the mind"},
+            {"pos": "vi.", "definition": "to become pregnant"}
+          ],
+          "translation": "设想;构思;怀孕",
+          "examples": [
+            {"en": "He conceived the idea during his travels.", "zh": "他在旅行中萌生了这个想法。"},
+            {"en": "It's hard to conceive of a worse outcome.", "zh": "很难想象还有更糟的结果。"}
+          ],
+          "collocations": ["conceive of", "conceive an idea", "conceive a plan"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "contemplate",
+          "uk_phonetic": "/ˈkɒntəmpleɪt/",
+          "us_phonetic": "/ˈkɑːntəmpleɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to look at thoughtfully for a long time"},
+            {"pos": "vt.", "definition": "to think about deeply and at length"},
+            {"pos": "vt.", "definition": "to think about doing something in the future"}
+          ],
+          "translation": "沉思;凝视;考虑",
+          "examples": [
+            {"en": "She sat contemplating the view.", "zh": "她坐着凝视风景。"},
+            {"en": "He is contemplating retirement.", "zh": "他正在考虑退休。"}
+          ],
+          "collocations": ["contemplate the future", "contemplate suicide", "sit and contemplate"],
+          "frequency": 3,
+          "tags": ["高频"]
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "name": "List 3",
+      "entries": [
+        {
+          "word": "deceive",
+          "uk_phonetic": "/dɪˈsiːv/",
+          "us_phonetic": "/dɪˈsiːv/",
+          "definitions": [
+            {"pos": "v.", "definition": "to make someone believe something that is not true"},
+            {"pos": "vi.", "definition": "to be unfaithful to a partner"}
+          ],
+          "translation": "欺骗;蒙蔽",
+          "examples": [
+            {"en": "Don't be deceived by appearances.", "zh": "不要被外表所蒙蔽。"},
+            {"en": "He deceived his friends about his real intentions.", "zh": "他对朋友隐瞒了自己的真实意图。"}
+          ],
+          "collocations": ["deceive oneself", "deceive the public", "deliberately deceive"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "dedicate",
+          "uk_phonetic": "/ˈdedɪkeɪt/",
+          "us_phonetic": "/ˈdedɪkeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to devote time, effort, or oneself to a particular task"},
+            {"pos": "vt.", "definition": "to address a book, song, etc. to someone as a mark of respect"}
+          ],
+          "translation": "奉献;致力于;献给",
+          "examples": [
+            {"en": "She dedicated her life to helping the poor.", "zh": "她一生致力于帮助穷人。"},
+            {"en": "The book is dedicated to his mother.", "zh": "这本书献给了他的母亲。"}
+          ],
+          "collocations": ["dedicate oneself to", "dedicate time to", "dedicated to"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "demographic",
+          "uk_phonetic": "/ˌdeməˈɡræfɪk/",
+          "us_phonetic": "/ˌdeməˈɡræfɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "relating to the structure of populations"},
+            {"pos": "n.", "definition": "a sector of the population having shared characteristics"}
+          ],
+          "translation": "人口统计的;特定人群的",
+          "examples": [
+            {"en": "Demographic changes will affect the economy.", "zh": "人口结构变化将影响经济。"},
+            {"en": "The product targets a younger demographic.", "zh": "该产品针对较年轻的人群。"}
+          ],
+          "collocations": ["demographic change", "demographic data", "target demographic"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "deplete",
+          "uk_phonetic": "/dɪˈpliːt/",
+          "us_phonetic": "/dɪˈpliːt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to use up the supply or resources of"},
+            {"pos": "vt.", "definition": "to reduce something by a large amount"}
+          ],
+          "translation": "耗尽;大量减少",
+          "examples": [
+            {"en": "Overfishing has depleted fish stocks.", "zh": "过度捕捞耗尽了鱼类资源。"},
+            {"en": "The ozone layer has been severely depleted.", "zh": "臭氧层已被严重损耗。"}
+          ],
+          "collocations": ["deplete resources", "severely depleted", "ozone-depleting"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "dilemma",
+          "uk_phonetic": "/dɪˈlemə/",
+          "us_phonetic": "/dɪˈlemə/",
+          "definitions": [
+            {"pos": "n.", "definition": "a situation requiring a choice between two equally undesirable alternatives"},
+            {"pos": "n.", "definition": "a difficult problem"}
+          ],
+          "translation": "困境;两难;进退两难",
+          "examples": [
+            {"en": "She faced a moral dilemma.", "zh": "她面临着道德上的两难。"},
+            {"en": "The government is in a dilemma over how to deal with the crisis.", "zh": "政府在如何应对危机方面处于两难境地。"}
+          ],
+          "collocations": ["moral dilemma", "face a dilemma", "in a dilemma"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "discourse",
+          "uk_phonetic": "/ˈdɪskɔːs/",
+          "us_phonetic": "/ˈdɪskɔːrs/",
+          "definitions": [
+            {"pos": "n.", "definition": "written or spoken communication or debate"},
+            {"pos": "n.", "definition": "a formal discussion of a topic"},
+            {"pos": "vi.", "definition": "to speak or write at length on a subject"}
+          ],
+          "translation": "论述;话语; discourse",
+          "examples": [
+            {"en": "Political discourse has become increasingly polarized.", "zh": "政治话语变得越来越两极化。"},
+            {"en": "He discoursed on the nature of poetry.", "zh": "他论述了诗歌的本质。"}
+          ],
+          "collocations": ["public discourse", "political discourse", "academic discourse"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "eligible",
+          "uk_phonetic": "/ˈelɪdʒəbl/",
+          "us_phonetic": "/ˈelɪdʒəbl/",
+          "definitions": [
+            {"pos": "adj.", "definition": "having the right to do or obtain something; satisfying the conditions"},
+            {"pos": "adj.", "definition": "desirable or suitable as a partner in marriage"}
+          ],
+          "translation": "有资格的;符合条件的;合适的",
+          "examples": [
+            {"en": "Only citizens are eligible to vote.", "zh": "只有公民有投票资格。"},
+            {"en": "She is eligible for the scholarship.", "zh": "她有资格获得奖学金。"}
+          ],
+          "collocations": ["eligible for", "eligible to vote", "eligible candidates"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "endeavor",
+          "uk_phonetic": "/ɪnˈdevər/",
+          "us_phonetic": "/ɪnˈdevər/",
+          "definitions": [
+            {"pos": "n.", "definition": "an attempt to achieve a goal"},
+            {"pos": "v.", "definition": "to try hard to do or achieve something"}
+          ],
+          "translation": "努力;尝试;事业",
+          "examples": [
+            {"en": "We should endeavor to improve our service.", "zh": "我们应该努力改善服务。"},
+            {"en": "Scientific endeavor requires patience and dedication.", "zh": "科学事业需要耐心和奉献。"}
+          ],
+          "collocations": ["endeavor to do", "human endeavor", "creative endeavor"],
+          "frequency": 3,
+          "tags": ["高频"]
+        },
+        {
+          "word": "epidemic",
+          "uk_phonetic": "/ˌepɪˈdemɪk/",
+          "us_phonetic": "/ˌepɪˈdemɪk/",
+          "definitions": [
+            {"pos": "n.", "definition": "a widespread occurrence of an infectious disease"},
+            {"pos": "adj.", "definition": "widespread and occurring rapidly"}
+          ],
+          "translation": "流行病;瘟疫;流行性的",
+          "examples": [
+            {"en": "The flu epidemic killed thousands.", "zh": "流感疫情造成数千人死亡。"},
+            {"en": "Obesity has reached epidemic proportions.", "zh": "肥胖已达到流行病的程度。"}
+          ],
+          "collocations": ["epidemic proportions", "obesity epidemic", "epidemic disease"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "exempt",
+          "uk_phonetic": "/ɪɡˈzempt/",
+          "us_phonetic": "/ɪɡˈzempt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "free from an obligation imposed on others"},
+            {"pos": "vt.", "definition": "to free from an obligation or liability"}
+          ],
+          "translation": "免除的;豁免的;免税",
+          "examples": [
+            {"en": "Students are exempt from paying taxes on scholarships.", "zh": "学生免交奖学金税。"},
+            {"en": "Small businesses were exempted from the new regulations.", "zh": "小企业被豁免了新规定。"}
+          ],
+          "collocations": ["exempt from", "tax exempt", "exempt from duty"],
+          "frequency": 3,
+          "tags": ["高频"]
+        }
+      ]
+    }
+  ]
+}

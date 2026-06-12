@@ -1,0 +1,717 @@
+{
+  "meta": {
+    "name": "托福核心 8000 词",
+    "name_en": "TOEFL Core 8000",
+    "slug": "toefl-core-8000",
+    "category": "toefl",
+    "difficulty": "advanced",
+    "cefr_level": "B2-C1",
+    "version": "1.0.0",
+    "source": "ETS TOEFL iBT 高频词汇研究",
+    "license": "educational-use"
+  },
+  "units": [
+    {
+      "unit": 1,
+      "name": "Academic Essentials",
+      "entries": [
+        {
+          "word": "aberration",
+          "uk_phonetic": "/ˌæbəˈreɪʃn/",
+          "us_phonetic": "/ˌæbəˈreɪʃn/",
+          "definitions": [
+            {"pos": "n.", "definition": "a departure from what is normal or expected"},
+            {"pos": "n.", "definition": "a deviation from the straight or normal course"}
+          ],
+          "translation": "偏差;反常现象",
+          "examples": [
+            {"en": "The warm weather in January was an aberration.", "zh": "一月的温暖天气是一种反常现象。"},
+            {"en": "Scientists are studying the statistical aberration in the data.", "zh": "科学家们正在研究数据中的统计偏差。"}
+          ],
+          "collocations": ["statistical aberration", "genetic aberration", "temporary aberration"],
+          "frequency": 4,
+          "tags": ["学术"]
+        },
+        {
+          "word": "abstract",
+          "uk_phonetic": "/ˈæbstrækt/",
+          "us_phonetic": "/ˈæbstrækt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "existing in thought or as an idea but not having physical existence"},
+            {"pos": "n.", "definition": "a summary of the contents of a book or article"},
+            {"pos": "vt.", "definition": "to extract or remove something"}
+          ],
+          "translation": "抽象的;摘要;提取",
+          "examples": [
+            {"en": "Abstract concepts like justice are difficult to define.", "zh": "像正义这样的抽象概念很难定义。"},
+            {"en": "The student wrote an abstract of the research paper.", "zh": "学生写了研究论文的摘要。"}
+          ],
+          "collocations": ["abstract concept", "abstract art", "in the abstract"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "accumulate",
+          "uk_phonetic": "/əˈkjuːmjuleɪt/",
+          "us_phonetic": "/əˈkjuːmjəleɪt/",
+          "definitions": [
+            {"pos": "v.", "definition": "to gather or collect in increasing amounts"},
+            {"pos": "v.", "definition": "to increase gradually in number or quantity"}
+          ],
+          "translation": "积累;积聚",
+          "examples": [
+            {"en": "Sediment accumulates at the bottom of the ocean.", "zh": "沉积物在海底积聚。"},
+            {"en": "Researchers have accumulated evidence supporting the theory.", "zh": "研究人员积累了支持该理论的证据。"}
+          ],
+          "collocations": ["accumulate wealth", "accumulate evidence", "accumulate data"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "advocate",
+          "uk_phonetic": "/ˈædvəkeɪt/",
+          "us_phonetic": "/ˈædvəkeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to publicly recommend or support"},
+            {"pos": "n.", "definition": "a person who publicly supports a particular cause or policy"}
+          ],
+          "translation": "提倡;拥护;倡导者",
+          "examples": [
+            {"en": "Many educators advocate a more student-centred approach.", "zh": "许多教育者提倡更加以学生为中心的方法。"},
+            {"en": "She is a strong advocate of environmental protection.", "zh": "她是环境保护的坚定倡导者。"}
+          ],
+          "collocations": ["advocate for", "strong advocate", "advocate a policy"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "aggregate",
+          "uk_phonetic": "/ˈæɡrɪɡət/",
+          "us_phonetic": "/ˈæɡrɪɡət/",
+          "definitions": [
+            {"pos": "n.", "definition": "a whole formed by combining several elements"},
+            {"pos": "adj.", "definition": "formed by the combination of many separate items"},
+            {"pos": "vt.", "definition": "to combine into a single body or mass"}
+          ],
+          "translation": "总计;聚合;合计的",
+          "examples": [
+            {"en": "The aggregate score determined the winner.", "zh": "总分决定了获胜者。"},
+            {"en": "Data was aggregated from multiple sources.", "zh": "数据从多个来源聚合。"}
+          ],
+          "collocations": ["in aggregate", "aggregate demand", "aggregate data"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "allocate",
+          "uk_phonetic": "/ˈæləkeɪt/",
+          "us_phonetic": "/ˈæləkeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to distribute resources or duties for a particular purpose"}
+          ],
+          "translation": "分配;拨出",
+          "examples": [
+            {"en": "The government allocated funds for healthcare reform.", "zh": "政府拨款用于医疗改革。"},
+            {"en": "Time must be allocated wisely during the exam.", "zh": "考试期间必须明智地分配时间。"}
+          ],
+          "collocations": ["allocate resources", "allocate funds", "allocate time"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "anomaly",
+          "uk_phonetic": "/əˈnɒməli/",
+          "us_phonetic": "/əˈnɑːməli/",
+          "definitions": [
+            {"pos": "n.", "definition": "something that deviates from what is standard or expected"},
+            {"pos": "n.", "definition": "an irregularity or abnormality"}
+          ],
+          "translation": "异常;反常事物",
+          "examples": [
+            {"en": "The researchers detected an anomaly in the experimental results.", "zh": "研究人员在实验结果中发现了一个异常。"},
+            {"en": "The warm winter was a climate anomaly.", "zh": "暖冬是气候异常现象。"}
+          ],
+          "collocations": ["statistical anomaly", "detect an anomaly", "climate anomaly"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "apparatus",
+          "uk_phonetic": "/ˌæpəˈreɪtəs/",
+          "us_phonetic": "/ˌæpəˈrætəs/",
+          "definitions": [
+            {"pos": "n.", "definition": "the technical equipment or machinery needed for a particular activity"},
+            {"pos": "n.", "definition": "the organized structure of a political party or state"}
+          ],
+          "translation": "设备;器械;机构",
+          "examples": [
+            {"en": "The laboratory was equipped with sophisticated apparatus.", "zh": "实验室配备了精密设备。"},
+            {"en": "The state apparatus controls all aspects of public life.", "zh": "国家机器控制着公共生活的所有方面。"}
+          ],
+          "collocations": ["scientific apparatus", "state apparatus", "breathing apparatus"],
+          "frequency": 4,
+          "tags": ["学术"]
+        },
+        {
+          "word": "arbitrary",
+          "uk_phonetic": "/ˈɑːbɪtrəri/",
+          "us_phonetic": "/ˈɑːrbɪtreri/",
+          "definitions": [
+            {"pos": "adj.", "definition": "based on random choice rather than reason or system"},
+            {"pos": "adj.", "definition": "unrestrained and despotic in the exercise of authority"}
+          ],
+          "translation": "任意的;武断的",
+          "examples": [
+            {"en": "The decision seemed arbitrary and unfair.", "zh": "这个决定似乎武断而不公平。"},
+            {"en": "There is no arbitrary limit on the number of attempts.", "zh": "尝试次数没有任意限制。"}
+          ],
+          "collocations": ["arbitrary decision", "arbitrary rule", "arbitrary power"],
+          "frequency": 3,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "articulate",
+          "uk_phonetic": "/ɑːˈtɪkjuleɪt/",
+          "us_phonetic": "/ɑːrˈtɪkjuleɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to express an idea or feeling fluently and coherently"},
+            {"pos": "adj.", "definition": "having or showing the ability to speak fluently and coherently"}
+          ],
+          "translation": "清楚表达;发音清晰的",
+          "examples": [
+            {"en": "She articulated her vision for the company's future.", "zh": "她清楚表达了她对公司未来的愿景。"},
+            {"en": "He is an articulate speaker who can explain complex ideas simply.", "zh": "他是一位善于表达的演讲者,能用简单的方式解释复杂的想法。"}
+          ],
+          "collocations": ["clearly articulate", "articulate an idea", "articulate speaker"],
+          "frequency": 3,
+          "tags": ["高频", "学术"]
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "name": "Science & Nature",
+      "entries": [
+        {
+          "word": "biodiversity",
+          "uk_phonetic": "/ˌbaɪəʊdaɪˈvɜːsəti/",
+          "us_phonetic": "/ˌbaɪoʊdaɪˈvɜːrsəti/",
+          "definitions": [
+            {"pos": "n.", "definition": "the variety of plant and animal life in the world or in a particular habitat"}
+          ],
+          "translation": "生物多样性",
+          "examples": [
+            {"en": "Tropical rainforests are rich in biodiversity.", "zh": "热带雨林拥有丰富的生物多样性。"},
+            {"en": "Loss of biodiversity threatens the stability of ecosystems.", "zh": "生物多样性的丧失威胁着生态系统的稳定性。"}
+          ],
+          "collocations": ["biodiversity loss", "marine biodiversity", "biodiversity hotspot"],
+          "frequency": 3,
+          "tags": ["学术", "环境"]
+        },
+        {
+          "word": "catalyst",
+          "uk_phonetic": "/ˈkætəlɪst/",
+          "us_phonetic": "/ˈkætəlɪst/",
+          "definitions": [
+            {"pos": "n.", "definition": "a substance that increases the rate of a chemical reaction"},
+            {"pos": "n.", "definition": "a person or thing that precipitates an event or change"}
+          ],
+          "translation": "催化剂;促进因素",
+          "examples": [
+            {"en": "The discovery acted as a catalyst for further research.", "zh": "这一发现成为了进一步研究的催化剂。"},
+            {"en": "Enzymes serve as biological catalysts in the body.", "zh": "酶在体内充当生物催化剂。"}
+          ],
+          "collocations": ["act as a catalyst", "chemical catalyst", "catalyst for change"],
+          "frequency": 3,
+          "tags": ["学术", "科学"]
+        },
+        {
+          "word": "climate",
+          "uk_phonetic": "/ˈklaɪmət/",
+          "us_phonetic": "/ˈklaɪmət/",
+          "definitions": [
+            {"pos": "n.", "definition": "the weather conditions prevailing in an area over a long period"},
+            {"pos": "n.", "definition": "the prevailing trend of public opinion or of another aspect of life"}
+          ],
+          "translation": "气候;风气;氛围",
+          "examples": [
+            {"en": "Climate change is one of the greatest challenges of our time.", "zh": "气候变化是我们这个时代最大的挑战之一。"},
+            {"en": "The political climate was hostile to reform.", "zh": "政治氛围对改革不利。"}
+          ],
+          "collocations": ["climate change", "tropical climate", "political climate"],
+          "frequency": 1,
+          "tags": ["高频"]
+        },
+        {
+          "word": "deplete",
+          "uk_phonetic": "/dɪˈpliːt/",
+          "us_phonetic": "/dɪˈpliːt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to use up the supply or resources of"},
+            {"pos": "vt.", "definition": "to reduce something in size or amount"}
+          ],
+          "translation": "耗尽;使枯竭",
+          "examples": [
+            {"en": "Overfishing has severely depleted fish stocks.", "zh": "过度捕捞严重耗尽了鱼类资源。"},
+            {"en": "The ozone layer has been depleted by chemical pollutants.", "zh": "臭氧层被化学污染物耗尽了。"}
+          ],
+          "collocations": ["deplete resources", "deplete the ozone layer", "severely depleted"],
+          "frequency": 3,
+          "tags": ["学术", "环境"]
+        },
+        {
+          "word": "dormant",
+          "uk_phonetic": "/ˈdɔːmənt/",
+          "us_phonetic": "/ˈdɔːrmənt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "temporarily inactive; having normal functions suspended"},
+            {"pos": "adj.", "definition": "(of a volcano) not erupting but capable of erupting"}
+          ],
+          "translation": "休眠的;潜伏的;不活跃的",
+          "examples": [
+            {"en": "The volcano has been dormant for over 300 years.", "zh": "这座火山已经休眠了300多年。"},
+            {"en": "Seeds remain dormant during the winter months.", "zh": "种子在冬季保持休眠状态。"}
+          ],
+          "collocations": ["dormant volcano", "dormant period", "lie dormant"],
+          "frequency": 4,
+          "tags": ["学术"]
+        },
+        {
+          "word": "ecosystem",
+          "uk_phonetic": "/ˈiːkəʊsɪstəm/",
+          "us_phonetic": "/ˈiːkoʊsɪstəm/",
+          "definitions": [
+            {"pos": "n.", "definition": "a biological community of interacting organisms and their physical environment"},
+            {"pos": "n.", "definition": "a complex system of interacting elements"}
+          ],
+          "translation": "生态系统",
+          "examples": [
+            {"en": "Coral reefs are among the most diverse ecosystems on Earth.", "zh": "珊瑚礁是地球上最多样化的生态系统之一。"},
+            {"en": "Pollution can disrupt the balance of an entire ecosystem.", "zh": "污染可以破坏整个生态系统的平衡。"}
+          ],
+          "collocations": ["marine ecosystem", "fragile ecosystem", "ecosystem services"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "empirical",
+          "uk_phonetic": "/ɪmˈpɪrɪkl/",
+          "us_phonetic": "/ɪmˈpɪrɪkl/",
+          "definitions": [
+            {"pos": "adj.", "definition": "based on observation or experience rather than theory"},
+            {"pos": "adj.", "definition": "relying on evidence that can be verified by observation"}
+          ],
+          "translation": "经验的;实证的",
+          "examples": [
+            {"en": "The theory is supported by empirical evidence.", "zh": "这个理论得到了实证证据的支持。"},
+            {"en": "The study used an empirical approach to test the hypothesis.", "zh": "该研究使用实证方法来检验假设。"}
+          ],
+          "collocations": ["empirical evidence", "empirical research", "empirical data"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "erosion",
+          "uk_phonetic": "/ɪˈrəʊʒn/",
+          "us_phonetic": "/ɪˈroʊʒn/",
+          "definitions": [
+            {"pos": "n.", "definition": "the gradual destruction of something by natural forces"},
+            {"pos": "n.", "definition": "the gradual diminution or weakening of something"}
+          ],
+          "translation": "侵蚀;腐蚀;削弱",
+          "examples": [
+            {"en": "Soil erosion is a major problem in agricultural regions.", "zh": "土壤侵蚀是农业地区的主要问题。"},
+            {"en": "There has been a steady erosion of civil liberties.", "zh": "公民自由一直在稳步受到削弱。"}
+          ],
+          "collocations": ["soil erosion", "coastal erosion", "erosion of rights"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "hypothesis",
+          "uk_phonetic": "/haɪˈpɒθəsɪs/",
+          "us_phonetic": "/haɪˈpɑːθəsɪs/",
+          "definitions": [
+            {"pos": "n.", "definition": "a proposed explanation made as a starting point for further investigation"},
+            {"pos": "n.", "definition": "a supposition made on the basis of limited evidence"}
+          ],
+          "translation": "假设;假说",
+          "examples": [
+            {"en": "The scientist tested her hypothesis through a series of experiments.", "zh": "科学家通过一系列实验检验了她的假设。"},
+            {"en": "The null hypothesis was rejected based on the data.", "zh": "根据数据,零假设被拒绝了。"}
+          ],
+          "collocations": ["test a hypothesis", "null hypothesis", "working hypothesis"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "paradigm",
+          "uk_phonetic": "/ˈpærədaɪm/",
+          "us_phonetic": "/ˈpærədaɪm/",
+          "definitions": [
+            {"pos": "n.", "definition": "a typical example or pattern of something"},
+            {"pos": "n.", "definition": "a model or framework of concepts or practices"}
+          ],
+          "translation": "范式;典范;模式",
+          "examples": [
+            {"en": "The discovery led to a paradigm shift in biology.", "zh": "这一发现导致了生物学的范式转变。"},
+            {"en": "The old paradigm of education is being challenged.", "zh": "旧的教育范式正在受到挑战。"}
+          ],
+          "collocations": ["paradigm shift", "new paradigm", "dominant paradigm"],
+          "frequency": 3,
+          "tags": ["学术"]
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "name": "Social Sciences",
+      "entries": [
+        {
+          "word": "demographic",
+          "uk_phonetic": "/ˌdeməˈɡræfɪk/",
+          "us_phonetic": "/ˌdeməˈɡræfɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "relating to the structure of populations"},
+            {"pos": "n.", "definition": "a sector of the population sharing common characteristics"}
+          ],
+          "translation": "人口统计的;人口特征",
+          "examples": [
+            {"en": "Demographic changes are putting pressure on pension systems.", "zh": "人口变化给养老金制度带来了压力。"},
+            {"en": "The product targets the 18-25 demographic.", "zh": "该产品面向18-25岁的人口群体。"}
+          ],
+          "collocations": ["demographic change", "demographic data", "target demographic"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "disparity",
+          "uk_phonetic": "/dɪˈspærəti/",
+          "us_phonetic": "/dɪˈspærəti/",
+          "definitions": [
+            {"pos": "n.", "definition": "a great difference or inequality"}
+          ],
+          "translation": "差异;差距;不等",
+          "examples": [
+            {"en": "The income disparity between rich and poor is widening.", "zh": "贫富之间的收入差距正在扩大。"},
+            {"en": "There is a significant disparity in educational achievement.", "zh": "教育成就方面存在显著差距。"}
+          ],
+          "collocations": ["income disparity", "gender disparity", "wide disparity"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "hierarchy",
+          "uk_phonetic": "/ˈhaɪərɑːki/",
+          "us_phonetic": "/ˈhaɪərɑːrki/",
+          "definitions": [
+            {"pos": "n.", "definition": "a system in which members are ranked according to status"},
+            {"pos": "n.", "definition": "a system of things arranged in order of importance"}
+          ],
+          "translation": "等级制度;层次结构",
+          "examples": [
+            {"en": "There is a strict hierarchy within the organization.", "zh": "组织内部有严格的等级制度。"},
+            {"en": "Maslow's hierarchy of needs is a well-known theory in psychology.", "zh": "马斯洛的需求层次理论是心理学中一个著名的理论。"}
+          ],
+          "collocations": ["social hierarchy", "organizational hierarchy", "hierarchy of needs"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "ideology",
+          "uk_phonetic": "/ˌaɪdiˈɒlədʒi/",
+          "us_phonetic": "/ˌaɪdiˈɑːlədʒi/",
+          "definitions": [
+            {"pos": "n.", "definition": "a system of ideas and ideals forming the basis of a theory or policy"},
+            {"pos": "n.", "definition": "the set of beliefs characteristic of a social group"}
+          ],
+          "translation": "意识形态;思想体系",
+          "examples": [
+            {"en": "Political ideology often shapes government policy.", "zh": "政治意识形态常常影响政府政策。"},
+            {"en": "The two parties have fundamentally different ideologies.", "zh": "两党有根本不同的意识形态。"}
+          ],
+          "collocations": ["political ideology", "dominant ideology", "ideological conflict"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "infrastructure",
+          "uk_phonetic": "/ˈɪnfrəstrʌktʃə/",
+          "us_phonetic": "/ˈɪnfrəstrʌktʃər/",
+          "definitions": [
+            {"pos": "n.", "definition": "the basic physical structures needed for the operation of a society"},
+            {"pos": "n.", "definition": "the underlying framework of a system"}
+          ],
+          "translation": "基础设施;基础建设",
+          "examples": [
+            {"en": "The country needs massive investment in infrastructure.", "zh": "这个国家需要对基础设施进行大规模投资。"},
+            {"en": "Roads, bridges, and railways are all part of a nation's infrastructure.", "zh": "道路、桥梁和铁路都是国家基础设施的一部分。"}
+          ],
+          "collocations": ["public infrastructure", "transport infrastructure", "digital infrastructure"],
+          "frequency": 2,
+          "tags": ["高频"]
+        },
+        {
+          "word": "paradox",
+          "uk_phonetic": "/ˈpærədɒks/",
+          "us_phonetic": "/ˈpærədɑːks/",
+          "definitions": [
+            {"pos": "n.", "definition": "a seemingly contradictory statement that may nonetheless be true"},
+            {"pos": "n.", "definition": "a person or thing that combines contradictory qualities"}
+          ],
+          "translation": "悖论;矛盾;似是而非的论点",
+          "examples": [
+            {"en": "It is a paradox that the busiest people often have the most time.", "zh": "最忙的人往往拥有最多的时间,这是一个悖论。"},
+            {"en": "The paradox of choice suggests that more options lead to less satisfaction.", "zh": "选择的悖论表明更多选项会导致更少的满足感。"}
+          ],
+          "collocations": ["apparent paradox", "paradox of choice", "resolve a paradox"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "phenomenon",
+          "uk_phonetic": "/fəˈnɒmɪnən/",
+          "us_phonetic": "/fəˈnɑːmɪnən/",
+          "definitions": [
+            {"pos": "n.", "definition": "a fact or situation that is observed to exist or happen"},
+            {"pos": "n.", "definition": "a remarkable person or thing"}
+          ],
+          "translation": "现象;非凡的人或事",
+          "examples": [
+            {"en": "The greenhouse effect is a well-known scientific phenomenon.", "zh": "温室效应是一个著名的科学现象。"},
+            {"en": "Social media has become a cultural phenomenon.", "zh": "社交媒体已成为一种文化现象。"}
+          ],
+          "collocations": ["natural phenomenon", "social phenomenon", "cultural phenomenon"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "prevalent",
+          "uk_phonetic": "/ˈprevələnt/",
+          "us_phonetic": "/ˈprevələnt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "widespread; occurring frequently or commonly"},
+            {"pos": "adj.", "definition": "having great influence or superiority"}
+          ],
+          "translation": "流行的;普遍的;盛行的",
+          "examples": [
+            {"en": "Obesity is becoming increasingly prevalent in developed countries.", "zh": "肥胖在发达国家变得越来越普遍。"},
+            {"en": "The disease is most prevalent in tropical regions.", "zh": "这种疾病在热带地区最为盛行。"}
+          ],
+          "collocations": ["increasingly prevalent", "most prevalent", "widely prevalent"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "sustainable",
+          "uk_phonetic": "/səˈsteɪnəbl/",
+          "us_phonetic": "/səˈsteɪnəbl/",
+          "definitions": [
+            {"pos": "adj.", "definition": "able to be maintained at a certain rate or level"},
+            {"pos": "adj.", "definition": "conserving an ecological balance by avoiding depletion of resources"}
+          ],
+          "translation": "可持续的;可维持的",
+          "examples": [
+            {"en": "We need to find sustainable solutions to the energy crisis.", "zh": "我们需要找到能源危机的可持续解决方案。"},
+            {"en": "Sustainable agriculture aims to minimize environmental impact.", "zh": "可持续农业旨在最小化环境影响。"}
+          ],
+          "collocations": ["sustainable development", "sustainable energy", "sustainable agriculture"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "urbanization",
+          "uk_phonetic": "/ˌɜːbənaɪˈzeɪʃn/",
+          "us_phonetic": "/ˌɜːrbənaɪˈzeɪʃn/",
+          "definitions": [
+            {"pos": "n.", "definition": "the process of making an area more urban; the migration from rural to urban areas"}
+          ],
+          "translation": "城市化",
+          "examples": [
+            {"en": "Rapid urbanization has led to overcrowding in many cities.", "zh": "快速的城市化导致许多城市过度拥挤。"},
+            {"en": "Urbanization rates vary significantly between countries.", "zh": "各国之间的城市化率差异很大。"}
+          ],
+          "collocations": ["rapid urbanization", "urbanization rate", "urbanization process"],
+          "frequency": 4,
+          "tags": ["学术"]
+        }
+      ]
+    },
+    {
+      "unit": 4,
+      "name": "Arts & Humanities",
+      "entries": [
+        {
+          "word": "aesthetic",
+          "uk_phonetic": "/iːsˈθetɪk/",
+          "us_phonetic": "/esˈθetɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "concerned with beauty or the appreciation of beauty"},
+            {"pos": "n.", "definition": "a set of principles underlying the work of a particular artist or movement"}
+          ],
+          "translation": "审美的;美学的;美感",
+          "examples": [
+            {"en": "The building has great aesthetic appeal.", "zh": "这座建筑有很大的审美吸引力。"},
+            {"en": "Japanese aesthetics emphasize simplicity and natural beauty.", "zh": "日本美学强调简约和自然之美。"}
+          ],
+          "collocations": ["aesthetic value", "aesthetic appeal", "aesthetic sense"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "contemporary",
+          "uk_phonetic": "/kənˈtemprəri/",
+          "us_phonetic": "/kənˈtempreri/",
+          "definitions": [
+            {"pos": "adj.", "definition": "living or occurring at the same time; modern or current"},
+            {"pos": "n.", "definition": "a person living at the same time as another"}
+          ],
+          "translation": "当代的;同时代的",
+          "examples": [
+            {"en": "Contemporary art reflects the concerns of modern society.", "zh": "当代艺术反映了现代社会的关注点。"},
+            {"en": "Shakespeare and Cervantes were contemporaries.", "zh": "莎士比亚和塞万提斯是同时代的人。"}
+          ],
+          "collocations": ["contemporary art", "contemporary society", "contemporary music"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "genre",
+          "uk_phonetic": "/ˈʒɒnrə/",
+          "us_phonetic": "/ˈʒɑːnrə/",
+          "definitions": [
+            {"pos": "n.", "definition": "a category of artistic composition characterized by similarities in form or style"}
+          ],
+          "translation": "类型;体裁",
+          "examples": [
+            {"en": "Science fiction is one of the most popular genres in literature.", "zh": "科幻小说是文学中最受欢迎的体裁之一。"},
+            {"en": "The film defies easy classification into any single genre.", "zh": "这部电影不容易归入任何单一类型。"}
+          ],
+          "collocations": ["literary genre", "music genre", "film genre"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "indigenous",
+          "uk_phonetic": "/ɪnˈdɪdʒənəs/",
+          "us_phonetic": "/ɪnˈdɪdʒənəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "originating or occurring naturally in a particular place"},
+            {"pos": "adj.", "definition": "of or relating to the earliest inhabitants of a region"}
+          ],
+          "translation": "本土的;土著的;原产的",
+          "examples": [
+            {"en": "The kangaroo is indigenous to Australia.", "zh": "袋鼠是澳大利亚特有的动物。"},
+            {"en": "Indigenous peoples have unique cultural traditions.", "zh": "土著人民拥有独特的文化传统。"}
+          ],
+          "collocations": ["indigenous people", "indigenous species", "indigenous culture"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "metaphor",
+          "uk_phonetic": "/ˈmetəfə/",
+          "us_phonetic": "/ˈmetəfər/",
+          "definitions": [
+            {"pos": "n.", "definition": "a figure of speech that refers to one thing by mentioning another"},
+            {"pos": "n.", "definition": "something regarded as representative of something else"}
+          ],
+          "translation": "隐喻;比喻",
+          "examples": [
+            {"en": "'The world is a stage' is a well-known metaphor.", "zh": "'世界是一个舞台'是一个著名的隐喻。"},
+            {"en": "The poet uses the metaphor of light to represent knowledge.", "zh": "诗人用光的隐喻来代表知识。"}
+          ],
+          "collocations": ["mixed metaphor", "extended metaphor", "powerful metaphor"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "narrative",
+          "uk_phonetic": "/ˈnærətɪv/",
+          "us_phonetic": "/ˈnærətɪv/",
+          "definitions": [
+            {"pos": "n.", "definition": "a spoken or written account of connected events; a story"},
+            {"pos": "n.", "definition": "the narrated part of a literary work"},
+            {"pos": "adj.", "definition": "in the form of a story or account"}
+          ],
+          "translation": "叙述;故事;叙事的",
+          "examples": [
+            {"en": "The novel's narrative is told from multiple perspectives.", "zh": "这部小说的叙述是从多个角度讲述的。"},
+            {"en": "The media shapes the public narrative around political events.", "zh": "媒体塑造了围绕政治事件的公共叙事。"}
+          ],
+          "collocations": ["narrative structure", "compelling narrative", "personal narrative"],
+          "frequency": 2,
+          "tags": ["高频", "学术"]
+        },
+        {
+          "word": "rhetoric",
+          "uk_phonetic": "/ˈretərɪk/",
+          "us_phonetic": "/ˈretərɪk/",
+          "definitions": [
+            {"pos": "n.", "definition": "the art of effective or persuasive speaking or writing"},
+            {"pos": "n.", "definition": "language designed to persuade or impress, often lacking sincerity"}
+          ],
+          "translation": "修辞学;修辞;花言巧语",
+          "examples": [
+            {"en": "Politicians often use rhetoric to persuade voters.", "zh": "政治家经常使用修辞来说服选民。"},
+            {"en": "Aristotle's work on rhetoric is still studied today.", "zh": "亚里士多德的修辞学著作至今仍被研究。"}
+          ],
+          "collocations": ["political rhetoric", "empty rhetoric", "rhetoric and reality"],
+          "frequency": 3,
+          "tags": ["学术"]
+        },
+        {
+          "word": "satire",
+          "uk_phonetic": "/ˈsætaɪə/",
+          "us_phonetic": "/ˈsætaɪər/",
+          "definitions": [
+            {"pos": "n.", "definition": "the use of humour or exaggeration to expose stupidity or vices"},
+            {"pos": "n.", "definition": "a literary work that uses satire"}
+          ],
+          "translation": "讽刺;讽刺作品",
+          "examples": [
+            {"en": "The novel is a biting satire of modern society.", "zh": "这部小说是对现代社会的辛辣讽刺。"},
+            {"en": "Political satire has a long history in English literature.", "zh": "政治讽刺在英国文学中有着悠久的历史。"}
+          ],
+          "collocations": ["political satire", "bitter satire", "literary satire"],
+          "frequency": 4,
+          "tags": ["学术"]
+        },
+        {
+          "word": "symbolism",
+          "uk_phonetic": "/ˈsɪmbəlɪzəm/",
+          "us_phonetic": "/ˈsɪmbəlɪzəm/",
+          "definitions": [
+            {"pos": "n.", "definition": "the use of symbols to represent ideas or qualities"},
+            {"pos": "n.", "definition": "symbolic meaning or the symbolic quality of something"}
+          ],
+          "translation": "象征主义;象征手法",
+          "examples": [
+            {"en": "The use of colour symbolism in the painting is striking.", "zh": "这幅画中色彩象征手法的使用引人注目。"},
+            {"en": "Religious symbolism pervades medieval art.", "zh": "宗教象征主义弥漫于中世纪艺术中。"}
+          ],
+          "collocations": ["religious symbolism", "rich symbolism", "colour symbolism"],
+          "frequency": 4,
+          "tags": ["学术"]
+        },
+        {
+          "word": "vernacular",
+          "uk_phonetic": "/vəˈnækjələ/",
+          "us_phonetic": "/vərˈnækjələr/",
+          "definitions": [
+            {"pos": "n.", "definition": "the language or dialect spoken by ordinary people in a particular region"},
+            {"pos": "adj.", "definition": "of or in the language spoken by ordinary people"}
+          ],
+          "translation": "方言;白话;本土的",
+          "examples": [
+            {"en": "The book was written in the vernacular rather than in Latin.", "zh": "这本书是用方言而不是拉丁语写的。"},
+            {"en": "Vernacular architecture reflects local building traditions.", "zh": "本土建筑反映了当地的建筑传统。"}
+          ],
+          "collocations": ["vernacular language", "vernacular architecture", "vernacular literature"],
+          "frequency": 4,
+          "tags": ["学术"]
+        }
+      ]
+    }
+  ]
+}

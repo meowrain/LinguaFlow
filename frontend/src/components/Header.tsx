@@ -40,6 +40,7 @@ export default function Header() {
         { name: '每日学习', path: '/study' },
         { name: '视频学习', path: '/study/videos' },
         { name: '生词复习', path: '/vocabulary' },
+        { name: '词书背词', path: '/wordbook' },
         { name: '知识图谱', path: '/knowledge-graph' },
         { name: '阅读历史', path: '/history' },
       ],
@@ -207,6 +208,13 @@ export default function Header() {
                       onClick={() => setShowUserMenu(false)}
                     >
                       生词本
+                    </Link>
+                    <Link
+                      href="/wordbook"
+                      className="block px-4 py-2 text-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      词书背词
                     </Link>
                     <Link
                       href="/knowledge-graph"
