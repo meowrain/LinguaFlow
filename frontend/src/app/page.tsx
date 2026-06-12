@@ -285,7 +285,14 @@ function ArticleCard({ article }: { article: Article }) {
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>(fallbackArticles);
   const [loading, setLoading] = useState(true);
-  const [dailySentence, setDailySentence] = useState<DailySentence | null>(null);
+  const fallbackSentence: DailySentence = {
+    sentence: 'The only way to learn a language is to use it every day.',
+    translation: '学习语言的唯一方法就是每天使用它。',
+    topic: '语言学习',
+    date: new Date().toISOString().slice(0, 10),
+    cached: false,
+  };
+  const [dailySentence, setDailySentence] = useState<DailySentence>(fallbackSentence);
   const [sentenceLoading, setSentenceLoading] = useState(true);
 
   useEffect(() => {
@@ -312,8 +319,8 @@ export default function Home() {
         const res = await dailySentenceAPI.getToday();
         setDailySentence(res.data);
       } catch {
-        // 静默失败，AI 可能未配置
-        setDailySentence(null);
+        // AI 可能未配置，使用预置例句作为 fallback
+        setDailySentence(fallbackSentence);
       } finally {
         setSentenceLoading(false);
       }
@@ -363,8 +370,7 @@ export default function Home() {
         </section>
 
         {/* 每日一句 */}
-        {!sentenceLoading && dailySentence ? (
-          <section className="mb-16">
+        <section className="mb-16">
             <div className="mb-4 flex items-center gap-2">
               <Quote className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">每日一句</h2>
@@ -390,8 +396,7 @@ export default function Home() {
                 )}
               </div>
             </div>
-          </section>
-        ) : null}
+        </section>
 
         {/* Featured Article */}
         {loading ? (
