@@ -154,11 +154,9 @@ func DeleteFavoriteFolder(c *gin.Context) {
 		return
 	}
 
-	var defaultFolder models.FavoriteFolder
-	if err := database.DB.
-		Where("user_id = ? AND is_default = ?", userID, true).
-		First(&defaultFolder).Error; err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Default folder not found"})
+	var defaultFolder, err = database.EnsureDefaultFolder(userID.(uint))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get default folder"})
 		return
 	}
 

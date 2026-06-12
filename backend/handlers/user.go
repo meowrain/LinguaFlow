@@ -64,10 +64,9 @@ func AddSubscription(c *gin.Context) {
 	// 确定收藏夹
 	folderID := req.FolderID
 	if folderID == 0 {
-		var defaultFolder models.FavoriteFolder
-		if err := database.DB.Where("user_id = ? AND is_default = ?", userID, true).
-			First(&defaultFolder).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "No default folder found"})
+		defaultFolder, err := database.EnsureDefaultFolder(userID.(uint))
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get default folder"})
 			return
 		}
 		folderID = defaultFolder.ID

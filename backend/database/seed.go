@@ -205,10 +205,6 @@ func SeedDemoData() error {
 		}
 	}
 
-	if err := migrateDefaultFolders(); err != nil {
-		return err
-	}
-
 	// 词书数据 seed(幂等)
 	if err := SeedWordBooks(); err != nil {
 		return err
@@ -217,34 +213,30 @@ func SeedDemoData() error {
 	return nil
 }
 
-func migrateDefaultFolders() error {
-	var users []models.User
-	if err := DB.Find(&users).Error; err != nil {
-		return err
+// EnsureDefaultFolder 确保用户有默认收藏夹（按需创建，非启动迁移）
+func EnsureDefaultFolder(userID uint) (*models.FavoriteFolder, error) {
+	var folder models.FavoriteFolder
+	err := DB.Where("user_id = ? AND is_default = ?", userID, true).First(&folder).Error
+	if err == nil {
+		return &folder, nil
 	}
 
-	for _, user := range users {
-		var folder models.FavoriteFolder
-		err := DB.Where("user_id = ? AND is_default = ?", user.ID, true).First(&folder).Error
-		if err != nil {
-			folder = models.FavoriteFolder{
-				UserID:    user.ID,
-				Name:      "默认收藏夹",
-				Icon:      "folder",
-				SortOrder: 0,
-				IsDefault: true,
-			}
-			if err := DB.Create(&folder).Error; err != nil {
-				return err
-			}
-		}
-
-		DB.Model(&models.Subscription{}).
-			Where("user_id = ? AND (folder_id = 0 OR folder_id IS NULL)", user.ID).
-			Update("folder_id", folder.ID)
+	folder = models.FavoriteFolder{
+		UserID:    userID,
+		Name:      "默认收藏夹",
+		Icon:      "folder",
+		SortOrder: 0,
+		IsDefault: true,
+	}
+	if err := DB.Create(&folder).Error; err != nil {
+		return nil, err
 	}
 
-	return nil
+	DB.Model(&models.Subscription{}).
+		Where("user_id = ? AND (folder_id = 0 OR folder_id IS NULL)", userID).
+		Update("folder_id", folder.ID)
+
+	return &folder, nil
 }
 
 func articleContent(paragraphs ...string) string {
