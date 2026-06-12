@@ -124,6 +124,27 @@ func seedOneWordBook(filePath string) error {
 		return fmt.Errorf("create wordbook %s: %w", data.Meta.Slug, err)
 	}
 
+	// 如果 JSON 里的元信息与数据库不一致(比如升级了词库数据),同步更新
+	updates := map[string]interface{}{
+		"name":         data.Meta.Name,
+		"name_en":      data.Meta.NameEN,
+		"description":  book.Description,
+		"category":     data.Meta.Category,
+		"difficulty":   data.Meta.Difficulty,
+		"cefr_level":   data.Meta.CEFRLevel,
+		"word_count":   totalEntries,
+		"unit_count":   len(unitSet),
+		"is_published": true,
+		"source":       data.Meta.Source,
+		"license":      data.Meta.License,
+		"version":      data.Meta.Version,
+	}
+	if saved.WordCount != totalEntries || saved.UnitCount != len(unitSet) || saved.Name != data.Meta.Name {
+		DB.Model(&saved).Updates(updates)
+		saved.WordCount = totalEntries
+		saved.UnitCount = len(unitSet)
+	}
+
 	// 写入词条
 	sortOrder := 0
 	for _, unit := range data.Units {
