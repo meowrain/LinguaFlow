@@ -239,6 +239,7 @@ func main() {
 				wordbooks.POST("/:id/review", handlers.SubmitReviewResult)
 				wordbooks.GET("/:id/stats", handlers.GetWordBookStats)
 				wordbooks.GET("/:id/entries", handlers.GetWordBookEntries)
+				wordbooks.GET("/:id/units", handlers.GetWordBookUnits)
 				wordbooks.POST("/:id/reset", handlers.ResetWordBookProgress)
 			}
 		}

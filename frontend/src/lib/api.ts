@@ -387,6 +387,8 @@ export const wordBookAPI = {
     api.get(`/wordbooks/${id}/stats`),
   getWordList: (id: number, params?: { page?: number; page_size?: number; unit?: number; status?: string; search?: string }) =>
     api.get(`/wordbooks/${id}/entries`, { params }),
+  getUnits: (id: number) =>
+    api.get(`/wordbooks/${id}/units`),
   resetProgress: (id: number) =>
     api.post(`/wordbooks/${id}/reset`, { confirm: true }),
 };

@@ -89,8 +89,8 @@ export default function WordBookWordlistPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
-  // 获取可用的单元列表(第一次加载)
-  const [availableUnits, setAvailableUnits] = useState<number[]>([]);
+  // 单元列表:{unit -> count},来自 GET /wordbooks/:id/units
+  const [unitCounts, setUnitCounts] = useState<Record<number, number>>({});
 
   useEffect(() => {
     setMounted(true);
@@ -113,23 +113,28 @@ export default function WordBookWordlistPage() {
       setTotal(data.data.total || 0);
       setTotalPages(data.data.total_pages || 1);
       setProgress(data.user_progress || {});
-
-      // 提取单元列表(只在第一次或无筛选时)
-      if (availableUnits.length === 0 && data.data.items) {
-        const units = new Set<number>();
-        for (const e of data.data.items as WordBookEntry[]) {
-          if (e.unit > 0) units.add(e.unit);
-        }
-        if (units.size > 0) {
-          setAvailableUnits(Array.from(units).sort((a, b) => a - b));
-        }
-      }
     } catch (err: unknown) {
       setError('加载词表失败');
     } finally {
       setLoading(false);
     }
-  }, [bookId, page, unitFilter, statusFilter, searchQuery, availableUnits.length]);
+  }, [bookId, page, unitFilter, statusFilter, searchQuery]);
+
+  // 单独加载单元元数据(每个单元的词条数),这样 2000+ 词的词书也能完整列出所有单元
+  useEffect(() => {
+    if (!mounted || !isAuthenticated || !token || !bookId) return;
+    let cancelled = false;
+    wordBookAPI.getUnits(bookId)
+      .then((res) => {
+        if (cancelled) return;
+        const units: { unit: number; count: number }[] = res.data?.data?.units || [];
+        const map: Record<number, number> = {};
+        for (const u of units) map[u.unit] = u.count;
+        setUnitCounts(map);
+      })
+      .catch(() => { /* 静默失败,选择器不显示即可 */ });
+    return () => { cancelled = true; };
+  }, [mounted, isAuthenticated, token, bookId]);
 
   useEffect(() => {
     if (!mounted || !isAuthenticated || !token || !bookId) return;
@@ -196,16 +201,19 @@ export default function WordBookWordlistPage() {
         </div>
 
         {/* 单元筛选 */}
-        {availableUnits.length > 0 && (
+        {Object.keys(unitCounts).length > 0 && (
           <select
             value={unitFilter}
             onChange={(e) => { setUnitFilter(Number(e.target.value)); setPage(1); }}
             className="rounded-lg border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800"
           >
             <option value={0}>全部单元</option>
-            {availableUnits.map((u) => (
-              <option key={u} value={u}>单元 {u}</option>
-            ))}
+            {Object.keys(unitCounts)
+              .map((k) => Number(k))
+              .sort((a, b) => a - b)
+              .map((u) => (
+                <option key={u} value={u}>单元 {u} ({unitCounts[u]} 词)</option>
+              ))}
           </select>
         )}
 

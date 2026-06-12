@@ -904,6 +904,46 @@ type wordBookProgressSnapshot struct {
 	FirstSeenAt    string `json:"first_seen_at,omitempty"`
 }
 
+// GetWordBookUnits 返回词书的单元列表(单元号 + 词条数),供词表页筛选器使用
+func GetWordBookUnits(c *gin.Context) {
+	bookID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid wordbook ID"})
+		return
+	}
+
+	var book models.WordBook
+	if err := database.DB.First(&book, bookID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Wordbook not found"})
+		return
+	}
+
+	type unitRow struct {
+		Unit  int `gorm:"column:unit"`
+		Count int `gorm:"column:count"`
+	}
+	var rows []unitRow
+	database.DB.Model(&models.WordBookEntry{}).
+		Select("unit, COUNT(*) as count").
+		Where("word_book_id = ? AND unit > 0", bookID).
+		Group("unit").
+		Order("unit ASC").
+		Scan(&rows)
+
+	units := make([]gin.H, 0, len(rows))
+	for _, r := range rows {
+		units = append(units, gin.H{"unit": r.Unit, "count": r.Count})
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": gin.H{
+			"word_book_id": bookID,
+			"total_units":  book.UnitCount,
+			"units":        units,
+		},
+	})
+}
+
 // GetWordBookEntries 获取词书词条列表(分页)
 func GetWordBookEntries(c *gin.Context) {
 	bookID, err := strconv.ParseUint(c.Param("id"), 10, 64)
