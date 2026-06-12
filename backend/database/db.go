@@ -57,6 +57,11 @@ func InitDB(cfg *config.Config) error {
 		&models.KnowledgeEdge{},
 		&models.UserKnowledgeState{},
 		&models.FavoriteFolder{},
+		&models.WordBook{},
+		&models.WordBookEntry{},
+		&models.UserWordBook{},
+		&models.UserWordBookProgress{},
+		&models.WordBookDailyRecord{},
 	); err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)
 	}

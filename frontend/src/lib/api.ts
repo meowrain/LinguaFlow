@@ -365,4 +365,30 @@ export const studyAPI = {
   }) => api.put('/study/goal', data),
 };
 
+// 词书背词 API
+export const wordBookAPI = {
+  list: (params?: { category?: string; difficulty?: string; search?: string }) =>
+    api.get('/wordbooks', { params }),
+  get: (id: number) =>
+    api.get(`/wordbooks/${id}`),
+  subscribe: (id: number, data: { daily_new_words?: number; daily_review_words?: number }) =>
+    api.post(`/wordbooks/${id}/subscribe`, data),
+  unsubscribe: (id: number) =>
+    api.delete(`/wordbooks/${id}/subscribe`),
+  updatePlan: (id: number, data: { daily_new_words?: number; daily_review_words?: number }) =>
+    api.patch(`/wordbooks/${id}/plan`, data),
+  getToday: (id: number) =>
+    api.get(`/wordbooks/${id}/today`),
+  learn: (id: number, data: { entry_id: number; rating: 'good' | 'hard' | 'forgot' }) =>
+    api.post(`/wordbooks/${id}/learn`, data),
+  review: (id: number, data: { progress_id: number; rating: 'good' | 'hard' | 'forgot' }) =>
+    api.post(`/wordbooks/${id}/review`, data),
+  getStats: (id: number) =>
+    api.get(`/wordbooks/${id}/stats`),
+  getWordList: (id: number, params?: { page?: number; page_size?: number; unit?: number; status?: string; search?: string }) =>
+    api.get(`/wordbooks/${id}/entries`, { params }),
+  resetProgress: (id: number) =>
+    api.post(`/wordbooks/${id}/reset`, { confirm: true }),
+};
+
 export default api;

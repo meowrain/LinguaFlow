@@ -440,6 +440,25 @@ export default function StudyPage() {
         </div>
       </section>
 
+      {/* 词书进度快捷入口 */}
+      <section className="mb-8 rounded-lg border border-gray-800 bg-gray-900/50 p-5">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gray-100">词书背词</h2>
+            <p className="mt-1 text-sm text-gray-500">
+              系统化记忆四六级、考研等考试核心词汇。
+            </p>
+          </div>
+          <Link
+            href="/wordbook"
+            className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-500"
+          >
+            <BookOpen className="h-4 w-4" />
+            进入词书
+          </Link>
+        </div>
+      </section>
+
       {diagnostics && (
         <section className="mb-8 rounded-lg border border-gray-800 bg-gray-900/50 p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

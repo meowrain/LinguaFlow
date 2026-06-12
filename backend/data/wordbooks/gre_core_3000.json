@@ -1,0 +1,633 @@
+{
+  "meta": {
+    "name": "GRE 核心 3000 词",
+    "name_en": "GRE Core 3000",
+    "slug": "gre-core-3000",
+    "category": "gre",
+    "difficulty": "advanced",
+    "cefr_level": "C1-C2",
+    "version": "1.0.0",
+    "source": "ETS GRE 高频词汇研究",
+    "license": "educational-use"
+  },
+  "units": [
+    {
+      "unit": 1,
+      "name": "List 1",
+      "entries": [
+        {
+          "word": "abate",
+          "uk_phonetic": "/əˈbeɪt/",
+          "us_phonetic": "/əˈbeɪt/",
+          "definitions": [
+            {"pos": "v.", "definition": "to become less intense or widespread"},
+            {"pos": "vt.", "definition": "to make less intense or severe"}
+          ],
+          "translation": "减少;减弱;减轻",
+          "examples": [
+            {"en": "The storm showed no signs of abating.", "zh": "暴风雨没有减弱的迹象。"},
+            {"en": "Nothing could abate his enthusiasm for the project.", "zh": "没有什么能减弱他对这个项目的热情。"}
+          ],
+          "collocations": ["abate the pain", "storm abates", "abate in intensity"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "abhor",
+          "uk_phonetic": "/əbˈhɔː/",
+          "us_phonetic": "/əbˈhɔːr/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to regard with disgust and hatred"},
+            {"pos": "vt.", "definition": "to shrink back from; to detest"}
+          ],
+          "translation": "厌恶;憎恨",
+          "examples": [
+            {"en": "She abhors all forms of cruelty.", "zh": "她厌恶一切形式的残忍行为。"},
+            {"en": "He abhors the idea of eating meat.", "zh": "他厌恶吃肉的想法。"}
+          ],
+          "collocations": ["abhor violence", "abhor the idea", "utterly abhor"],
+          "frequency": 3,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "acquiesce",
+          "uk_phonetic": "/ˌækwiˈes/",
+          "us_phonetic": "/ˌækwiˈes/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to accept something reluctantly but without protest"}
+          ],
+          "translation": "默许;勉强同意",
+          "examples": [
+            {"en": "She acquiesced in her parents' decision.", "zh": "她默许了父母的决定。"},
+            {"en": "The government acquiesced to the demands of the protesters.", "zh": "政府默许了抗议者的要求。"}
+          ],
+          "collocations": ["acquiesce in", "acquiesce to", "silently acquiesce"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "amalgamate",
+          "uk_phonetic": "/əˈmælɡəmeɪt/",
+          "us_phonetic": "/əˈmælɡəmeɪt/",
+          "definitions": [
+            {"pos": "v.", "definition": "to combine or unite to form one structure"},
+            {"pos": "v.", "definition": "to blend or mix together"}
+          ],
+          "translation": "合并;混合;结合",
+          "examples": [
+            {"en": "The two companies amalgamated to form a larger corporation.", "zh": "两家公司合并组成了一家更大的企业。"},
+            {"en": "Different cultural traditions amalgamated over centuries.", "zh": "不同的文化传统在数个世纪中融合了。"}
+          ],
+          "collocations": ["amalgamate into", "amalgamate with", "amalgamate companies"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "ameliorate",
+          "uk_phonetic": "/əˈmiːliəreɪt/",
+          "us_phonetic": "/əˈmiːliəreɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to make something bad or unsatisfactory better"},
+            {"pos": "vi.", "definition": "to become better; improve"}
+          ],
+          "translation": "改善;改进",
+          "examples": [
+            {"en": "Steps have been taken to ameliorate the housing situation.", "zh": "已经采取措施改善住房状况。"},
+            {"en": "The new policy aims to ameliorate working conditions.", "zh": "新政策旨在改善工作条件。"}
+          ],
+          "collocations": ["ameliorate conditions", "ameliorate the situation", "ameliorate suffering"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "anachronism",
+          "uk_phonetic": "/əˈnækrənɪzəm/",
+          "us_phonetic": "/əˈnækrənɪzəm/",
+          "definitions": [
+            {"pos": "n.", "definition": "a thing belonging to a period other than that in which it exists"},
+            {"pos": "n.", "definition": "an error in chronological ordering"}
+          ],
+          "translation": "时代错误;过时的事物",
+          "examples": [
+            {"en": "The fax machine seems like an anachronism in the age of email.", "zh": "传真机在电子邮件时代显得过时了。"},
+            {"en": "The monarchy is seen by some as an anachronism.", "zh": "一些人认为君主制是一种时代错误。"}
+          ],
+          "collocations": ["historical anachronism", "cultural anachronism", "social anachronism"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "apathy",
+          "uk_phonetic": "/ˈæpəθi/",
+          "us_phonetic": "/ˈæpəθi/",
+          "definitions": [
+            {"pos": "n.", "definition": "lack of interest, enthusiasm, or concern"},
+            {"pos": "n.", "definition": "indifference; absence of feeling"}
+          ],
+          "translation": "冷漠;漠不关心",
+          "examples": [
+            {"en": "Voter apathy led to a very low turnout.", "zh": "选民的冷漠导致投票率非常低。"},
+            {"en": "Public apathy about environmental issues is alarming.", "zh": "公众对环境问题的漠不关心令人震惊。"}
+          ],
+          "collocations": ["public apathy", "voter apathy", "political apathy"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "ascetic",
+          "uk_phonetic": "/əˈsetɪk/",
+          "us_phonetic": "/əˈsetɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "characterized by severe self-discipline and abstaining from indulgence"},
+            {"pos": "n.", "definition": "a person who practises severe self-discipline"}
+          ],
+          "translation": "苦行的;禁欲的;苦行者",
+          "examples": [
+            {"en": "He led an ascetic life in the mountains.", "zh": "他在山里过着苦行的生活。"},
+            {"en": "The monk's ascetic lifestyle impressed everyone.", "zh": "僧侣的禁欲生活方式给每个人留下了深刻印象。"}
+          ],
+          "collocations": ["ascetic lifestyle", "ascetic monk", "ascetic practices"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "audacious",
+          "uk_phonetic": "/ɔːˈdeɪʃəs/",
+          "us_phonetic": "/ɔːˈdeɪʃəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "showing a willingness to take surprisingly bold risks"},
+            {"pos": "adj.", "definition": "showing impudent lack of respect"}
+          ],
+          "translation": "大胆的;鲁莽的;无礼的",
+          "examples": [
+            {"en": "The company made an audacious bid to dominate the market.", "zh": "公司大胆竞标,企图主导市场。"},
+            {"en": "It was an audacious plan to climb the mountain in winter.", "zh": "冬季攀登这座山是一个大胆的计划。"}
+          ],
+          "collocations": ["audacious plan", "audacious move", "audacious attempt"],
+          "frequency": 3,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "bolster",
+          "uk_phonetic": "/ˈbəʊlstə/",
+          "us_phonetic": "/ˈboʊlstər/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to support or strengthen; to prop up"},
+            {"pos": "vt.", "definition": "to boost confidence or morale"}
+          ],
+          "translation": "支持;增强;鼓励",
+          "examples": [
+            {"en": "More evidence is needed to bolster the argument.", "zh": "需要更多证据来支持这个论点。"},
+            {"en": "The government tried to bolster public confidence.", "zh": "政府试图增强公众信心。"}
+          ],
+          "collocations": ["bolster confidence", "bolster support", "bolster the economy"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        }
+      ]
+    },
+    {
+      "unit": 2,
+      "name": "List 2",
+      "entries": [
+        {
+          "word": "bucolic",
+          "uk_phonetic": "/bjuːˈkɒlɪk/",
+          "us_phonetic": "/bjuːˈkɑːlɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "relating to the pleasant aspects of the countryside"},
+            {"pos": "adj.", "definition": "rural; pastoral"}
+          ],
+          "translation": "田园的;乡村的",
+          "examples": [
+            {"en": "The bucolic landscape attracted many tourists.", "zh": "田园风光吸引了许多游客。"},
+            {"en": "He longed for a bucolic life away from the city.", "zh": "他渴望远离城市的田园生活。"}
+          ],
+          "collocations": ["bucolic setting", "bucolic charm", "bucolic landscape"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "capricious",
+          "uk_phonetic": "/kəˈprɪʃəs/",
+          "us_phonetic": "/kəˈprɪʃəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "given to sudden and unaccountable changes of mood or behaviour"},
+            {"pos": "adj.", "definition": "unpredictable; fickle"}
+          ],
+          "translation": "善变的;反复无常的;任性的",
+          "examples": [
+            {"en": "The capricious weather ruined our outdoor plans.", "zh": "变幻莫测的天气破坏了我们的户外计划。"},
+            {"en": "His capricious nature made it difficult to work with him.", "zh": "他反复无常的性格使得与他共事很困难。"}
+          ],
+          "collocations": ["capricious nature", "capricious weather", "capricious decision"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "cogent",
+          "uk_phonetic": "/ˈkəʊdʒənt/",
+          "us_phonetic": "/ˈkoʊdʒənt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "clear, logical, and convincing"},
+            {"pos": "adj.", "definition": "powerfully persuasive"}
+          ],
+          "translation": "有说服力的;令人信服的",
+          "examples": [
+            {"en": "She made a cogent argument for changing the policy.", "zh": "她提出了改变政策的有说服力的论点。"},
+            {"en": "The evidence presented was cogent and compelling.", "zh": "提供的证据是有说服力且令人信服的。"}
+          ],
+          "collocations": ["cogent argument", "cogent evidence", "cogent reason"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "desiccate",
+          "uk_phonetic": "/ˈdesɪkeɪt/",
+          "us_phonetic": "/ˈdesɪkeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to remove the moisture from; to dry out thoroughly"},
+            {"pos": "vi.", "definition": "to become dried out"}
+          ],
+          "translation": "使干燥;脱水",
+          "examples": [
+            {"en": "The hot wind desiccated the soil rapidly.", "zh": "热风迅速使土壤干燥。"},
+            {"en": "Desiccated coconut is used in many baking recipes.", "zh": "脱水椰丝在许多烘焙食谱中使用。"}
+          ],
+          "collocations": ["desiccated fruit", "desiccated soil", "desiccate completely"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "ebullient",
+          "uk_phonetic": "/ɪˈbʊliənt/",
+          "us_phonetic": "/ɪˈbʊliənt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "cheerful and full of energy"},
+            {"pos": "adj.", "definition": "enthusiastic and excited"}
+          ],
+          "translation": "热情洋溢的;兴高采烈的",
+          "examples": [
+            {"en": "She was in an ebullient mood at the party.", "zh": "她在派对上情绪高昂。"},
+            {"en": "His ebullient personality makes him popular with everyone.", "zh": "他热情洋溢的个性使他在众人中很受欢迎。"}
+          ],
+          "collocations": ["ebullient mood", "ebullient personality", "ebullient enthusiasm"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "equivocate",
+          "uk_phonetic": "/ɪˈkwɪvəkeɪt/",
+          "us_phonetic": "/ɪˈkwɪvəkeɪt/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to use ambiguous language to conceal the truth or avoid committing oneself"}
+          ],
+          "translation": "含糊其辞;模棱两可",
+          "examples": [
+            {"en": "When asked directly, the politician began to equivocate.", "zh": "被直接问到时,政治家开始含糊其辞。"},
+            {"en": "She refused to equivocate and gave a straight answer.", "zh": "她拒绝含糊其辞,给出了直接的回答。"}
+          ],
+          "collocations": ["equivocate on", "refuse to equivocate", "deliberately equivocate"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "erudite",
+          "uk_phonetic": "/ˈerʊdaɪt/",
+          "us_phonetic": "/ˈerədaɪt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "having or showing great knowledge or learning"},
+            {"pos": "adj.", "definition": "scholarly; learned"}
+          ],
+          "translation": "博学的;有学问的",
+          "examples": [
+            {"en": "The professor was known for his erudite lectures.", "zh": "这位教授以博学的讲座著称。"},
+            {"en": "His erudite essay impressed the entire academic community.", "zh": "他渊博的论文给整个学术界留下了深刻印象。"}
+          ],
+          "collocations": ["erudite scholar", "erudite essay", "erudite conversation"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "garrulous",
+          "uk_phonetic": "/ˈɡærələs/",
+          "us_phonetic": "/ˈɡærələs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "excessively talkative, especially about trivial things"},
+            {"pos": "adj.", "definition": "wordy; verbose"}
+          ],
+          "translation": "喋喋不休的;话多的",
+          "examples": [
+            {"en": "The garrulous old man kept talking to everyone on the bus.", "zh": "那个话多的老人不停地和公交车上的每个人说话。"},
+            {"en": "She found the garrulous tour guide exhausting.", "zh": "她觉得那个喋喋不休的导游令人疲惫。"}
+          ],
+          "collocations": ["garrulous old man", "garrulous conversation", "increasingly garrulous"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "laconic",
+          "uk_phonetic": "/ləˈkɒnɪk/",
+          "us_phonetic": "/ləˈkɑːnɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "using very few words; brief and concise"},
+            {"pos": "adj.", "definition": "terse; not given to many words"}
+          ],
+          "translation": "简洁的;言简意赅的",
+          "examples": [
+            {"en": "His laconic reply revealed little about his true feelings.", "zh": "他简洁的回答几乎没有透露他的真实感受。"},
+            {"en": "She gave a laconic 'yes' and said nothing more.", "zh": "她简短地说了个'是',再无多言。"}
+          ],
+          "collocations": ["laconic reply", "laconic style", "laconic wit"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "loquacious",
+          "uk_phonetic": "/ləˈkweɪʃəs/",
+          "us_phonetic": "/loʊˈkweɪʃəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "tending to talk a great deal; very talkative"},
+            {"pos": "adj.", "definition": "wordy; garrulous"}
+          ],
+          "translation": "健谈的;多话的;饶舌的",
+          "examples": [
+            {"en": "The loquacious host kept the dinner conversation lively.", "zh": "健谈的主人使晚宴对话保持活跃。"},
+            {"en": "She became more loquacious after a few glasses of wine.", "zh": "几杯酒后她变得更加健谈了。"}
+          ],
+          "collocations": ["loquacious speaker", "loquacious friend", "naturally loquacious"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        }
+      ]
+    },
+    {
+      "unit": 3,
+      "name": "List 3",
+      "entries": [
+        {
+          "word": "mitigate",
+          "uk_phonetic": "/ˈmɪtɪɡeɪt/",
+          "us_phonetic": "/ˈmɪtɪɡeɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to make less severe, serious, or painful"},
+            {"pos": "vt.", "definition": "to lessen the gravity of an offence or mistake"}
+          ],
+          "translation": "减轻;缓和;缓解",
+          "examples": [
+            {"en": "Measures were taken to mitigate the effects of the earthquake.", "zh": "采取了措施来减轻地震的影响。"},
+            {"en": "The judge considered mitigating circumstances when sentencing.", "zh": "法官在量刑时考虑了减轻情节。"}
+          ],
+          "collocations": ["mitigate risk", "mitigate the effects", "mitigating circumstances"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "obsequious",
+          "uk_phonetic": "/əbˈsiːkwiəs/",
+          "us_phonetic": "/əbˈsiːkwiəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "obedient or attentive to an excessive or servile degree"},
+            {"pos": "adj.", "definition": "fawning; sycophantic"}
+          ],
+          "translation": "谄媚的;奉承的;卑躬屈膝的",
+          "examples": [
+            {"en": "The waiter's obsequious manner annoyed the customers.", "zh": "服务员谄媚的态度惹恼了顾客。"},
+            {"en": "He was surrounded by obsequious aides who never disagreed with him.", "zh": "他身边围绕着一群从不反对他的谄媚助手。"}
+          ],
+          "collocations": ["obsequious manner", "obsequious servant", "obsequious flattery"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "perfunctory",
+          "uk_phonetic": "/pəˈfʌŋktəri/",
+          "us_phonetic": "/pərˈfʌŋktəri/",
+          "definitions": [
+            {"pos": "adj.", "definition": "carried out with a minimum of effort or reflection"},
+            {"pos": "adj.", "definition": "done as a duty or routine, without care or interest"}
+          ],
+          "translation": "敷衍的;马虎的;草率的",
+          "examples": [
+            {"en": "She gave him a perfunctory smile and returned to her work.", "zh": "她敷衍地给了他一个微笑,然后继续工作。"},
+            {"en": "The security check was perfunctory and easily bypassed.", "zh": "安全检查敷衍了事,很容易被绕过。"}
+          ],
+          "collocations": ["perfunctory glance", "perfunctory search", "perfunctory nod"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "pragmatic",
+          "uk_phonetic": "/præɡˈmætɪk/",
+          "us_phonetic": "/præɡˈmætɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "dealing with things sensibly and realistically"},
+            {"pos": "adj.", "definition": "based on practical considerations rather than theoretical ones"}
+          ],
+          "translation": "务实的;实用主义的",
+          "examples": [
+            {"en": "We need a pragmatic approach to solving the housing crisis.", "zh": "我们需要一种务实的方法来解决住房危机。"},
+            {"en": "The government adopted a more pragmatic foreign policy.", "zh": "政府采取了更务实的外交政策。"}
+          ],
+          "collocations": ["pragmatic approach", "pragmatic solution", "pragmatic leader"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "prevaricate",
+          "uk_phonetic": "/prɪˈværɪkeɪt/",
+          "us_phonetic": "/prɪˈværɪkeɪt/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to speak or act in an evasive way"},
+            {"pos": "vi.", "definition": "to avoid giving a direct answer"}
+          ],
+          "translation": "支吾其辞;搪塞;回避",
+          "examples": [
+            {"en": "The witness continued to prevaricate despite the lawyer's direct questions.", "zh": "尽管律师提出了直接的问题,证人仍继续支吾其辞。"},
+            {"en": "Stop prevaricating and give me a straight answer.", "zh": "别搪塞了,给我一个直接的回答。"}
+          ],
+          "collocations": ["prevaricate about", "prevaricate on", "refuse to prevaricate"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "prolific",
+          "uk_phonetic": "/prəˈlɪfɪk/",
+          "us_phonetic": "/prəˈlɪfɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "producing much fruit, foliage, or offspring"},
+            {"pos": "adj.", "definition": "present in large numbers; abundant"},
+            {"pos": "adj.", "definition": "(of an artist or author) producing many works"}
+          ],
+          "translation": "多产的;丰富的;富有创造力的",
+          "examples": [
+            {"en": "She is one of the most prolific writers of the twentieth century.", "zh": "她是20世纪最多产的作家之一。"},
+            {"en": "The rabbit is known for being a prolific breeder.", "zh": "兔子以多产著称。"}
+          ],
+          "collocations": ["prolific writer", "prolific scorer", "prolific period"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "quixotic",
+          "uk_phonetic": "/kwɪkˈsɒtɪk/",
+          "us_phonetic": "/kwɪkˈsɑːtɪk/",
+          "definitions": [
+            {"pos": "adj.", "definition": "exceedingly idealistic; unrealistic and impractical"},
+            {"pos": "adj.", "definition": "impulsive and rash"}
+          ],
+          "translation": "不切实际的;空想的;堂吉诃德式的",
+          "examples": [
+            {"en": "His quixotic plan to end world hunger was dismissed as unrealistic.", "zh": "他终结世界饥饿的不切实际的计划被认为是不现实的。"},
+            {"en": "She pursued a quixotic dream of building a utopia.", "zh": "她追求一个建立乌托邦的空想。"}
+          ],
+          "collocations": ["quixotic quest", "quixotic dream", "quixotic ideal"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "recalcitrant",
+          "uk_phonetic": "/rɪˈkælsɪtrənt/",
+          "us_phonetic": "/rɪˈkælsɪtrənt/",
+          "definitions": [
+            {"pos": "adj.", "definition": "having an obstinately uncooperative attitude"},
+            {"pos": "adj.", "definition": "stubbornly resistant to authority or guidance"}
+          ],
+          "translation": "顽抗的;不顺从的;桀骜不驯的",
+          "examples": [
+            {"en": "The recalcitrant student refused to follow classroom rules.", "zh": "那个桀骜不驯的学生拒绝遵守课堂规则。"},
+            {"en": "Dealing with recalcitrant employees requires patience.", "zh": "处理不服管的员工需要耐心。"}
+          ],
+          "collocations": ["recalcitrant child", "recalcitrant attitude", "recalcitrant debtor"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "sanguine",
+          "uk_phonetic": "/ˈsæŋɡwɪn/",
+          "us_phonetic": "/ˈsæŋɡwɪn/",
+          "definitions": [
+            {"pos": "adj.", "definition": "optimistic or positive, especially in a difficult situation"},
+            {"pos": "adj.", "definition": "blood-red in colour"}
+          ],
+          "translation": "乐观的;自信的",
+          "examples": [
+            {"en": "He remained sanguine despite the setbacks.", "zh": "尽管遇到了挫折,他仍然保持乐观。"},
+            {"en": "The report was not as sanguine as previous forecasts.", "zh": "这份报告不像之前的预测那样乐观。"}
+          ],
+          "collocations": ["sanguine outlook", "sanguine about", "less than sanguine"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "taciturn",
+          "uk_phonetic": "/ˈtæsɪtɜːn/",
+          "us_phonetic": "/ˈtæsɪtɜːrn/",
+          "definitions": [
+            {"pos": "adj.", "definition": "reserved or uncommunicative in speech; saying little"},
+            {"pos": "adj.", "definition": "habitually silent; reticent"}
+          ],
+          "translation": "沉默寡言的;不爱说话的",
+          "examples": [
+            {"en": "The taciturn farmer rarely spoke to his neighbours.", "zh": "那个沉默寡言的农民很少和邻居说话。"},
+            {"en": "His taciturn nature was mistaken for unfriendliness.", "zh": "他沉默寡言的性格被误认为是不友好。"}
+          ],
+          "collocations": ["taciturn manner", "taciturn character", "naturally taciturn"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        }
+      ]
+    },
+    {
+      "unit": 4,
+      "name": "List 4",
+      "entries": [
+        {
+          "word": "ubiquitous",
+          "uk_phonetic": "/juːˈbɪkwɪtəs/",
+          "us_phonetic": "/juːˈbɪkwɪtəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "present, appearing, or found everywhere"},
+            {"pos": "adj.", "definition": "seemingly encountered everywhere"}
+          ],
+          "translation": "无处不在的;普遍存在的",
+          "examples": [
+            {"en": "Mobile phones have become ubiquitous in modern life.", "zh": "手机在现代生活中已经无处不在。"},
+            {"en": "The ubiquitous coffee shop chains dominate the high street.", "zh": "无处不在的咖啡店连锁品牌占据了主要街道。"}
+          ],
+          "collocations": ["ubiquitous presence", "become ubiquitous", "ubiquitous technology"],
+          "frequency": 2,
+          "tags": ["高频", "GRE核心"]
+        },
+        {
+          "word": "vacillate",
+          "uk_phonetic": "/ˈvæsɪleɪt/",
+          "us_phonetic": "/ˈvæsəleɪt/",
+          "definitions": [
+            {"pos": "vi.", "definition": "to alternate between different opinions or actions; to be indecisive"},
+            {"pos": "vi.", "definition": "to waver in mind or opinion"}
+          ],
+          "translation": "犹豫不决;踌躇;摇摆",
+          "examples": [
+            {"en": "She vacillated between accepting the job offer and staying at her current position.", "zh": "她在接受工作邀请和留在现职位之间犹豫不决。"},
+            {"en": "The committee vacillated on the issue for months.", "zh": "委员会在这个问题上犹豫了好几个月。"}
+          ],
+          "collocations": ["vacillate between", "vacillate on", "continually vacillate"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "venerate",
+          "uk_phonetic": "/ˈvenəreɪt/",
+          "us_phonetic": "/ˈvenəreɪt/",
+          "definitions": [
+            {"pos": "vt.", "definition": "to regard with great respect; to revere"},
+            {"pos": "vt.", "definition": "to honour as holy or sacred"}
+          ],
+          "translation": "尊敬;崇拜;敬仰",
+          "examples": [
+            {"en": "In many cultures, ancestors are venerated as spiritual guides.", "zh": "在许多文化中,祖先被尊崇为精神导师。"},
+            {"en": "The scientist is venerated for her contributions to medicine.", "zh": "这位科学家因对医学的贡献而受到尊敬。"}
+          ],
+          "collocations": ["venerate ancestors", "widely venerated", "deeply venerated"],
+          "frequency": 3,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "vociferous",
+          "uk_phonetic": "/vəˈsɪfərəs/",
+          "us_phonetic": "/voʊˈsɪfərəs/",
+          "definitions": [
+            {"pos": "adj.", "definition": "expressing feelings or opinions loudly and vehemently"},
+            {"pos": "adj.", "definition": "noisy; clamorous"}
+          ],
+          "translation": "大声疾呼的;喧嚣的;激烈抗议的",
+          "examples": [
+            {"en": "There was vociferous opposition to the new tax plan.", "zh": "对新税收计划有激烈的反对。"},
+            {"en": "He was a vociferous defender of civil rights.", "zh": "他是公民权利的激烈捍卫者。"}
+          ],
+          "collocations": ["vociferous opposition", "vociferous protest", "vociferous supporter"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        },
+        {
+          "word": "zealot",
+          "uk_phonetic": "/ˈzelət/",
+          "us_phonetic": "/ˈzelət/",
+          "definitions": [
+            {"pos": "n.", "definition": "a person who is fanatical and uncompromising in pursuit of their ideals"},
+            {"pos": "n.", "definition": "a fervent or even fanatical partisan"}
+          ],
+          "translation": "狂热者;极端分子",
+          "examples": [
+            {"en": "The religious zealot refused to accept any other viewpoint.", "zh": "宗教狂热者拒绝接受任何其他观点。"},
+            {"en": "Political zealots on both sides refused to compromise.", "zh": "双方的政治狂热者都拒绝妥协。"}
+          ],
+          "collocations": ["religious zealot", "political zealot", "ideological zealot"],
+          "frequency": 4,
+          "tags": ["GRE核心"]
+        }
+      ]
+    }
+  ]
+}

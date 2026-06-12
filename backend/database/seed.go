@@ -209,6 +209,11 @@ func SeedDemoData() error {
 		return err
 	}
 
+	// 词书数据 seed(幂等)
+	if err := SeedWordBooks(); err != nil {
+		return err
+	}
+
 	return nil
 }
 

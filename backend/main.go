@@ -225,6 +225,22 @@ func main() {
 				protected.PATCH("/vocabulary/:id/notes", handlers.UpdateVocabularyNotes)
 			protected.POST("/vocabulary/:id/review", handlers.ReviewVocabulary)
 			protected.POST("/vocabulary/:id/review-answer", handlers.SubmitVocabularyReviewAnswer)
+
+			// 词书背词
+			wordbooks := protected.Group("/wordbooks")
+			{
+				wordbooks.GET("", handlers.ListWordBooks)
+				wordbooks.GET("/:id", handlers.GetWordBook)
+				wordbooks.POST("/:id/subscribe", handlers.SubscribeWordBook)
+				wordbooks.DELETE("/:id/subscribe", handlers.UnsubscribeWordBook)
+				wordbooks.PATCH("/:id/plan", handlers.UpdateWordBookPlan)
+				wordbooks.GET("/:id/today", handlers.GetTodayTasks)
+				wordbooks.POST("/:id/learn", handlers.SubmitLearnResult)
+				wordbooks.POST("/:id/review", handlers.SubmitReviewResult)
+				wordbooks.GET("/:id/stats", handlers.GetWordBookStats)
+				wordbooks.GET("/:id/entries", handlers.GetWordBookEntries)
+				wordbooks.POST("/:id/reset", handlers.ResetWordBookProgress)
+			}
 		}
 	}
 
