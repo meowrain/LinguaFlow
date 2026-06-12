@@ -3,9 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Loader2, Sparkles } from 'lucide-react';
-import { articleAPI, isRemoteHTTPURL, resolveAPIAssetURL } from '@/lib/api';
-import { Article } from '@/types';
+import { ArrowRight, BookOpen, Loader2, Sparkles, Quote, RefreshCw } from 'lucide-react';
+import { articleAPI, dailySentenceAPI, isRemoteHTTPURL, resolveAPIAssetURL } from '@/lib/api';
+import { Article, DailySentence } from '@/types';
 
 const fallbackArticles: Article[] = [
   {
@@ -285,6 +285,8 @@ function ArticleCard({ article }: { article: Article }) {
 export default function Home() {
   const [articles, setArticles] = useState<Article[]>(fallbackArticles);
   const [loading, setLoading] = useState(true);
+  const [dailySentence, setDailySentence] = useState<DailySentence | null>(null);
+  const [sentenceLoading, setSentenceLoading] = useState(true);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -303,6 +305,21 @@ export default function Home() {
     };
 
     fetchArticles();
+
+    const fetchDailySentence = async () => {
+      try {
+        setSentenceLoading(true);
+        const res = await dailySentenceAPI.getToday();
+        setDailySentence(res.data);
+      } catch {
+        // 静默失败，AI 可能未配置
+        setDailySentence(null);
+      } finally {
+        setSentenceLoading(false);
+      }
+    };
+
+    fetchDailySentence();
   }, []);
 
   const featuredArticle = articles[0];
@@ -344,6 +361,37 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* 每日一句 */}
+        {!sentenceLoading && dailySentence ? (
+          <section className="mb-16">
+            <div className="mb-4 flex items-center gap-2">
+              <Quote className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">每日一句</h2>
+              <span className="ml-auto text-xs text-gray-400">{dailySentence.date}</span>
+            </div>
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-8 shadow-sm dark:from-emerald-950/30 dark:to-teal-950/30 dark:shadow-emerald-900/10">
+              <Quote className="absolute right-6 top-6 h-16 w-16 text-emerald-200/50 dark:text-emerald-800/30" />
+              <div className="relative z-10 max-w-3xl">
+                <span className="mb-4 inline-block rounded-full bg-emerald-200/60 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-300">
+                  {dailySentence.topic || '每日精选'}
+                </span>
+                <p className="mb-3 text-xl font-bold leading-relaxed text-gray-900 dark:text-gray-100 sm:text-2xl">
+                  &ldquo;{dailySentence.sentence}&rdquo;
+                </p>
+                <p className="text-base leading-relaxed text-gray-600 dark:text-gray-400">
+                  {dailySentence.translation}
+                </p>
+                {dailySentence.cached && (
+                  <div className="mt-3 flex items-center gap-1 text-xs text-gray-400">
+                    <RefreshCw className="h-3 w-3" />
+                    <span>已缓存</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        ) : null}
 
         {/* Featured Article */}
         {loading ? (

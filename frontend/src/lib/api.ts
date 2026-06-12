@@ -393,4 +393,8 @@ export const wordBookAPI = {
     api.post(`/wordbooks/${id}/reset`, { confirm: true }),
 };
 
+export const dailySentenceAPI = {
+  getToday: () => api.get('/daily-sentence'),
+};
+
 export default api;

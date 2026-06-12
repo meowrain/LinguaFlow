@@ -21,6 +21,12 @@ type SentenceAnalysisResult struct {
 	Provider       string   `json:"provider"`
 }
 
+type DailySentenceResult struct {
+	Sentence    string `json:"sentence"`
+	Translation string `json:"translation"`
+	Topic       string `json:"topic"`
+}
+
 type ArticleAssistantMessage struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
@@ -483,6 +489,92 @@ func buildArticleAssistantMessages(title, summary, content string, history []Art
 	}
 
 	return messages
+}
+
+// GenerateDailySentence 生成每日一句英文句子及其中文翻译
+func (s *AIAnalysisService) GenerateDailySentence() (*DailySentenceResult, error) {
+	if !s.IsConfigured() {
+		return nil, fmt.Errorf("AI 服务未配置")
+	}
+
+	payload := chatCompletionRequest{
+		Model: s.Model,
+		Messages: []chatMessage{
+			{
+				Role: "system",
+				Content: strings.TrimSpace(`你是一个面向中文英语学习者的每日英文精选老师。
+请生成一句有趣的英文句子，适合中高级英语学习者（CET-4 水平）。
+要求：
+1. 句子内容应包含有用的词汇或地道表达
+2. 涉及科技、文化、生活方式、自然等话题
+3. 句子要有一定深度和可讨论性，但不要太长（15-30 词）
+4. 每天的句子不要重复主题
+
+请只返回 JSON，不要使用 Markdown，不要输出额外解释。
+JSON 字段必须是：
+sentence: 英文句子
+translation: 自然准确的中文翻译
+topic: 话题分类（如：科技、文化、生活方式、自然、教育等）`),
+			},
+			{
+				Role:    "user",
+				Content: "请生成今天的每日一句。",
+			},
+		},
+		Temperature: temperatureForModel(s.Model, 0.8),
+		MaxTokens:   300,
+	}
+
+	body, err := json.Marshal(payload)
+	if err != nil {
+		return nil, fmt.Errorf("构建每日一句请求失败: %w", err)
+	}
+
+	endpoint := s.BaseURL + "/chat/completions"
+	req, err := http.NewRequest(http.MethodPost, endpoint, bytes.NewReader(body))
+	if err != nil {
+		return nil, fmt.Errorf("构建每日一句请求失败: %w", err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+s.APIKey)
+
+	resp, err := s.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("每日一句请求失败: %w", err)
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("读取每日一句响应失败: %w", err)
+	}
+
+	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("每日一句 HTTP %d: %s", resp.StatusCode, string(respBody))
+	}
+
+	var completion chatCompletionResponse
+	if err := json.Unmarshal(respBody, &completion); err != nil {
+		return nil, fmt.Errorf("解析 AI 响应失败: %w", err)
+	}
+	if completion.Error != nil {
+		return nil, fmt.Errorf("每日一句错误: %s", completion.Error.Message)
+	}
+	if len(completion.Choices) == 0 || strings.TrimSpace(completion.Choices[0].Message.Content) == "" {
+		return nil, fmt.Errorf("每日一句结果为空")
+	}
+
+	content := cleanJSONContent(completion.Choices[0].Message.Content)
+	var result DailySentenceResult
+	if err := json.Unmarshal([]byte(content), &result); err != nil {
+		return nil, fmt.Errorf("解析每日一句 JSON 失败: %w", err)
+	}
+
+	if result.Sentence == "" || result.Translation == "" {
+		return nil, fmt.Errorf("每日一句结果缺少必要字段")
+	}
+
+	return &result, nil
 }
 
 func temperatureForModel(model string, value float64) *float64 {

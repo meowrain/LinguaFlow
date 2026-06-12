@@ -932,3 +932,13 @@ export interface WordBookEntryListResponse {
   };
   user_progress: Record<string, WordBookProgressSnapshot>;
 }
+
+// ---------- 每日一句 ----------
+
+export interface DailySentence {
+  sentence: string;
+  translation: string;
+  topic: string;
+  date: string;
+  cached: boolean;
+}

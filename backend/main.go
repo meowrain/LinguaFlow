@@ -120,6 +120,9 @@ func main() {
 			ao3.GET("/works/:id", handlers.GetAO3Work)
 		}
 
+		// 每日一句（无需登录）
+		api.GET("/daily-sentence", handlers.GetDailySentence)
+
 		// 翻译服务（无需登录）
 		api.POST("/translate", middleware.OptionalAuth(), handlers.Translate)
 		api.GET("/dictionary", middleware.OptionalAuth(), handlers.LookupWord)
