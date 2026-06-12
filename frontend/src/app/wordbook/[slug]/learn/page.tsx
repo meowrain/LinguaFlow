@@ -268,6 +268,22 @@ export default function WordBookLearnPage() {
     }, 1000);
   }, [spellingResult, submitting, tasks, reviewIndex, spellingInput, handleReviewRating]);
 
+  // 当前新词之后的即将出现的单词列表（用于预加载音频）
+  const upcomingNewWords = useMemo(() => {
+    if (!tasks) return [];
+    return tasks.new_words
+      .slice(newIndex + 1, newIndex + 4)
+      .map((w) => w.word);
+  }, [tasks, newIndex]);
+
+  // 当前复习词之后的即将出现的单词列表
+  const upcomingReviewWords = useMemo(() => {
+    if (!tasks) return [];
+    return tasks.review_words
+      .slice(reviewIndex + 1, reviewIndex + 4)
+      .map((w) => w.word);
+  }, [tasks, reviewIndex]);
+
   if (!mounted || loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -362,6 +378,7 @@ export default function WordBookLearnPage() {
             collocations={currentNew.collocations}
             onRating={handleLearnRating}
             disabled={submitting}
+            upcomingWords={upcomingNewWords}
           />
         </div>
       )}
@@ -374,9 +391,13 @@ export default function WordBookLearnPage() {
           </p>
           <LearnCard
             word={currentReview.word}
+            phonetic={currentReview.phonetic}
+            uk_phonetic={currentReview.uk_phonetic}
+            us_phonetic={currentReview.us_phonetic}
             translation={currentReview.translation}
             onRating={handleReviewRating}
             disabled={submitting}
+            upcomingWords={upcomingReviewWords}
           />
         </div>
       )}

@@ -63,14 +63,17 @@ type dailyTaskNewWord struct {
 }
 
 type dailyTaskReviewWord struct {
-	ProgressID    uint   `json:"progress_id"`
-	EntryID       uint   `json:"entry_id"`
-	Word          string `json:"word"`
-	Translation   string `json:"translation"`
-	Status        string `json:"status"`
-	ReviewCount   int    `json:"review_count"`
-	ForgottenCount int   `json:"forgotten_count"`
-	NextReviewAt  string `json:"next_review_at"`
+	ProgressID     uint   `json:"progress_id"`
+	EntryID        uint   `json:"entry_id"`
+	Word           string `json:"word"`
+	Phonetic       string `json:"phonetic"`
+	UKPhonetic     string `json:"uk_phonetic"`
+	USPhonetic     string `json:"us_phonetic"`
+	Translation    string `json:"translation"`
+	Status         string `json:"status"`
+	ReviewCount    int    `json:"review_count"`
+	ForgottenCount int    `json:"forgotten_count"`
+	NextReviewAt   string `json:"next_review_at"`
 }
 
 type dailyTasksResponse struct {
@@ -636,14 +639,17 @@ func generateDailyTasks(db *gorm.DB, userID uint, ub models.UserWordBook) (*dail
 			nextReview = p.NextReviewAt.Format(time.RFC3339)
 		}
 		reviewWords = append(reviewWords, dailyTaskReviewWord{
-			ProgressID:    p.ID,
-			EntryID:       entry.ID,
-			Word:          entry.Word,
-			Translation:   entry.Translation,
-			Status:        p.Status,
-			ReviewCount:   p.ReviewCount,
+			ProgressID:     p.ID,
+			EntryID:        entry.ID,
+			Word:           entry.Word,
+			Phonetic:       entry.Phonetic,
+			UKPhonetic:     entry.UKPhonetic,
+			USPhonetic:     entry.USPhonetic,
+			Translation:    entry.Translation,
+			Status:         p.Status,
+			ReviewCount:    p.ReviewCount,
 			ForgottenCount: p.ForgottenCount,
-			NextReviewAt:  nextReview,
+			NextReviewAt:   nextReview,
 		})
 	}
 

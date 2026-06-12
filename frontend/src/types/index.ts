@@ -868,6 +868,9 @@ export interface WordBookDailyTaskReview {
   progress_id: number;
   entry_id: number;
   word: string;
+  phonetic?: string;
+  uk_phonetic?: string;
+  us_phonetic?: string;
   translation?: string;
   status: 'learning' | 'mastered';
   review_count: number;

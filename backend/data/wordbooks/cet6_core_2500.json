@@ -6,7 +6,7 @@
     "category": "cet6",
     "difficulty": "intermediate",
     "cefr_level": "B1-B2",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "source": "RealKai42/qwerty-learner (MIT) - 教育部 CET-6 词表",
     "license": "MIT (qwerty-learner), 词表本身为教育公共信息"
   },
@@ -293,7 +293,7 @@
           "collocations": [
             "Approval and Disapproval",
             "in disapproval",
-            "Approval \u0026 Disapproval",
+            "Approval & Disapproval",
             "social disapproval",
             "provoked worldwide disapproval"
           ],
@@ -2074,7 +2074,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c美俚\u003e变得紧张，变得焦急"
+              "definition": "<美俚>变得紧张，变得焦急"
             },
             {
               "pos": "v.",
@@ -2086,14 +2086,14 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c美俚\u003e在危急时可以信赖的"
+              "definition": "<美俚>在危急时可以信赖的"
             },
             {
               "pos": "adj.",
               "definition": "关键性的"
             }
           ],
-          "translation": "离合器\n控制，掌管\n离合器踏板\n群，组，簇，堆\n爪子，手\n攫住，紧紧抓住\n一群\n一批\n权力\n攫取，抢夺\n势力范围\n紧急关头\n一窝蛋\n抓紧，紧握，抱紧\n突然抓住\n企图抓住\n急忙地抓，突然抢走\n\u003c美俚\u003e变得紧张，变得焦急\n踩汽车离合器踏板\n无手提带的\n\u003c美俚\u003e在危急时可以信赖的\n关键性的",
+          "translation": "离合器\n控制，掌管\n离合器踏板\n群，组，簇，堆\n爪子，手\n攫住，紧紧抓住\n一群\n一批\n权力\n攫取，抢夺\n势力范围\n紧急关头\n一窝蛋\n抓紧，紧握，抱紧\n突然抓住\n企图抓住\n急忙地抓，突然抢走\n<美俚>变得紧张，变得焦急\n踩汽车离合器踏板\n无手提带的\n<美俚>在危急时可以信赖的\n关键性的",
           "examples": [
             {
               "en": "The car needs a new clutch.",
@@ -7970,7 +7970,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e 足，腿，（木制）假腿"
+              "definition": "<口> 足，腿，（木制）假腿"
             },
             {
               "pos": "n.",
@@ -7994,11 +7994,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美俚\u003e裤子"
+              "definition": "<美俚>裤子"
             },
             {
               "pos": "n.",
-              "definition": "\u003c英\u003e晾衣夹子"
+              "definition": "<英>晾衣夹子"
             },
             {
               "pos": "n.",
@@ -8018,11 +8018,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e（棒球中为把跑垒员杀出局的）全力投球，钉子球"
+              "definition": "<口>（棒球中为把跑垒员杀出局的）全力投球，钉子球"
             },
             {
               "pos": "n.",
-              "definition": "\u003c英口\u003e 少量威士忌（白兰地）"
+              "definition": "<英口> 少量威士忌（白兰地）"
             },
             {
               "pos": "n.",
@@ -8034,7 +8034,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c美口\u003e 把…认定标出，把…归类"
+              "definition": "<美口> 把…认定标出，把…归类"
             },
             {
               "pos": "v.",
@@ -8046,7 +8046,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e给（新闻报道等）提供背景依据"
+              "definition": "<口>给（新闻报道等）提供背景依据"
             },
             {
               "pos": "v.",
@@ -8066,7 +8066,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c美口\u003e（棒）投出钉子球将（跑垒员）杀出局"
+              "definition": "<美口>（棒）投出钉子球将（跑垒员）杀出局"
             },
             {
               "pos": "v.",
@@ -8077,7 +8077,7 @@
               "definition": "上宽下窄的"
             }
           ],
-          "translation": "挂钩，挂钉\n桩\n钉子\n\u003c口\u003e 足，腿，假腿\n楔子，橛子，短桩\n借口，遁词，依据\n界桩\n限度，标定点\n弦钮，琴栓\n\u003c美俚\u003e裤子\n\u003c英\u003e晾衣夹子\n钢锥\n孔塞\n钉间间距\n尖爪，尖叉\n\u003c口\u003e全力投球，钉子球\n\u003c英口\u003e 少量威士忌\n标竿\n视为，看做\n\u003c美口\u003e 把…认定标出，把…归类\n使受约束，使遵守规则\n疾行\n\u003c口\u003e给提供背景依据\n使工资、价格等固定于某水平\n用钉固定，用夹子夹住，用楔子钉住\n用桩标出\n坚持不懈地奋力干\n\u003c美口\u003e投出钉子球将杀出局\n用得分枚记\n上宽下窄的",
+          "translation": "挂钩，挂钉\n桩\n钉子\n<口> 足，腿，假腿\n楔子，橛子，短桩\n借口，遁词，依据\n界桩\n限度，标定点\n弦钮，琴栓\n<美俚>裤子\n<英>晾衣夹子\n钢锥\n孔塞\n钉间间距\n尖爪，尖叉\n<口>全力投球，钉子球\n<英口> 少量威士忌\n标竿\n视为，看做\n<美口> 把…认定标出，把…归类\n使受约束，使遵守规则\n疾行\n<口>给提供背景依据\n使工资、价格等固定于某水平\n用钉固定，用夹子夹住，用楔子钉住\n用桩标出\n坚持不懈地奋力干\n<美口>投出钉子球将杀出局\n用得分枚记\n上宽下窄的",
           "examples": [
             {
               "en": "His work jacket hung on the peg in the kitchen.",
@@ -10040,7 +10040,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c英方\u003e 绳子，绞索"
+              "definition": "<英方> 绳子，绞索"
             },
             {
               "pos": "n.",
@@ -10051,7 +10051,7 @@
               "definition": "陶式反坦克导弹（亦作 Tow missile）"
             }
           ],
-          "translation": "拖，拉，牵引\n拉，牵引\n牵引，拖带\n拖行，被拖带\n牵引，拖，拉\n拖轮，抱曳车\n拖绳，拖链\n\u003c英方\u003e 绳子，绞索\n被拖的船\n陶式反坦克导弹（亦作 Tow missile）",
+          "translation": "拖，拉，牵引\n拉，牵引\n牵引，拖带\n拖行，被拖带\n牵引，拖，拉\n拖轮，抱曳车\n拖绳，拖链\n<英方> 绳子，绞索\n被拖的船\n陶式反坦克导弹（亦作 Tow missile）",
           "examples": [
             {
               "en": "They threatened to tow away my car.",
@@ -12997,11 +12997,11 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e 活动，工作，起作用"
+              "definition": "<口> 活动，工作，起作用"
             },
             {
               "pos": "v.",
-              "definition": "\u003c主英\u003e 给...标记号"
+              "definition": "<主英> 给...标记号"
             },
             {
               "pos": "v.",
@@ -13021,7 +13021,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c英口\u003e 滴答的一瞬间，一会儿"
+              "definition": "<英口> 滴答的一瞬间，一会儿"
             },
             {
               "pos": "n.",
@@ -13029,18 +13029,18 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e 赊账，赊欠"
+              "definition": "<口> 赊账，赊欠"
             },
             {
               "pos": "n.",
-              "definition": "\u003c英口\u003e 讨厌的人，可鄙的人"
+              "definition": "<英口> 讨厌的人，可鄙的人"
             },
             {
               "pos": "n.",
               "definition": "（坚质棉布做的）垫套，褥套"
             }
           ],
-          "translation": "打上钩，打对号\n发出滴答声，滴答地走时\n\u003c口\u003e 活动，工作，起作用\n\u003c主英\u003e 给...标记号\n做出…举动，有…的行为\n蜱，壁虱，扁虱\n记号，核对号\n滴答声\n\u003c英口\u003e 滴答的一瞬间，一会儿\n对号，钩号\n\u003c口\u003e 赊账，赊欠\n\u003c英口\u003e 讨厌的人，可鄙的人\n垫套，褥套",
+          "translation": "打上钩，打对号\n发出滴答声，滴答地走时\n<口> 活动，工作，起作用\n<主英> 给...标记号\n做出…举动，有…的行为\n蜱，壁虱，扁虱\n记号，核对号\n滴答声\n<英口> 滴答的一瞬间，一会儿\n对号，钩号\n<口> 赊账，赊欠\n<英口> 讨厌的人，可鄙的人\n垫套，褥套",
           "examples": [
             {
               "en": "I wound up the watch and listened to it tick.",
@@ -13481,7 +13481,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c书\u003e 纸面装订的，平装的"
+              "definition": "<书> 纸面装订的，平装的"
             },
             {
               "pos": "adj.",
@@ -13489,10 +13489,10 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c主英\u003e以平装本出版"
+              "definition": "<主英>以平装本出版"
             }
           ],
-          "translation": "平装本，平装书，简装书\n\u003c书\u003e 纸面装订的，平装的\n纸面平装本书籍的\n\u003c主英\u003e以平装本出版",
+          "translation": "平装本，平装书，简装书\n<书> 纸面装订的，平装的\n纸面平装本书籍的\n<主英>以平装本出版",
           "examples": [
             {
               "en": "The novel was reissued in paperback.",
@@ -13990,7 +13990,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c主英\u003e(士兵所穿的)作战服(尤指卡其服、迷彩服等) "
+              "definition": "<主英>(士兵所穿的)作战服(尤指卡其服、迷彩服等) "
             },
             {
               "pos": "vt.",
@@ -14009,7 +14009,7 @@
               "definition": "作战的，战斗的"
             }
           ],
-          "translation": "搏斗，打仗，战斗\n格斗\n\u003c主英\u003e作战服\n防止，减轻，抑制\n战斗，\n搏斗\n作战的，战斗的",
+          "translation": "搏斗，打仗，战斗\n格斗\n<主英>作战服\n防止，减轻，抑制\n战斗，\n搏斗\n作战的，战斗的",
           "examples": [
             {
               "en": "It was the end of a long combat.",
@@ -14442,14 +14442,14 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c旧\u003e平民的，属于平民的"
+              "definition": "<旧>平民的，属于平民的"
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e平民百姓，庶民"
+              "definition": "<古>平民百姓，庶民"
             }
           ],
-          "translation": "粗俗的，粗野的\n庸俗的\n下流的，猥亵的，诲淫的\n粗鲁的\n平庸的，平凡的\n不雅的\n乡土语的，方言的\n通行的，流行的\n\u003c旧\u003e平民的，属于平民的\n\u003c古\u003e平民百姓，庶民",
+          "translation": "粗俗的，粗野的\n庸俗的\n下流的，猥亵的，诲淫的\n粗鲁的\n平庸的，平凡的\n不雅的\n乡土语的，方言的\n通行的，流行的\n<旧>平民的，属于平民的\n<古>平民百姓，庶民",
           "examples": [
             {
               "en": "I think it's a very vulgar house.",
@@ -15175,7 +15175,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e上司，头头"
+              "definition": "<口>上司，头头"
             },
             {
               "pos": "n.",
@@ -15226,7 +15226,7 @@
               "definition": "首要地"
             }
           ],
-          "translation": "最高领导人\n酋长\n首领\n族长\n\u003c口\u003e上司，头头\n老板，先生\n主要部分，最有价值的部分\n纹章的上段，纹章上段的图记\n首席的\n主要的\n总的\n首要的\n最重要的\n为首的\n最高级别的\n主要地\n首要地",
+          "translation": "最高领导人\n酋长\n首领\n族长\n<口>上司，头头\n老板，先生\n主要部分，最有价值的部分\n纹章的上段，纹章上段的图记\n首席的\n主要的\n总的\n首要的\n最重要的\n为首的\n最高级别的\n主要地\n首要地",
           "examples": [
             {
               "en": "Unemployment was the chief cause of poverty.",
@@ -18487,7 +18487,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c印\u003e铅版，铅版浇铸，铅版印刷"
+              "definition": "<印>铅版，铅版浇铸，铅版印刷"
             },
             {
               "pos": "n.",
@@ -18499,7 +18499,7 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c印\u003e（用盲文凸版印制机）把……印制成盲文"
+              "definition": "<印>（用盲文凸版印制机）把……印制成盲文"
             },
             {
               "pos": "vt.",
@@ -18510,7 +18510,7 @@
               "definition": "对…形成模式化(或类型化)的看法"
             }
           ],
-          "translation": "刻板印象\n陈规，老一套\n\u003c印\u003e铅版，铅版浇铸，铅版印刷\n模式化观念\n对……产生成见\n\u003c印\u003e把……印制成盲文\n使成为陈规, 使成为老一套, 使变得刻板\n对…形成模式化的看法",
+          "translation": "刻板印象\n陈规，老一套\n<印>铅版，铅版浇铸，铅版印刷\n模式化观念\n对……产生成见\n<印>把……印制成盲文\n使成为陈规, 使成为老一套, 使变得刻板\n对…形成模式化的看法",
           "examples": [
             {
               "en": "There's always been a stereotype about successful businessmen.",
@@ -19078,10 +19078,10 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e令人敬畏的"
+              "definition": "<古>令人敬畏的"
             }
           ],
-          "translation": "畏惧\n担忧，忧虑\n厌恶，不愿\n畏惧，恐惧\n厌恶\n令人生畏的人，可怖的事物\n可怕的\n令人担忧的\n\u003c古\u003e令人敬畏的",
+          "translation": "畏惧\n担忧，忧虑\n厌恶，不愿\n畏惧，恐惧\n厌恶\n令人生畏的人，可怖的事物\n可怕的\n令人担忧的\n<古>令人敬畏的",
           "examples": [
             {
               "en": "My greatest dread is that my parents will find out.",
@@ -19227,7 +19227,7 @@
             "chase county",
             "Chase Budinger",
             "Chase Bank",
-            "JPMorgan Chase \u0026 Co"
+            "JPMorgan Chase & Co"
           ],
           "frequency": 340,
           "tags": [
@@ -21183,7 +21183,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c计\u003e光读取的，光存贮的"
+              "definition": "<计>光读取的，光存贮的"
             },
             {
               "pos": "adj.",
@@ -21195,10 +21195,10 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c电子\u003e需电磁波才能运行的"
+              "definition": "<电子>需电磁波才能运行的"
             }
           ],
-          "translation": "光的，光学的\n眼的，视力的，视觉的\n\u003c计\u003e光读取的，光存贮的\n有助于视力的，矫正视力的\n光效应艺术的，视幻艺术的\n\u003c电子\u003e需电磁波才能运行的",
+          "translation": "光的，光学的\n眼的，视力的，视觉的\n<计>光读取的，光存贮的\n有助于视力的，矫正视力的\n光效应艺术的，视幻艺术的\n<电子>需电磁波才能运行的",
           "examples": [
             {
               "en": "A sensor channels the light signal along an optical fibre.",
@@ -24111,7 +24111,7 @@
             "judgement notwithstanding the verdict",
             "Notwithstanding the foregoing",
             "notwithstanding despite prep",
-            "notwithstanding ad\u0026conj\u0026prep"
+            "notwithstanding ad&conj&prep"
           ],
           "frequency": 431,
           "tags": [
@@ -24737,7 +24737,7 @@
             },
             {
               "pos": "n.",
-              "definition": ".\u003c口\u003e ( 一次 ) 电话"
+              "definition": ".<口> ( 一次 ) 电话"
             },
             {
               "pos": "n.",
@@ -24761,7 +24761,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e给…打电话"
+              "definition": "<口>给…打电话"
             },
             {
               "pos": "v.",
@@ -24796,7 +24796,7 @@
               "definition": "（词语、想法或活动）时髦的"
             }
           ],
-          "translation": "嗡嗡声\n.\u003c口\u003e 电话\n蜂鸣声\n传闻，谣传\n信号声， 嗞嗞呼叫声\n唧唧喳喳的谈话声\n强烈情感\n\u003c口\u003e给…打电话\n发出嗡嗡声\n发出蜂鸣声\n飞近\n低空掠过\n用蜂鸣器\n充满兴奋\n说闲话\n时髦的",
+          "translation": "嗡嗡声\n.<口> 电话\n蜂鸣声\n传闻，谣传\n信号声， 嗞嗞呼叫声\n唧唧喳喳的谈话声\n强烈情感\n<口>给…打电话\n发出嗡嗡声\n发出蜂鸣声\n飞近\n低空掠过\n用蜂鸣器\n充满兴奋\n说闲话\n时髦的",
           "examples": [
             {
               "en": "I'll give you a buzz on Monday, OK?",
@@ -26124,22 +26124,22 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c心\u003e潜在的，隐性的"
+              "definition": "<心>潜在的，隐性的"
             },
             {
               "pos": "adj.",
-              "definition": "\u003c医\u003e潜伏的，隐性的"
+              "definition": "<医>潜伏的，隐性的"
             },
             {
               "pos": "adj.",
-              "definition": "\u003c植\u003e休眠的，潜伏的"
+              "definition": "<植>休眠的，潜伏的"
             },
             {
               "pos": "n.",
               "definition": "(犯罪现场等的)隐约指纹，潜指印"
             }
           ],
-          "translation": "潜伏的，潜在的，隐藏的，不易察觉的\n\u003c心\u003e潜在的，隐性的\n\u003c医\u003e潜伏的，隐性的\n\u003c植\u003e休眠的，潜伏的\n隐约指纹，潜指印",
+          "translation": "潜伏的，潜在的，隐藏的，不易察觉的\n<心>潜在的，隐性的\n<医>潜伏的，隐性的\n<植>休眠的，潜伏的\n隐约指纹，潜指印",
           "examples": [
             {
               "en": "These children have a huge reserve of latent talent.",
@@ -26344,7 +26344,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c旧\u003e 当海盗，从事劫掠"
+              "definition": "<旧> 当海盗，从事劫掠"
             },
             {
               "pos": "v.",
@@ -26371,7 +26371,7 @@
               "definition": "从事剽窃（或盗用）的"
             }
           ],
-          "translation": "海盗\n盗版者，盗印者\n道德败坏者，违法者\n侵犯专利权者，非法仿制者\n非法播音者\n\u003c旧\u003e 当海盗，从事劫掠\n盗印，窃用\n以海盗方式劫掠，抢掠\n挖\n盗版的，盗用的，剽窃的\n从事海盗活动的\n从事剽窃的",
+          "translation": "海盗\n盗版者，盗印者\n道德败坏者，违法者\n侵犯专利权者，非法仿制者\n非法播音者\n<旧> 当海盗，从事劫掠\n盗印，窃用\n以海盗方式劫掠，抢掠\n挖\n盗版的，盗用的，剽窃的\n从事海盗活动的\n从事剽窃的",
           "examples": [
             {
               "en": "Ed played at being a pirate.",
@@ -27447,11 +27447,11 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e优美的, 雅致的"
+              "definition": "<古>优美的, 雅致的"
             },
             {
               "pos": "adj.",
-              "definition": "\u003c废\u003e虔诚的，受眷顾的"
+              "definition": "<废>虔诚的，受眷顾的"
             },
             {
               "pos": "adj.",
@@ -27462,7 +27462,7 @@
               "definition": "（表示惊异）天哪，老天爷，啊呀"
             }
           ],
-          "translation": "亲切的\n仁慈的，宽恕的\n仁慈的，宽厚的\n和蔼的，慈祥的，有礼貌的，宽厚的\n\u003c古\u003e优美的, 雅致的\n\u003c废\u003e虔诚的，受眷顾的\n豪华舒适的，富贵安逸的\n天哪，老天爷，啊呀",
+          "translation": "亲切的\n仁慈的，宽恕的\n仁慈的，宽厚的\n和蔼的，慈祥的，有礼貌的，宽厚的\n<古>优美的, 雅致的\n<废>虔诚的，受眷顾的\n豪华舒适的，富贵安逸的\n天哪，老天爷，啊呀",
           "examples": [
             {
               "en": "She is a lovely and gracious woman.",
@@ -27516,7 +27516,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c物\u003e分裂（原子） "
+              "definition": "<物>分裂（原子） "
             },
             {
               "pos": "v.",
@@ -27524,11 +27524,11 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e使经济上失败，使破产"
+              "definition": "<口>使经济上失败，使破产"
             },
             {
               "pos": "v.",
-              "definition": "\u003c旧\u003e破产"
+              "definition": "<旧>破产"
             },
             {
               "pos": "v.",
@@ -27568,7 +27568,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e轰动的演出，巨大的成功"
+              "definition": "<口>轰动的演出，巨大的成功"
             },
             {
               "pos": "n.",
@@ -27584,14 +27584,14 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c口\u003e轰动一时的，极为成功的"
+              "definition": "<口>轰动一时的，极为成功的"
             },
             {
               "pos": "adv.",
               "definition": "轰然"
             }
           ],
-          "translation": "粉碎\n粉碎，使破灭\n打碎，打破，破碎\n打破\n捣毁\n撞毁\n\u003c物\u003e分裂\n压扁，压平，压碎\n\u003c口\u003e使经济上失败，使破产\n\u003c旧\u003e破产\n撞开，击穿，闯过\n猛烈撞击，猛烈碰撞\n打高压球，猛扣\n打碎\n破碎\n扣球，高压球\n猛击，猛撞\n撞车\n破灭，垮台\n\u003c口\u003e轰动的演出，巨大的成功\n十分走红的歌曲\n破碎的哗啦声\n斯马喜饮料\n\u003c口\u003e轰动一时的，极为成功的\n轰然",
+          "translation": "粉碎\n粉碎，使破灭\n打碎，打破，破碎\n打破\n捣毁\n撞毁\n<物>分裂\n压扁，压平，压碎\n<口>使经济上失败，使破产\n<旧>破产\n撞开，击穿，闯过\n猛烈撞击，猛烈碰撞\n打高压球，猛扣\n打碎\n破碎\n扣球，高压球\n猛击，猛撞\n撞车\n破灭，垮台\n<口>轰动的演出，巨大的成功\n十分走红的歌曲\n破碎的哗啦声\n斯马喜饮料\n<口>轰动一时的，极为成功的\n轰然",
           "examples": [
             {
               "en": "They did not need to smash paint and canvas; they went beyond this to smash the whole continuity of logical thought.",
@@ -30927,14 +30927,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美\u003e须穿礼服的社交集会"
+              "definition": "<美>须穿礼服的社交集会"
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e夜礼服"
+              "definition": "<口>夜礼服"
             }
           ],
-          "translation": "正式的\n正规的\n庄重的\n整齐的\n适合正式场合的\n方式上的\n合乎规矩的\n\u003c美\u003e须穿礼服的社交集会\n\u003c口\u003e夜礼服",
+          "translation": "正式的\n正规的\n庄重的\n整齐的\n适合正式场合的\n方式上的\n合乎规矩的\n<美>须穿礼服的社交集会\n<口>夜礼服",
           "examples": [
             {
               "en": "He wore formal evening dress.",
@@ -31201,10 +31201,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c音\u003e延音"
+              "definition": "<音>延音"
             }
           ],
-          "translation": "维持，保持\n为……提供食物，维持\n支持，给……以力量\n支撑，承受\n承担\n蒙受，遭受\n证明，证实\n确认……为正当, 认可\n支援，救济\n扮演，充分表演\n经受\n经受，承受住\n赡养，供养\n\u003c音\u003e延音",
+          "translation": "维持，保持\n为……提供食物，维持\n支持，给……以力量\n支撑，承受\n承担\n蒙受，遭受\n证明，证实\n确认……为正当, 认可\n支援，救济\n扮演，充分表演\n经受\n经受，承受住\n赡养，供养\n<音>延音",
           "examples": [
             {
               "en": "Which planets can sustain life?",
@@ -33895,7 +33895,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c主美\u003e殡仪馆的停尸室"
+              "definition": "<主美>殡仪馆的停尸室"
             },
             {
               "pos": "n.",
@@ -33914,7 +33914,7 @@
               "definition": "按时去做礼拜的"
             }
           ],
-          "translation": "小教堂\n教堂\n葬礼祈祷间，祈祷室\n唱诗班，管弦乐队\n宗教仪式\n私人祈祷室\n殡仪馆\n\u003c主美\u003e殡仪馆的停尸室\n分堂\n工会分会，工会分会会员\n非国教的\n按时去做礼拜的",
+          "translation": "小教堂\n教堂\n葬礼祈祷间，祈祷室\n唱诗班，管弦乐队\n宗教仪式\n私人祈祷室\n殡仪馆\n<主美>殡仪馆的停尸室\n分堂\n工会分会，工会分会会员\n非国教的\n按时去做礼拜的",
           "examples": [
             {
               "en": "We married in the college chapel.",
@@ -35179,7 +35179,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c方\u003e使绊倒，摔倒"
+              "definition": "<方>使绊倒，摔倒"
             },
             {
               "pos": "v.",
@@ -35202,7 +35202,7 @@
               "definition": "发吱喳声（拟声）"
             }
           ],
-          "translation": "缺口，缺损处\n筹码\n筹码，讨价还价的资本\n碎屑，碎片，碎渣\n芯片，集成电路片\n薄片\n油炸土豆条，炸薯条\n玉米片\n油炸土豆片，炸薯片\n撮球，切球\n木条\n高球\n琐碎之物\n干焦的东西\n无价值的东西\n摔倒对手的技巧\n近穴球\n吱喳声\n打破，弄缺，被损坏\n切下，削下，凿下\n\u003c方\u003e使绊倒，摔倒\n近穴击球\n植入微芯片\n打高球\n将切条\n发吱喳声",
+          "translation": "缺口，缺损处\n筹码\n筹码，讨价还价的资本\n碎屑，碎片，碎渣\n芯片，集成电路片\n薄片\n油炸土豆条，炸薯条\n玉米片\n油炸土豆片，炸薯片\n撮球，切球\n木条\n高球\n琐碎之物\n干焦的东西\n无价值的东西\n摔倒对手的技巧\n近穴球\n吱喳声\n打破，弄缺，被损坏\n切下，削下，凿下\n<方>使绊倒，摔倒\n近穴击球\n植入微芯片\n打高球\n将切条\n发吱喳声",
           "examples": [
             {
               "en": "The cup had a small chip.",
@@ -35538,14 +35538,14 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c北美\u003e经历转变过程"
+              "definition": "<北美>经历转变过程"
             },
             {
               "pos": "v.",
               "definition": "过渡"
             }
           ],
-          "translation": "过渡\n转变\n变迁\n变革\n\u003c北美\u003e经历转变过程",
+          "translation": "过渡\n转变\n变迁\n变革\n<北美>经历转变过程",
           "examples": [
             {
               "en": "The transition from school to work can be difficult.",
@@ -36413,7 +36413,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美\u003e急诊室"
+              "definition": "<美>急诊室"
             },
             {
               "pos": "n.",
@@ -36428,7 +36428,7 @@
               "definition": "应急的"
             }
           ],
-          "translation": "突发事件，紧急情况\n\u003c美\u003e急诊室\n急症\n紧急情况下使用的, 紧急的\n应急的",
+          "translation": "突发事件，紧急情况\n<美>急诊室\n急症\n紧急情况下使用的, 紧急的\n应急的",
           "examples": [
             {
               "en": "Emergency generators cut in.",
@@ -36474,7 +36474,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c口\u003e迟钝的，愚蠢的"
+              "definition": "<口>迟钝的，愚蠢的"
             },
             {
               "pos": "adj.",
@@ -36498,10 +36498,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e\u003c诗\u003e昏暗，幽暗"
+              "definition": "<古><诗>昏暗，幽暗"
             }
           ],
-          "translation": "暗淡的，昏暗的\n不清晰的，模糊的\n不分明的，朦胧的\n差的，模糊不清的\n\u003c口\u003e迟钝的，愚蠢的\n不利的，灰暗失色的，不光明的\n无光泽的，不鲜亮的\n变暗淡，变微弱，变昏暗\n减弱，变淡漠，失去光泽\n减光，近光\n\u003c古\u003e\u003c诗\u003e昏暗，幽暗",
+          "translation": "暗淡的，昏暗的\n不清晰的，模糊的\n不分明的，朦胧的\n差的，模糊不清的\n<口>迟钝的，愚蠢的\n不利的，灰暗失色的，不光明的\n无光泽的，不鲜亮的\n变暗淡，变微弱，变昏暗\n减弱，变淡漠，失去光泽\n减光，近光\n<古><诗>昏暗，幽暗",
           "examples": [
             {
               "en": "The room was dim and cool and quiet.",
@@ -39767,7 +39767,7 @@
             "Tuition and Fees",
             "tuition fee",
             "tuition assistance",
-            "Tuition \u0026 Fee Waiver",
+            "Tuition & Fee Waiver",
             "College Tuition"
           ],
           "frequency": 716,
@@ -40279,7 +40279,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c口\u003e 有点不舒服的，稍感眩晕的"
+              "definition": "<口> 有点不舒服的，稍感眩晕的"
             },
             {
               "pos": "n.",
@@ -40291,10 +40291,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c印\u003e（常用成套活字外的）特殊活字"
+              "definition": "<印>（常用成套活字外的）特殊活字"
             }
           ],
-          "translation": "特殊的，特别的\n特有的\n奇怪的，怪异的，不寻常的\n\u003c口\u003e 有点不舒服的，稍感眩晕的\n专有财产，专有特权\n特殊教会\n\u003c印\u003e特殊活字",
+          "translation": "特殊的，特别的\n特有的\n奇怪的，怪异的，不寻常的\n<口> 有点不舒服的，稍感眩晕的\n专有财产，专有特权\n特殊教会\n<印>特殊活字",
           "examples": [
             {
               "en": "I had a peculiar feeling we'd met before.",
@@ -42897,7 +42897,7 @@
             },
             {
               "pos": "adv.",
-              "definition": "\u003c古\u003e靠什么，如何"
+              "definition": "<古>靠什么，如何"
             },
             {
               "pos": "adv.",
@@ -42912,7 +42912,7 @@
               "definition": "在那个方面"
             }
           ],
-          "translation": "由此\n由于\n借以\n\u003c古\u003e靠什么，如何\n凭此\n在哪方\n在那个方面",
+          "translation": "由此\n由于\n借以\n<古>靠什么，如何\n凭此\n在哪方\n在那个方面",
           "examples": [
             {
               "en": "They have introduced a new system whereby all employees must undergo regular training.",
@@ -46483,7 +46483,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美\u003e（陆军）专业人员"
+              "definition": "<美>（陆军）专业人员"
             },
             {
               "pos": "n.",
@@ -46491,7 +46491,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c生\u003e专化物种"
+              "definition": "<生>专化物种"
             },
             {
               "pos": "n.",
@@ -46506,7 +46506,7 @@
               "definition": "专家的，有专门学识的"
             }
           ],
-          "translation": "专家\n\u003c美\u003e专业人员\n专科医生\n\u003c生\u003e专化物种\n专营特定证券的经纪人\n专业的，专科的\n专家的，有专门学识的",
+          "translation": "专家\n<美>专业人员\n专科医生\n<生>专化物种\n专营特定证券的经纪人\n专业的，专科的\n专家的，有专门学识的",
           "examples": [
             {
               "en": "My doctor referred me to a specialist.",
@@ -46540,7 +46540,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c计\u003e后台"
+              "definition": "<计>后台"
             },
             {
               "pos": "n.",
@@ -46568,10 +46568,10 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e为...提供背景资料"
+              "definition": "<口>为...提供背景资料"
             }
           ],
-          "translation": "背景\n\u003c计\u003e后台\n背景音乐\n出身背景，经历\n底子，底色\n背景情况\n不引人注意的地方\n作...的背景\n\u003c口\u003e为...提供背景资料",
+          "translation": "背景\n<计>后台\n背景音乐\n出身背景，经历\n底子，底色\n背景情况\n不引人注意的地方\n作...的背景\n<口>为...提供背景资料",
           "examples": [
             {
               "en": "Her background militates against her.",
@@ -47177,7 +47177,7 @@
               "zh": "这一装置受专利保护。"
             },
             {
-              "en": "P\u0026G applied for a patent on its cookies.",
+              "en": "P&G applied for a patent on its cookies.",
               "zh": "宝洁公司为其饼干申请了专利。"
             }
           ],
@@ -47516,7 +47516,7 @@
             "hot and sour soup",
             "Whisky Sour",
             "sweet and sour pork",
-            "sweet \u0026 sour soup"
+            "sweet & sour soup"
           ],
           "frequency": 852,
           "tags": [
@@ -52404,7 +52404,7 @@
             "Justice and Equality Movement",
             "equality and mutual benefit",
             "equality before the law",
-            "Equality \u0026 Identity"
+            "Equality & Identity"
           ],
           "frequency": 941,
           "tags": [
@@ -52969,7 +52969,7 @@
             "dedicate to",
             "dedicate oneself to",
             "They dedicate their lives",
-            "FOCUS \u0026 DEDICATE",
+            "FOCUS & DEDICATE",
             "dedicate money to"
           ],
           "frequency": 951,
@@ -54343,7 +54343,7 @@
             "shrug off",
             "Shrug ones shoulders",
             "shrug vt",
-            "shrug vt\u0026vi",
+            "shrug vt&vi",
             "Shrug Tides"
           ],
           "frequency": 977,
@@ -57024,7 +57024,7 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c古\u003e照管，监督，监视"
+              "definition": "<古>照管，监督，监视"
             },
             {
               "pos": "vt.",
@@ -57040,7 +57040,7 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c古\u003e用歹毒的目光看，施魔法于"
+              "definition": "<古>用歹毒的目光看，施魔法于"
             },
             {
               "pos": "n.",
@@ -57055,7 +57055,7 @@
               "definition": "供眺望的场所，可眺望四周的高地"
             }
           ],
-          "translation": "没有注意到，忽视，忽略\n眺望，俯瞰\n察看，细看，检查\n不予理会，视而不见\n\u003c古\u003e照管，监督，监视\n宽容，宽恕\n高耸于…之上\n对不予考虑\n\u003c古\u003e用歹毒的目光看，施魔法于\n忽视，忽略，看漏\n从高处眺望到的景色\n供眺望的场所，可眺望四周的高地",
+          "translation": "没有注意到，忽视，忽略\n眺望，俯瞰\n察看，细看，检查\n不予理会，视而不见\n<古>照管，监督，监视\n宽容，宽恕\n高耸于…之上\n对不予考虑\n<古>用歹毒的目光看，施魔法于\n忽视，忽略，看漏\n从高处眺望到的景色\n供眺望的场所，可眺望四周的高地",
           "examples": [
             {
               "en": "Houses which overlook the lake cost more.",
@@ -57815,14 +57815,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c矿\u003e （付给矿工或矿主一部分产品或其等值作为报酬的）份子，份额分配"
+              "definition": "<矿> （付给矿工或矿主一部分产品或其等值作为报酬的）份子，份额分配"
             },
             {
               "pos": "n.",
               "definition": "勒索的钱财"
             }
           ],
-          "translation": "礼物，颂辞，行为\n贡品，贡金\n进贡，进贡的义务\n致敬，颂辞，悼念，致哀，吊唁礼物\n体现，显示\n贡税, 贡赋\n\u003c矿\u003e 份子，份额分配\n勒索的钱财",
+          "translation": "礼物，颂辞，行为\n贡品，贡金\n进贡，进贡的义务\n致敬，颂辞，悼念，致哀，吊唁礼物\n体现，显示\n贡税, 贡赋\n<矿> 份子，份额分配\n勒索的钱财",
           "examples": [
             {
               "en": "The director paid tribute to all she had done for the charity.",
@@ -57909,7 +57909,7 @@
         {
           "word": "subordinate",
           "uk_phonetic": "/sə'bɔːdɪnət/",
-          "us_phonetic": "/səˈbɔːdɪnɪt (for n. \u0026adj.) ; səˈbɔːdɪˌnet (for v.)/",
+          "us_phonetic": "/səˈbɔːdɪnɪt (for n. &adj.) ; səˈbɔːdɪˌnet (for v.)/",
           "definitions": [
             {
               "pos": "n.",
@@ -58304,7 +58304,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c生\u003e亲和的"
+              "definition": "<生>亲和的"
             },
             {
               "pos": "adj.",
@@ -58324,7 +58324,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c植\u003e可异花受精的，可嫁接的"
+              "definition": "<植>可异花受精的，可嫁接的"
             },
             {
               "pos": "n.",
@@ -58335,7 +58335,7 @@
               "definition": "兼容(计算)机"
             }
           ],
-          "translation": "兼容的，可共存的\n\u003c生\u003e亲和的\n协调一致的\n关系好的，和睦相处的\n合得来的，意气相投的\n可共用的\n\u003c植\u003e可异花受精的，可嫁接的\n计算机兼容设备\n兼容机",
+          "translation": "兼容的，可共存的\n<生>亲和的\n协调一致的\n关系好的，和睦相处的\n合得来的，意气相投的\n可共用的\n<植>可异花受精的，可嫁接的\n计算机兼容设备\n兼容机",
           "examples": [
             {
               "en": "The new system will be compatible with existing equipment.",
@@ -58650,7 +58650,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c英\u003e（吉卜赛人的）大篷车"
+              "definition": "<英>（吉卜赛人的）大篷车"
             },
             {
               "pos": "n.",
@@ -58666,7 +58666,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c主英\u003e（网球）优势分"
+              "definition": "<主英>（网球）优势分"
             },
             {
               "pos": "v.",
@@ -58677,7 +58677,7 @@
               "definition": "搭货车旅行"
             }
           ],
-          "translation": "面包车\n厢式货车\n客货车\n车厢\n前卫，前锋\n先锋，前驱\n\u003c英\u003e大篷车\n轻型汽车\n拖挂载客车厢\n旅客吊舱\n\u003c主英\u003e优势分\n选；用车搬运\n搭货车旅行",
+          "translation": "面包车\n厢式货车\n客货车\n车厢\n前卫，前锋\n先锋，前驱\n<英>大篷车\n轻型汽车\n拖挂载客车厢\n旅客吊舱\n<主英>优势分\n选；用车搬运\n搭货车旅行",
           "examples": [
             {
               "en": "The driver got out of his van.",
@@ -59669,7 +59669,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c化\u003e（使）取代"
+              "definition": "<化>（使）取代"
             },
             {
               "pos": "v.",
@@ -59677,7 +59677,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c语\u003e替代（形式），代用词，代用语"
+              "definition": "<语>替代（形式），代用词，代用语"
             },
             {
               "pos": "n.",
@@ -59693,7 +59693,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c海\u003e(用于重复桅杆信号旗信号的)代用小信号旗, 代用旗"
+              "definition": "<海>(用于重复桅杆信号旗信号的)代用小信号旗, 代用旗"
             },
             {
               "pos": "n.",
@@ -59701,11 +59701,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c矿\u003e转接器"
+              "definition": "<矿>转接器"
             },
             {
               "pos": "n.",
-              "definition": "\u003c苏格兰\u003e\u003c律\u003e副职"
+              "definition": "<苏格兰><律>副职"
             },
             {
               "pos": "adj.",
@@ -59720,7 +59720,7 @@
               "definition": "由代用品构成的，用代用品的"
             }
           ],
-          "translation": "代替，代用\n接替，替代\n\u003c化\u003e取代\n派……接替，由……替代\n\u003c语\u003e替代，代用词，代用语\n代用品，代替者\n替补队员\n代替者，替换者\n\u003c海\u003e代用小信号旗, 代用旗\n应征入伍者\n\u003c矿\u003e转接器\n\u003c苏格兰\u003e\u003c律\u003e副职\n代替的，代用的\n替补的\n由代用品构成的，用代用品的",
+          "translation": "代替，代用\n接替，替代\n<化>取代\n派……接替，由……替代\n<语>替代，代用词，代用语\n代用品，代替者\n替补队员\n代替者，替换者\n<海>代用小信号旗, 代用旗\n应征入伍者\n<矿>转接器\n<苏格兰><律>副职\n代替的，代用的\n替补的\n由代用品构成的，用代用品的",
           "examples": [
             {
               "en": "He was brought on as (a) substitute after half-time.",
@@ -61203,11 +61203,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c空\u003e翼展"
+              "definition": "<空>翼展"
             },
             {
               "pos": "n.",
-              "definition": "\u003c南非口\u003e很，非常"
+              "definition": "<南非口>很，非常"
             },
             {
               "pos": "n.",
@@ -61239,11 +61239,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c海\u003e跨绳"
+              "definition": "<海>跨绳"
             },
             {
               "pos": "n.",
-              "definition": "\u003c数\u003e生成空间"
+              "definition": "<数>生成空间"
             },
             {
               "pos": "n.",
@@ -61291,7 +61291,7 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c数\u003e生成，张成"
+              "definition": "<数>生成，张成"
             },
             {
               "pos": "vt.",
@@ -61315,7 +61315,7 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c美\u003e 尺蠖般蠕动"
+              "definition": "<美> 尺蠖般蠕动"
             },
             {
               "pos": "vt.",
@@ -61326,7 +61326,7 @@
               "definition": "完全地"
             }
           ],
-          "translation": "跨度，范围\n跨距，宽度\n\u003c空\u003e翼展\n\u003c南非口\u003e很，非常\n全长\n持续时间\n持续时间，时间阶段\n拉紧，张紧\n指距，一拃宽\n一群，一伙\n小范围，短距离\n\u003c海\u003e跨绳\n\u003c数\u003e生成空间\n墩距\n缚住，扎牢\n套上—段时间，短促的时间\n共轭马\n包括的种类\n极差\n共轭骡\n共轭牛\n跨越，横跨\n持续，包括\n包括\n\u003c数\u003e生成，张成\n测量\n持续\n涵盖\n贯穿\n在…上架桥\n\u003c美\u003e 尺蠖般蠕动\n用手环绕\n完全地",
+          "translation": "跨度，范围\n跨距，宽度\n<空>翼展\n<南非口>很，非常\n全长\n持续时间\n持续时间，时间阶段\n拉紧，张紧\n指距，一拃宽\n一群，一伙\n小范围，短距离\n<海>跨绳\n<数>生成空间\n墩距\n缚住，扎牢\n套上—段时间，短促的时间\n共轭马\n包括的种类\n极差\n共轭骡\n共轭牛\n跨越，横跨\n持续，包括\n包括\n<数>生成，张成\n测量\n持续\n涵盖\n贯穿\n在…上架桥\n<美> 尺蠖般蠕动\n用手环绕\n完全地",
           "examples": [
             {
               "en": "The bridge crosses the river in a single span.",
@@ -64017,7 +64017,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e著名的，独特的"
+              "definition": "<古>著名的，独特的"
             },
             {
               "pos": "adj.",
@@ -64028,7 +64028,7 @@
               "definition": "有识别力的"
             }
           ],
-          "translation": "区分，辨别\n歧视\n区别对待\n\u003c古\u003e著名的，独特的\n有区别的\n有识别力的",
+          "translation": "区分，辨别\n歧视\n区别对待\n<古>著名的，独特的\n有区别的\n有识别力的",
           "examples": [
             {
               "en": "When do babies learn to discriminate voices?",
@@ -64569,7 +64569,7 @@
           ],
           "collocations": [
             "Command Prompt",
-            "Command \u0026 Conquer",
+            "Command & Conquer",
             "Command Line",
             "Command Pattern",
             "command economy"
@@ -64643,7 +64643,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e（可鄙、可笑的）行为，举动"
+              "definition": "<口>（可鄙、可笑的）行为，举动"
             },
             {
               "pos": "n.",
@@ -64670,7 +64670,7 @@
               "definition": "性能卓越的，高性能的"
             }
           ],
-          "translation": "表演，演出\n进行，施行\n表现，性能，业绩，工作情况\n履行，执行，完成\n\u003c口\u003e行为，举动\n事情，成绩，作品\n艺术上的表现，演技\n演技\n麻烦，忙乱\n语言表现，言语行为\n性能卓越的，高性能的",
+          "translation": "表演，演出\n进行，施行\n表现，性能，业绩，工作情况\n履行，执行，完成\n<口>行为，举动\n事情，成绩，作品\n艺术上的表现，演技\n演技\n麻烦，忙乱\n语言表现，言语行为\n性能卓越的，高性能的",
           "examples": [
             {
               "en": "Her performance was mesmerizing.",
@@ -68189,14 +68189,14 @@
             },
             {
               "pos": "v.",
-              "definition": ".\u003c美口\u003e（黑人用语）吹牛，吹捧，辱骂"
+              "definition": ".<美口>（黑人用语）吹牛，吹捧，辱骂"
             },
             {
               "pos": "v.",
-              "definition": "\u003c美俚\u003e冒充内行，装蒜"
+              "definition": "<美俚>冒充内行，装蒜"
             }
           ],
-          "translation": "代表，表示，象征\n表示，表明\n表达，显示\n说明，意思是\n预示\n具有重要性，要紧\n.\u003c美口\u003e吹牛，吹捧，辱骂\n\u003c美俚\u003e冒充内行，装蒜",
+          "translation": "代表，表示，象征\n表示，表明\n表达，显示\n说明，意思是\n预示\n具有重要性，要紧\n.<美口>吹牛，吹捧，辱骂\n<美俚>冒充内行，装蒜",
           "examples": [
             {
               "en": "He nodded to signify that he agreed.",
@@ -68348,7 +68348,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e命运女神"
+              "definition": "<古>命运女神"
             },
             {
               "pos": "n.",
@@ -68359,7 +68359,7 @@
               "definition": "宿命"
             }
           ],
-          "translation": "奇怪的\n诡异的\n怪诞的\n奇异的\n离奇的\n不寻常的\n命运\n\u003c古\u003e命运女神\n厄运\n宿命",
+          "translation": "奇怪的\n诡异的\n怪诞的\n奇异的\n离奇的\n不寻常的\n命运\n<古>命运女神\n厄运\n宿命",
           "examples": [
             {
               "en": "Some of the music was weird.",
@@ -69049,7 +69049,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e（大量随意快速地）涂抹"
+              "definition": "<口>（大量随意快速地）涂抹"
             },
             {
               "pos": "v.",
@@ -69057,7 +69057,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e对…提起诉讼，向…送交（传票等）"
+              "definition": "<口>对…提起诉讼，向…送交（传票等）"
             },
             {
               "pos": "v.",
@@ -69085,7 +69085,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e浓妆"
+              "definition": "<口>浓妆"
             },
             {
               "pos": "n.",
@@ -69097,7 +69097,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c南非\u003e无力的，无约束力的"
+              "definition": "<南非>无力的，无约束力的"
             },
             {
               "pos": "adj.",
@@ -69128,7 +69128,7 @@
               "definition": "径直"
             }
           ],
-          "translation": "打，拍，掴\n掴，拍打\n惩罚，课\n\u003c口\u003e涂抹\n口头攻击，斥责\n\u003c口\u003e对…提起诉讼，向…送交\n啪的一声放下，随意扔放\n啪地击打\n打击，挫伤\n拍打声，类似拍打的声音\n开口，缺口\n\u003c口\u003e浓妆\n便妆\n山丘间的小道\n\u003c南非\u003e无力的，无约束力的\n松软的\n水分过多的，软塌塌的\n无能的，效率不高的\n正好\n恰好\n猛然\n径直",
+          "translation": "打，拍，掴\n掴，拍打\n惩罚，课\n<口>涂抹\n口头攻击，斥责\n<口>对…提起诉讼，向…送交\n啪的一声放下，随意扔放\n啪地击打\n打击，挫伤\n拍打声，类似拍打的声音\n开口，缺口\n<口>浓妆\n便妆\n山丘间的小道\n<南非>无力的，无约束力的\n松软的\n水分过多的，软塌塌的\n无能的，效率不高的\n正好\n恰好\n猛然\n径直",
           "examples": [
             {
               "en": "She gave him a slap across the face.",
@@ -70697,7 +70697,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c电\u003e\u003c电子\u003e互相的"
+              "definition": "<电><电子>互相的"
             },
             {
               "pos": "adj.",
@@ -70728,7 +70728,7 @@
               "definition": "互助公司"
             }
           ],
-          "translation": "相互的\n共同的\n\u003c电\u003e\u003c电子\u003e互相的\n彼此的\n互助的\n共有的\n亲密的\n共同的朋友\n互助基金\n互助公司",
+          "translation": "相互的\n共同的\n<电><电子>互相的\n彼此的\n互助的\n共有的\n亲密的\n共同的朋友\n互助基金\n互助公司",
           "examples": [
             {
               "en": "We met at the home of a mutual friend.",
@@ -73184,10 +73184,10 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c英\u003e专供土地占有者使用的"
+              "definition": "<英>专供土地占有者使用的"
             }
           ],
-          "translation": "工作，职业\n占领，控制\n使用，居住，占用\n消遣，业余活动\n\u003c英\u003e专供土地占有者使用的",
+          "translation": "工作，职业\n占领，控制\n使用，居住，占用\n消遣，业余活动\n<英>专供土地占有者使用的",
           "examples": [
             {
               "en": "Her main occupation seems to be shopping.",
@@ -73798,10 +73798,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c心\u003e投射，推断"
+              "definition": "<心>投射，推断"
             }
           ],
-          "translation": "驱逐，逐出，排斥\n喷射\n把…弹射出来\n剥夺的租用权\n弹射出来\n\u003c心\u003e投射，推断",
+          "translation": "驱逐，逐出，排斥\n喷射\n把…弹射出来\n剥夺的租用权\n弹射出来\n<心>投射，推断",
           "examples": [
             {
               "en": "Officials used guard dogs to eject the protesters.",
@@ -74794,10 +74794,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美俚\u003e扒手"
+              "definition": "<美俚>扒手"
             }
           ],
-          "translation": "天主教的\n天主教教徒的\n包罗万象的，广泛的\n宽容的, 开明的, 不存偏见的\n基督教会的\n全体基督教徒的\n天主教教徒\n普世性基督教教徒\n\u003c美俚\u003e扒手",
+          "translation": "天主教的\n天主教教徒的\n包罗万象的，广泛的\n宽容的, 开明的, 不存偏见的\n基督教会的\n全体基督教徒的\n天主教教徒\n普世性基督教教徒\n<美俚>扒手",
           "examples": [
             {
               "en": "Are they Catholic or Protestant?",
@@ -74831,7 +74831,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c数\u003e偏的"
+              "definition": "<数>偏的"
             },
             {
               "pos": "adj.",
@@ -74843,18 +74843,18 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c音\u003e分音（指泛音列诸音）"
+              "definition": "<音>分音（指泛音列诸音）"
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e部分托牙，部分假牙"
+              "definition": "<口>部分托牙，部分假牙"
             },
             {
               "pos": "vt.",
               "definition": "（在统计相关中）排除（一个或几个有关变量）的影响"
             }
           ],
-          "translation": "部分的，不完全的\n\u003c数\u003e偏的\n偏向一方的，偏袒的，不公平的\n偏爱的，癖好的\n\u003c音\u003e分音\n\u003c口\u003e部分托牙，部分假牙\n排除的影响",
+          "translation": "部分的，不完全的\n<数>偏的\n偏向一方的，偏袒的，不公平的\n偏爱的，癖好的\n<音>分音\n<口>部分托牙，部分假牙\n排除的影响",
           "examples": [
             {
               "en": "I might be accused of being partial.",
@@ -76816,11 +76816,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c律\u003e形式，式样"
+              "definition": "<律>形式，式样"
             },
             {
               "pos": "n.",
-              "definition": "\u003c物\u003e核素"
+              "definition": "<物>核素"
             },
             {
               "pos": "n.",
@@ -76831,7 +76831,7 @@
               "definition": "物种上的"
             }
           ],
-          "translation": "种，物种\n\u003c律\u003e形式，式样\n\u003c物\u003e核素\n面包和圣酒\n物种上的",
+          "translation": "种，物种\n<律>形式，式样\n<物>核素\n面包和圣酒\n物种上的",
           "examples": [
             {
               "en": "This species is extremely rare.",
@@ -77299,11 +77299,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c核\u003e榭"
+              "definition": "<核>榭"
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e兽窝，兽穴"
+              "definition": "<古>兽窝，兽穴"
             },
             {
               "pos": "n.",
@@ -77359,7 +77359,7 @@
             },
             {
               "pos": "vt.",
-              "definition": "\u003c口\u003e与…离婚"
+              "definition": "<口>与…离婚"
             },
             {
               "pos": "vt.",
@@ -77386,7 +77386,7 @@
               "definition": "散发出光"
             }
           ],
-          "translation": "棚，小屋\n梭口， 梭道\n厂房，库房\n简易房，货棚\n分水岭，高地山脊\n挤奶棚\n剪羊毛棚\n\u003c核\u003e榭\n\u003c古\u003e兽窝，兽穴\n脱落之物\n流\n去除，摆脱\n摆脱，去除\n下跌\n流出，溢出\n发出，摄发\n使落下，使掉下\n切断\n解雇\n掉落\n蜕\n分散，散开\n\u003c口\u003e与…离婚\n倾吐，吐露\n一连串地排出\n造成伤亡\n把…置于棚内\n使淌过而不透\n散发出光",
+          "translation": "棚，小屋\n梭口， 梭道\n厂房，库房\n简易房，货棚\n分水岭，高地山脊\n挤奶棚\n剪羊毛棚\n<核>榭\n<古>兽窝，兽穴\n脱落之物\n流\n去除，摆脱\n摆脱，去除\n下跌\n流出，溢出\n发出，摄发\n使落下，使掉下\n切断\n解雇\n掉落\n蜕\n分散，散开\n<口>与…离婚\n倾吐，吐露\n一连串地排出\n造成伤亡\n把…置于棚内\n使淌过而不透\n散发出光",
           "examples": [
             {
               "en": "He was discovered hiding in a shed.",
@@ -78953,7 +78953,7 @@
           "collocations": [
             "contemporary literature",
             "Museum of Contemporary Art",
-            "Contemporary R\u0026B",
+            "Contemporary R&B",
             "Contemporary fantasy",
             "contemporary classical music"
           ],
@@ -84600,7 +84600,7 @@
             }
           ],
           "collocations": [
-            "Lilo \u0026 Stitch",
+            "Lilo & Stitch",
             "BACK STITCH",
             "BLIND STITCH",
             "LOCK STITCH",
@@ -86617,7 +86617,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c统\u003e显著的, 有效的"
+              "definition": "<统>显著的, 有效的"
             },
             {
               "pos": "adj.",
@@ -86641,14 +86641,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e有意义的事物"
+              "definition": "<古>有意义的事物"
             },
             {
               "pos": "n.",
               "definition": "标志, 象征"
             }
           ],
-          "translation": "重要的, 有重大意义的\n显著的, 值得注意的\n\u003c统\u003e显著的, 有效的\n有意义的\n不可忽略的, 值得注意的\n相当数量的\n别有含义的, 意味深长的\n区别性的\n\u003c古\u003e有意义的事物\n标志, 象征",
+          "translation": "重要的, 有重大意义的\n显著的, 值得注意的\n<统>显著的, 有效的\n有意义的\n不可忽略的, 值得注意的\n相当数量的\n别有含义的, 意味深长的\n区别性的\n<古>有意义的事物\n标志, 象征",
           "examples": [
             {
               "en": "There remained one significant problem.",
@@ -86759,7 +86759,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c印\u003e被印成出血版"
+              "definition": "<印>被印成出血版"
             },
             {
               "pos": "v.",
@@ -86771,14 +86771,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c印\u003e出血版"
+              "definition": "<印>出血版"
             },
             {
               "pos": "adj.",
               "definition": "出血版的"
             }
           ],
-          "translation": "流血，出血\n给...放血\n散开，渗开\n\u003c印\u003e被印成出血版\n长期榨取\n抽掉\n\u003c印\u003e出血版\n出血版的",
+          "translation": "流血，出血\n给...放血\n散开，渗开\n<印>被印成出血版\n长期榨取\n抽掉\n<印>出血版\n出血版的",
           "examples": [
             {
               "en": "One morning, the old man started to bleed.",
@@ -87694,7 +87694,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c废\u003e用…做交易，投资 (若干数目)"
+              "definition": "<废>用…做交易，投资 (若干数目)"
             },
             {
               "pos": "v.",
@@ -87705,7 +87705,7 @@
               "definition": "使 (头脑等) 全神贯注"
             }
           ],
-          "translation": "占据\n使用，占用\n占领，侵占\n使用，居住\n承担，担任\n使从事，使关注，使花费时间\n\u003c废\u003e用…做交易，投资\n使忙于，忙着\n使 全神贯注",
+          "translation": "占据\n使用，占用\n占领，侵占\n使用，居住\n承担，担任\n使从事，使关注，使花费时间\n<废>用…做交易，投资\n使忙于，忙着\n使 全神贯注",
           "examples": [
             {
               "en": "How much memory does the program occupy?",
@@ -88231,7 +88231,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c数\u003e棱锥体顶点，锥顶"
+              "definition": "<数>棱锥体顶点，锥顶"
             },
             {
               "pos": "adj.",
@@ -88250,7 +88250,7 @@
               "definition": "达到性欲高潮"
             }
           ],
-          "translation": "首脑会议，峰会\n山顶，顶峰\n最高点，顶点\n最高官阶\n\u003c数\u003e棱锥体顶点，锥顶\n最高级的，政府首脑间的\n参加峰会\n登上顶峰\n达到性欲高潮",
+          "translation": "首脑会议，峰会\n山顶，顶峰\n最高点，顶点\n最高官阶\n<数>棱锥体顶点，锥顶\n最高级的，政府首脑间的\n参加峰会\n登上顶峰\n达到性欲高潮",
           "examples": [
             {
               "en": "We reached the summit at noon.",
@@ -89070,9 +89070,9 @@
           "collocations": [
             "complexion soap",
             "sallow complexion",
-            "Elasticity \u0026 Complexion",
+            "Elasticity & Complexion",
             "pale complexion",
-            "skin \u0026 complexion improving cream"
+            "skin & complexion improving cream"
           ],
           "frequency": 1595,
           "tags": [
@@ -89544,7 +89544,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e 早的"
+              "definition": "<古> 早的"
             },
             {
               "pos": "adv.",
@@ -89552,10 +89552,10 @@
             },
             {
               "pos": "adv.",
-              "definition": "\u003c古\u003e 早"
+              "definition": "<古> 早"
             }
           ],
-          "translation": "及时的，适时的\n\u003c古\u003e 早的\n及地，适时地\n\u003c古\u003e 早",
+          "translation": "及时的，适时的\n<古> 早的\n及地，适时地\n<古> 早",
           "examples": [
             {
               "en": "A nasty incident was prevented by the timely arrival of the police.",
@@ -90594,7 +90594,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c语\u003e 嵌进"
+              "definition": "<语> 嵌进"
             },
             {
               "pos": "v.",
@@ -90614,10 +90614,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美\u003e(军队等中的)随行记者"
+              "definition": "<美>(军队等中的)随行记者"
             }
           ],
-          "translation": "把…嵌入\n\u003c语\u003e 嵌进\n灌封\n扎牢\n使深留脑中\n把栽入土中\n\u003c美\u003e随行记者",
+          "translation": "把…嵌入\n<语> 嵌进\n灌封\n扎牢\n使深留脑中\n把栽入土中\n<美>随行记者",
           "examples": [
             {
               "en": "In fact, the process can embed small flaws in the genes of clones that scientists are only now discovering.",
@@ -92574,7 +92574,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c纺\u003e（织物）有稀路织疵"
+              "definition": "<纺>（织物）有稀路织疵"
             },
             {
               "pos": "v.",
@@ -92585,7 +92585,7 @@
               "definition": "咧着嘴笑，露齿的笑，龇牙咧嘴的笑"
             }
           ],
-          "translation": "咧嘴笑，露齿而笑，咧着嘴笑，龇着牙笑\n显露出来\n\u003c纺\u003e有稀路织疵\n咧嘴而笑地表示\n咧着嘴笑，露齿的笑，龇牙咧嘴的笑",
+          "translation": "咧嘴笑，露齿而笑，咧着嘴笑，龇着牙笑\n显露出来\n<纺>有稀路织疵\n咧嘴而笑地表示\n咧着嘴笑，露齿的笑，龇牙咧嘴的笑",
           "examples": [
             {
               "en": "Mary gave her a sheepish grin.",
@@ -93864,7 +93864,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c计\u003e溢出"
+              "definition": "<计>溢出"
             },
             {
               "pos": "n.",
@@ -93883,7 +93883,7 @@
               "definition": "溢出的，满出的"
             }
           ],
-          "translation": "漫出，溢出，泛滥\n充满，挤满，装满\n淹没\n洋溢着，溢于言表\n多得使…无法容纳，挤出\n扩展出界\n过度延伸\n扩展出界，过度延伸\n溢出，漫出，溢出的液体\n\u003c计\u003e溢出\n排水管，溢流道\n溢出物，超出的数额\n容纳不下的人\n溢出的，满出的",
+          "translation": "漫出，溢出，泛滥\n充满，挤满，装满\n淹没\n洋溢着，溢于言表\n多得使…无法容纳，挤出\n扩展出界\n过度延伸\n扩展出界，过度延伸\n溢出，漫出，溢出的液体\n<计>溢出\n排水管，溢流道\n溢出物，超出的数额\n容纳不下的人\n溢出的，满出的",
           "examples": [
             {
               "en": "Pour in some of the broth, but not all of it, because it will probably overflow.",
@@ -97838,7 +97838,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e变化的，易变的"
+              "definition": "<古>变化的，易变的"
             },
             {
               "pos": "adj.",
@@ -97858,14 +97858,14 @@
             },
             {
               "pos": "pron.",
-              "definition": "\u003c口\u003e各位，各个"
+              "definition": "<口>各位，各个"
             },
             {
               "pos": "pron.",
               "definition": "不止一个的，各别的"
             }
           ],
-          "translation": "各种各样的，不同的\n各个的，各别的\n不止一个的，许多的\n\u003c古\u003e变化的，易变的\n多方面的\n杂色的，彩色的\n多姿多彩的，多才多艺的\n具有多种特征的\n\u003c口\u003e各位，各个\n不止一个的，各别的",
+          "translation": "各种各样的，不同的\n各个的，各别的\n不止一个的，许多的\n<古>变化的，易变的\n多方面的\n杂色的，彩色的\n多姿多彩的，多才多艺的\n具有多种特征的\n<口>各位，各个\n不止一个的，各别的",
           "examples": [
             {
               "en": "He directed various TV shows.",
@@ -98465,14 +98465,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c植\u003e四季开花蔷薇，多年生植物"
+              "definition": "<植>四季开花蔷薇，多年生植物"
             },
             {
               "pos": "n.",
               "definition": "永不还本的投资"
             }
           ],
-          "translation": "永恒的，永久的\n终身的，永久的\n不间断的，持续的，长久的\n一再反复的，无尽无休的，没完没了的\n终年开花的，四季开花的\n永不还本的\n\u003c植\u003e四季开花蔷薇，多年生植物\n永不还本的投资",
+          "translation": "永恒的，永久的\n终身的，永久的\n不间断的，持续的，长久的\n一再反复的，无尽无休的，没完没了的\n终年开花的，四季开花的\n永不还本的\n<植>四季开花蔷薇，多年生植物\n永不还本的投资",
           "examples": [
             {
               "en": "The perpetual argument is that funds are tight, that we have more pressing problems here on Earth.",
@@ -99060,11 +99060,11 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c美\u003e预科的"
+              "definition": "<美>预科的"
             },
             {
               "pos": "adj.",
-              "definition": "\u003c英\u003e小学教育的"
+              "definition": "<英>小学教育的"
             },
             {
               "pos": "adj.",
@@ -99072,18 +99072,18 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美\u003e大学预科"
+              "definition": "<美>大学预科"
             },
             {
               "pos": "n.",
-              "definition": "\u003c英\u003e私立预科学校"
+              "definition": "<英>私立预科学校"
             },
             {
               "pos": "adv.",
               "definition": "作为准备"
             }
           ],
-          "translation": "准备的，筹备的，预备的\n\u003c美\u003e预科的\n\u003c英\u003e小学教育的\n引导性的, 作为开始的\n\u003c美\u003e大学预科\n\u003c英\u003e私立预科学校\n作为准备",
+          "translation": "准备的，筹备的，预备的\n<美>预科的\n<英>小学教育的\n引导性的, 作为开始的\n<美>大学预科\n<英>私立预科学校\n作为准备",
           "examples": [
             {
               "en": "The preparatory work for the conference had been undertaken at two meetings of experts.",
@@ -101712,7 +101712,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e狂赌，大做投机"
+              "definition": "<口>狂赌，大做投机"
             },
             {
               "pos": "v.",
@@ -101744,10 +101744,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c口\u003e鲁莽的投资（或投机）"
+              "definition": "<口>鲁莽的投资（或投机）"
             }
           ],
-          "translation": "陷入\n暴跌，骤降，突降\n把…投入\n开始从事，投身\n颠簸，震荡\n突然陷入，突然遭受\n纵身投入，一头进入\n陡峭地向下倾斜\n猛冲向\n使突然前冲\n把齐盆边埋入土中\n扬起后蹄奔窜\n\u003c口\u003e狂赌，大做投机\n开得很低\n暴跌，猛降，骤减\n跳水，投身入水\n卷入，参与\n阵雨\n突然跌落，突然分离\n开始从事，突然的开始\n\u003c口\u003e鲁莽的投资",
+          "translation": "陷入\n暴跌，骤降，突降\n把…投入\n开始从事，投身\n颠簸，震荡\n突然陷入，突然遭受\n纵身投入，一头进入\n陡峭地向下倾斜\n猛冲向\n使突然前冲\n把齐盆边埋入土中\n扬起后蹄奔窜\n<口>狂赌，大做投机\n开得很低\n暴跌，猛降，骤减\n跳水，投身入水\n卷入，参与\n阵雨\n突然跌落，突然分离\n开始从事，突然的开始\n<口>鲁莽的投资",
           "examples": [
             {
               "en": "His weight began to plunge.",
@@ -102626,7 +102626,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c医\u003e(与传染病的)接触，接触者"
+              "definition": "<医>(与传染病的)接触，接触者"
             },
             {
               "pos": "n.",
@@ -102658,11 +102658,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c主美\u003e（有影响的）熟人，有用的社会关系"
+              "definition": "<主美>（有影响的）熟人，有用的社会关系"
             },
             {
               "pos": "n.",
-              "definition": "\u003c空\u003e(对地面或水面的)目视"
+              "definition": "<空>(对地面或水面的)目视"
             },
             {
               "pos": "n.",
@@ -102694,10 +102694,10 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c空\u003e目视地面(或水面)的"
+              "definition": "<空>目视地面(或水面)的"
             }
           ],
-          "translation": "联系，联络\n接触，接通\n\u003c医\u003e接触，接触者\n接触\n触点，接头，接触器\n联络，通信\n触摸\n隐形眼镜\n联络人\n会见，往来\n\u003c主美\u003e熟人，有用的社会关系\n\u003c空\u003e目视\n碰上\n遇见\n情报来源\n接触；联系，取得联系\n有关系的\n由接触引起的\n供联系的，供联络的\n\u003c空\u003e目视地面的",
+          "translation": "联系，联络\n接触，接通\n<医>接触，接触者\n接触\n触点，接头，接触器\n联络，通信\n触摸\n隐形眼镜\n联络人\n会见，往来\n<主美>熟人，有用的社会关系\n<空>目视\n碰上\n遇见\n情报来源\n接触；联系，取得联系\n有关系的\n由接触引起的\n供联系的，供联络的\n<空>目视地面的",
           "examples": [
             {
               "en": "I will contact you by letter.",
@@ -103774,11 +103774,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c诗\u003e（空间、时间等的）深邃"
+              "definition": "<诗>（空间、时间等的）深邃"
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e海，深海，海洋"
+              "definition": "<古>海，深海，海洋"
             },
             {
               "pos": "n.",
@@ -103789,7 +103789,7 @@
               "definition": "深奥的事物"
             }
           ],
-          "translation": "意义深远的\n严重的\n深邃的，深沉的\n深邃的，理解深刻的\n巨大的，重大的\n完全的，彻底的\n知识渊博的\n艰深的，玄奥的\n\u003c诗\u003e深邃\n\u003c古\u003e海，深海，海洋\n深处\n深奥的事物",
+          "translation": "意义深远的\n严重的\n深邃的，深沉的\n深邃的，理解深刻的\n巨大的，重大的\n完全的，彻底的\n知识渊博的\n艰深的，玄奥的\n<诗>深邃\n<古>海，深海，海洋\n深处\n深奥的事物",
           "examples": [
             {
               "en": "Her speech made a profound impact on everyone.",
@@ -104889,7 +104889,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c口\u003e与众不同的，出人意料的"
+              "definition": "<口>与众不同的，出人意料的"
             },
             {
               "pos": "adj.",
@@ -104905,14 +104905,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003e印\u003e（排字工人的）斜面改样工作台"
+              "definition": ">印>（排字工人的）斜面改样工作台"
             },
             {
               "pos": "adv.",
               "definition": "胡乱地，任意地，规格不一地"
             }
           ],
-          "translation": "随机的，随意的\n大小不一的，规格不一的，无规则的\n辨认不出的，不认识的\n\u003c口\u003e与众不同的，出人意料的\n仰角发射的\n不受管束的\n任意行动，随机过程\n\u003e印\u003e斜面改样工作台\n胡乱地，任意地，规格不一地",
+          "translation": "随机的，随意的\n大小不一的，规格不一的，无规则的\n辨认不出的，不认识的\n<口>与众不同的，出人意料的\n仰角发射的\n不受管束的\n任意行动，随机过程\n>印>斜面改样工作台\n胡乱地，任意地，规格不一地",
           "examples": [
             {
               "en": "Police will conduct random breath tests.",
@@ -104963,7 +104963,7 @@
           "collocations": [
             "dine out",
             "wine and dine",
-            "Wine \u0026 Dine",
+            "Wine & Dine",
             "dine and wine",
             "dine in"
           ],
@@ -105263,7 +105263,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c诗\u003e木船"
+              "definition": "<诗>木船"
             },
             {
               "pos": "adj.",
@@ -105274,7 +105274,7 @@
               "definition": "栎木制的"
             }
           ],
-          "translation": "栎树叶\n栎树，橡树\n烟熏味\n栎 木家具，栎木细工，栎木制品，栎木门\n栎木，橡木\n栎棕色\n\u003c诗\u003e木船\n栎树的\n栎木制的",
+          "translation": "栎树叶\n栎树，橡树\n烟熏味\n栎 木家具，栎木细工，栎木制品，栎木门\n栎木，橡木\n栎棕色\n<诗>木船\n栎树的\n栎木制的",
           "examples": [
             {
               "en": "This table is made of solid oak.",
@@ -105374,7 +105374,7 @@
           "collocations": [
             "take a sip",
             "CON SIP",
-            "sip vt\u0026vi",
+            "sip vt&vi",
             "SIP server",
             "SIP UA"
           ],
@@ -105637,11 +105637,11 @@
             }
           ],
           "collocations": [
-            "PROCTER \u0026 GAMBLE",
+            "PROCTER & GAMBLE",
             "Procter and Gamble",
             "gamble in stock",
-            "Procter \u0026 Gamble Co",
-            "The Procter \u0026 Gamble Co"
+            "Procter & Gamble Co",
+            "The Procter & Gamble Co"
           ],
           "frequency": 1884,
           "tags": [
@@ -107890,7 +107890,7 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c口\u003e硬拉，硬拖"
+              "definition": "<口>硬拉，硬拖"
             },
             {
               "pos": "v.",
@@ -107910,11 +107910,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c非正式\u003e街，路"
+              "definition": "<非正式>街，路"
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e车轮制动器，刹车"
+              "definition": "<古>车轮制动器，刹车"
             },
             {
               "pos": "n.",
@@ -107926,11 +107926,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c北美，非正式\u003e（对其他人的）影响（力）"
+              "definition": "<北美，非正式>（对其他人的）影响（力）"
             },
             {
               "pos": "n.",
-              "definition": "\u003c英，非正式\u003e汽车"
+              "definition": "<英，非正式>汽车"
             },
             {
               "pos": "n.",
@@ -107957,7 +107957,7 @@
               "definition": "一吸，一抽"
             }
           ],
-          "translation": "拖，拽\n谈论，讨论\n用鼠标拖动\n拖锚，走锚\n搜寻\n\u003c口\u003e硬拉，硬拖\n在地上拖着移动\n硬撑着行进，费劲地移动\n阻力，抗力\n累赘，拖累\n\u003c非正式\u003e街，路\n\u003c古\u003e车轮制动器，刹车\n男扮女装\n拖网，打捞器\n\u003c北美，非正式\u003e影响\n\u003c英，非正式\u003e汽车\n异动\n高大私人马车\n每次敲击前用另一只鼓槌先击两个装饰音\n被拖之物\n令人不快的事，无聊的事\n一吸，一抽",
+          "translation": "拖，拽\n谈论，讨论\n用鼠标拖动\n拖锚，走锚\n搜寻\n<口>硬拉，硬拖\n在地上拖着移动\n硬撑着行进，费劲地移动\n阻力，抗力\n累赘，拖累\n<非正式>街，路\n<古>车轮制动器，刹车\n男扮女装\n拖网，打捞器\n<北美，非正式>影响\n<英，非正式>汽车\n异动\n高大私人马车\n每次敲击前用另一只鼓槌先击两个装饰音\n被拖之物\n令人不快的事，无聊的事\n一吸，一抽",
           "examples": [
             {
               "en": "Walking's a drag—let's drive there.",
@@ -109588,7 +109588,7 @@
           "collocations": [
             "Pride and Prejudice",
             "Bride and Prejudice",
-            "Pride \u0026 Prejudice",
+            "Pride & Prejudice",
             "Pride and Prejudice and Zombies",
             "bias prejudice"
           ],
@@ -110802,7 +110802,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e有充分能力的, 足以胜任的"
+              "definition": "<古>有充分能力的, 足以胜任的"
             },
             {
               "pos": "n.",
@@ -110813,7 +110813,7 @@
               "definition": "充足"
             }
           ],
-          "translation": "足够的\n充足的, 充分的\n充足的\n\u003c古\u003e有充分能力的, 足以胜任的\n足量\n充足",
+          "translation": "足够的\n充足的, 充分的\n充足的\n<古>有充分能力的, 足以胜任的\n足量\n充足",
           "examples": [
             {
               "en": "Is it available in sufficient quantity?",
@@ -112803,14 +112803,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美口\u003e许多，大量"
+              "definition": "<美口>许多，大量"
             },
             {
               "pos": "adv.",
-              "definition": "\u003c方\u003e相当地，十分地，非常地"
+              "definition": "<方>相当地，十分地，非常地"
             }
           ],
-          "translation": "相当大的\n相当多的\n值得注意的，著名的\n值得尊敬的\n\u003c美口\u003e许多，大量\n\u003c方\u003e相当地，十分地，非常地",
+          "translation": "相当大的\n相当多的\n值得注意的，著名的\n值得尊敬的\n<美口>许多，大量\n<方>相当地，十分地，非常地",
           "examples": [
             {
               "en": "Damage to the building was considerable.",
@@ -116116,7 +116116,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e旗手"
+              "definition": "<古>旗手"
             },
             {
               "pos": "n.",
@@ -116124,10 +116124,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c古\u003e高龄老人"
+              "definition": "<古>高龄老人"
             }
           ],
-          "translation": "古代的\n古老的\n很老的\n古代人\n\u003c古\u003e旗手\n古文明国的国民\n\u003c古\u003e高龄老人",
+          "translation": "古代的\n古老的\n很老的\n古代人\n<古>旗手\n古文明国的国民\n<古>高龄老人",
           "examples": [
             {
               "en": "Lettuce was grown by the ancient Romans.",
@@ -116641,7 +116641,7 @@
             "News Commentary",
             "Commentary Report",
             "Commentary Writing",
-            "News Commentary \u0026 Composition"
+            "News Commentary & Composition"
           ],
           "frequency": 2081,
           "tags": []
@@ -117360,7 +117360,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c旧\u003e\u003c俚\u003e卑鄙的家伙，可恶的人"
+              "definition": "<旧><俚>卑鄙的家伙，可恶的人"
             },
             {
               "pos": "n.",
@@ -117368,11 +117368,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美俚\u003e越狱，潜逃"
+              "definition": "<美俚>越狱，潜逃"
             },
             {
               "pos": "n.",
-              "definition": "\u003c船\u003e龙骨后端，桅脚，桅根"
+              "definition": "<船>龙骨后端，桅脚，桅根"
             },
             {
               "pos": "n.",
@@ -117392,7 +117392,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c高尔夫\u003e球杆弯头"
+              "definition": "<高尔夫>球杆弯头"
             },
             {
               "pos": "n.",
@@ -117416,7 +117416,7 @@
             },
             {
               "pos": "v.",
-              "definition": " \u003c美口\u003e供钱给，武装，使带枪"
+              "definition": " <美口>供钱给，武装，使带枪"
             },
             {
               "pos": "v.",
@@ -117428,14 +117428,14 @@
             },
             {
               "pos": "v.",
-              "definition": "\u003c高尔夫\u003e用球杆弯头击（球） "
+              "definition": "<高尔夫>用球杆弯头击（球） "
             },
             {
               "pos": "v.",
-              "definition": "\u003c橄\u003e用脚跟往回传（球）"
+              "definition": "<橄>用脚跟往回传（球）"
             }
           ],
-          "translation": "脚后跟，足跟\n后跟\n踵\n底部，根部，后部\n倾侧，倾侧度\n手掌根\n\u003c旧\u003e\u003c俚\u003e卑鄙的家伙，可恶的人\n女高跟鞋\n\u003c美俚\u003e越狱，潜逃\n\u003c船\u003e龙骨后端，桅脚，桅根\n结束部分，末尾\n后肢蹄踵，蹄的后部\n弓根\n近柄部分，刀根\n\u003c高尔夫\u003e球杆弯头\n面包头，干酪硬皮\n倾侧，倾斜\n紧跟，紧追\n倾侧，使倾侧\n用脚后跟触地\n\u003c美口\u003e供钱给，武装，使带枪\n用脚后跟踩\n给修理后跟\n\u003c高尔夫\u003e用球杆弯头击\n\u003c橄\u003e用脚跟往回传",
+          "translation": "脚后跟，足跟\n后跟\n踵\n底部，根部，后部\n倾侧，倾侧度\n手掌根\n<旧><俚>卑鄙的家伙，可恶的人\n女高跟鞋\n<美俚>越狱，潜逃\n<船>龙骨后端，桅脚，桅根\n结束部分，末尾\n后肢蹄踵，蹄的后部\n弓根\n近柄部分，刀根\n<高尔夫>球杆弯头\n面包头，干酪硬皮\n倾侧，倾斜\n紧跟，紧追\n倾侧，使倾侧\n用脚后跟触地\n<美口>供钱给，武装，使带枪\n用脚后跟踩\n给修理后跟\n<高尔夫>用球杆弯头击\n<橄>用脚跟往回传",
           "examples": [
             {
               "en": "He had an operation on his heel last week.",
@@ -121460,7 +121460,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c经\u003e （资本、现金等的）周转，周转数"
+              "definition": "<经> （资本、现金等的）周转，周转数"
             },
             {
               "pos": "n.",
@@ -121472,7 +121472,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美\u003e（篮）易手，失球"
+              "definition": "<美>（篮）易手，失球"
             },
             {
               "pos": "n.",
@@ -121496,14 +121496,14 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c英\u003e （报纸上）随笔式报道"
+              "definition": "<英> （报纸上）随笔式报道"
             },
             {
               "pos": "adj.",
               "definition": "有一部分翻转的，（被）翻转的，可翻转的"
             }
           ],
-          "translation": "营业额，成交量\n\u003c经\u003e 周转，周转数\n翻倒，翻转\n人员流动率，人事变更率\n\u003c美\u003e易手，失球\n货物周转率，销售比率\n人员调整率\n三角馅饼，半圆馅饼\n翻倒物，翻转物\n银行贷款资本基金额\n\u003c英\u003e 随笔式报道\n有一部分翻转的，翻转的，可翻转的",
+          "translation": "营业额，成交量\n<经> 周转，周转数\n翻倒，翻转\n人员流动率，人事变更率\n<美>易手，失球\n货物周转率，销售比率\n人员调整率\n三角馅饼，半圆馅饼\n翻倒物，翻转物\n银行贷款资本基金额\n<英> 随笔式报道\n有一部分翻转的，翻转的，可翻转的",
           "examples": [
             {
               "en": "We have a fast turnover of stock.",
@@ -121583,10 +121583,10 @@
             },
             {
               "pos": "adv.",
-              "definition": "\u003c方\u003e极，非常"
+              "definition": "<方>极，非常"
             }
           ],
-          "translation": "凡人\n人\n普通人\n人的，凡人的，普通人的\n想象得出的，可能的\n致死的，致命的\n死的，临死的\n极端的，极大的\n你死我活的，不共戴天的\n世间的，现世的\n终将死亡的，不能永生的\n至死方休的\n非常危急的\n\u003c方\u003e极，非常",
+          "translation": "凡人\n人\n普通人\n人的，凡人的，普通人的\n想象得出的，可能的\n致死的，致命的\n死的，临死的\n极端的，极大的\n你死我活的，不共戴天的\n世间的，现世的\n终将死亡的，不能永生的\n至死方休的\n非常危急的\n<方>极，非常",
           "examples": [
             {
               "en": "We are all mortal.",
@@ -122051,14 +122051,14 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c口\u003e过早的, 过急的"
+              "definition": "<口>过早的, 过急的"
             },
             {
               "pos": "adj.",
               "definition": "(时间上)稍前的"
             }
           ],
-          "translation": "上一次的, 上一个的\n以前的, 先前的, 以往的\n\u003c口\u003e过早的, 过急的\n稍前的",
+          "translation": "上一次的, 上一个的\n以前的, 先前的, 以往的\n<口>过早的, 过急的\n稍前的",
           "examples": [
             {
               "en": "Her previous calm gave way to terror.",
@@ -123191,14 +123191,14 @@
             },
             {
               "pos": "adv.",
-              "definition": "\u003c方\u003e非常，极其"
+              "definition": "<方>非常，极其"
             },
             {
               "pos": "n.",
-              "definition": "\u003c英\u003e廉价刺激性(尤指恐怖)小说(或杂志)"
+              "definition": "<英>廉价刺激性(尤指恐怖)小说(或杂志)"
             }
           ],
-          "translation": "可怕的，令人感到恐怖的\n糟糕透顶的，讨厌的\n极端的，极其大的\n令人敬畏的\n\u003c方\u003e非常，极其\n\u003c英\u003e廉价刺激性小说",
+          "translation": "可怕的，令人感到恐怖的\n糟糕透顶的，讨厌的\n极端的，极其大的\n令人敬畏的\n<方>非常，极其\n<英>廉价刺激性小说",
           "examples": [
             {
               "en": "We've made a dreadful mistake.",
@@ -123867,7 +123867,7 @@
           ],
           "collocations": [
             "The Society of the Spectacle",
-            "Spectacle cases \u0026 accessories",
+            "Spectacle cases & accessories",
             "spectacle blind",
             "spectacle frame",
             "spectacle stone"
@@ -124926,7 +124926,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c电\u003e电容; 负载量，最高发电量"
+              "definition": "<电>电容; 负载量，最高发电量"
             },
             {
               "pos": "n.",
@@ -124957,7 +124957,7 @@
               "definition": "座无虚席的，满场的，挤满的 "
             }
           ],
-          "translation": "容量\n生产量，生产能力\n容积，功率\n\u003c电\u003e电容; 负载量，最高发电量\n容积\n职责\n职位\n容纳能力\n领悟能力\n充满的，达到最大限度的\n座无虚席的，满场的，挤满的",
+          "translation": "容量\n生产量，生产能力\n容积，功率\n<电>电容; 负载量，最高发电量\n容积\n职责\n职位\n容纳能力\n领悟能力\n充满的，达到最大限度的\n座无虚席的，满场的，挤满的",
           "examples": [
             {
               "en": "Human beings have an infinite capacity for self-deception.",
@@ -126457,7 +126457,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c律\u003e法定期限, 时效"
+              "definition": "<律>法定期限, 时效"
             },
             {
               "pos": "n.",
@@ -126488,7 +126488,7 @@
               "definition": "（眼镜等）根据验光单磨制的"
             }
           ],
-          "translation": "处方, 药方\n规定\n\u003c律\u003e法定期限, 时效\n计划\n秘诀, 办法, 良策\n开处方, 开药\n验光单\n医生开的药\n凭处方供应的, 根据处方配制的\n根据验光单磨制的",
+          "translation": "处方, 药方\n规定\n<律>法定期限, 时效\n计划\n秘诀, 办法, 良策\n开处方, 开药\n验光单\n医生开的药\n凭处方供应的, 根据处方配制的\n根据验光单磨制的",
           "examples": [
             {
               "en": "Nicola got her prescription for strep.",
@@ -127116,11 +127116,11 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c美悝\u003e(背诵课文等时的)张口结舌(指完全背不出) "
+              "definition": "<美悝>(背诵课文等时的)张口结舌(指完全背不出) "
             },
             {
               "pos": "n.",
-              "definition": "\u003c英俚\u003e破产者"
+              "definition": "<英俚>破产者"
             },
             {
               "pos": "vt.",
@@ -127148,10 +127148,10 @@
             },
             {
               "pos": "int.",
-              "definition": "\u003c英俚\u003e闭嘴！"
+              "definition": "<英俚>闭嘴！"
             }
           ],
-          "translation": "软木\n软木塞\n瓶塞\n木栓\n软木浮子\n\u003c美悝\u003e张口结舌\n\u003c英俚\u003e破产者\n克制, 抑制\n用塞子盖住\n用软木塞封\n给…装软木\n用软木炭涂黑\n软木制的\n\u003c英俚\u003e闭嘴！",
+          "translation": "软木\n软木塞\n瓶塞\n木栓\n软木浮子\n<美悝>张口结舌\n<英俚>破产者\n克制, 抑制\n用塞子盖住\n用软木塞封\n给…装软木\n用软木炭涂黑\n软木制的\n<英俚>闭嘴！",
           "examples": [
             {
               "en": "He drew the cork out of the bottle.",
@@ -127183,7 +127183,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c口\u003e 非常的，惊人的"
+              "definition": "<口> 非常的，惊人的"
             },
             {
               "pos": "adj.",
@@ -127191,10 +127191,10 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c古\u003e 可怕的，可怖的"
+              "definition": "<古> 可怕的，可怖的"
             }
           ],
-          "translation": "巨大的，极大的\n\u003c口\u003e 非常的，惊人的\n极好的，精彩的，了不起的\n\u003c古\u003e 可怕的，可怖的",
+          "translation": "巨大的，极大的\n<口> 非常的，惊人的\n极好的，精彩的，了不起的\n<古> 可怕的，可怖的",
           "examples": [
             {
               "en": "It was a tremendous experience.",
@@ -127779,7 +127779,7 @@
             }
           ],
           "collocations": [
-            "Fast \u0026 Furious",
+            "Fast & Furious",
             "The Fast and The Furious",
             "Fast And Furious",
             "Fast 2 Furious",
@@ -127799,10 +127799,10 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c医\u003e肥胖（症）"
+              "definition": "<医>肥胖（症）"
             }
           ],
-          "translation": "肥胖\n\u003c医\u003e肥胖",
+          "translation": "肥胖\n<医>肥胖",
           "examples": [
             {
               "en": "Obesity can increase the risk of heart disease.",
@@ -128660,7 +128660,7 @@
             },
             {
               "pos": "adj.",
-              "definition": "\u003c英\u003e(房屋)属市(或郡等)政会的, 市(或郡等)建的"
+              "definition": "<英>(房屋)属市(或郡等)政会的, 市(或郡等)建的"
             },
             {
               "pos": "adj.",
@@ -128671,7 +128671,7 @@
               "definition": "(房屋或公寓)地方政府出租的"
             }
           ],
-          "translation": "委员会，理事会，顾问委员会\n开会，审议, 讨论\n管理者，委员\n委员会会议\n地方议会\n协商会议\n会社，俱乐部\n政务委员会\n代表联席会\n市政服务机构\n\u003c英\u003e属市政会的, 市建的\n会议用的, 议事用的\n地方政府出租的",
+          "translation": "委员会，理事会，顾问委员会\n开会，审议, 讨论\n管理者，委员\n委员会会议\n地方议会\n协商会议\n会社，俱乐部\n政务委员会\n代表联席会\n市政服务机构\n<英>属市政会的, 市建的\n会议用的, 议事用的\n地方政府出租的",
           "examples": [
             {
               "en": "The members left the council chamber.",
@@ -130412,7 +130412,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c宗\u003e(天主教)继叙咏"
+              "definition": "<宗>(天主教)继叙咏"
             },
             {
               "pos": "n.",
@@ -130420,7 +130420,7 @@
             },
             {
               "pos": "n.",
-              "definition": "\u003c英\u003e外语翻译练习"
+              "definition": "<英>外语翻译练习"
             },
             {
               "pos": "v.",
@@ -130443,7 +130443,7 @@
               "definition": "平凡的, 乏味的"
             }
           ],
-          "translation": "散文, 白话文\n平凡, 乏味, 无聊\n\u003c宗\u003e继叙咏\n乏味的话\n\u003c英\u003e外语翻译练习\n写散文\n把…写成散文, 改写成散文\n乏味地讲话\n散文的\n平凡的, 乏味的",
+          "translation": "散文, 白话文\n平凡, 乏味, 无聊\n<宗>继叙咏\n乏味的话\n<英>外语翻译练习\n写散文\n把…写成散文, 改写成散文\n乏味地讲话\n散文的\n平凡的, 乏味的",
           "examples": [
             {
               "en": "Shute's prose is stark and chillingly unsentimental.",
@@ -130624,7 +130624,7 @@
             "Chinese refreshment",
             "fuel refreshment",
             "Ice for refreshment",
-            "Refreshment \u0026 Meals"
+            "Refreshment & Meals"
           ],
           "frequency": 2333,
           "tags": []

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Volume2 } from 'lucide-react';
-import { translationAPI } from '@/lib/api';
+import { playWordAudio, preloadUpcoming } from '@/lib/wordAudio';
 
 interface LearnCardDefinition {
   pos: string;
@@ -25,6 +25,8 @@ interface LearnCardProps {
   collocations?: string;
   onRating: (rating: 'good' | 'hard' | 'forgot') => void;
   disabled?: boolean;
+  /** 后续即将出现的单词列表，用于预加载音频 */
+  upcomingWords?: string[];
 }
 
 function parseJSON<T>(value: string | undefined | null, fallback: T): T {
@@ -33,21 +35,6 @@ function parseJSON<T>(value: string | undefined | null, fallback: T): T {
     return JSON.parse(value) as T;
   } catch {
     return fallback;
-  }
-}
-
-async function speakWord(text: string) {
-  if (!text) return;
-  try {
-    const response = await translationAPI.lookupWord(text, {});
-    const data = response.data.data;
-    const audioUrl = data.us_speech_url || data.speech_url || data.uk_speech_url;
-    if (audioUrl) {
-      const audio = new Audio(audioUrl);
-      await audio.play();
-    }
-  } catch {
-    // 静默失败
   }
 }
 
@@ -62,19 +49,40 @@ export default function LearnCard({
   collocations,
   onRating,
   disabled,
+  upcomingWords = [],
 }: LearnCardProps) {
   const [flipped, setFlipped] = useState(false);
+  const lastWordRef = useRef('');
 
   const defs = parseJSON<LearnCardDefinition[]>(definitions, []);
   const exs = parseJSON<LearnCardExample[]>(examples, []);
   const colls = parseJSON<string[]>(collocations, []);
 
-  const displayPhonetic = us_phonetic || uk_phonetic || phonetic;
+  // 单词切换时：自动播放美音 + 预加载后续单词 + 重置翻牌
+  useEffect(() => {
+    if (word && word !== lastWordRef.current) {
+      lastWordRef.current = word;
+      setFlipped(false);
+
+      const timer = setTimeout(() => {
+        playWordAudio(word, 'us');
+      }, 150);
+
+      preloadUpcoming(upcomingWords, 'us', 3);
+
+      return () => clearTimeout(timer);
+    }
+  }, [word, upcomingWords]);
 
   const handleRating = (rating: 'good' | 'hard' | 'forgot') => {
     if (disabled) return;
     onRating(rating);
     setFlipped(false);
+  };
+
+  const handlePlay = (e: React.MouseEvent, accent: 'uk' | 'us') => {
+    e.stopPropagation();
+    playWordAudio(word, accent);
   };
 
   return (
@@ -97,25 +105,46 @@ export default function LearnCard({
             className="flex min-h-[360px] flex-col items-center justify-center rounded-2xl border border-gray-200 bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-900"
             style={{ backfaceVisibility: 'hidden' }}
           >
-            <h2 className="mb-3 text-4xl font-black text-gray-950 dark:text-gray-100">
+            <h2 className="mb-4 text-4xl font-black text-gray-950 dark:text-gray-100">
               {word}
             </h2>
-            {displayPhonetic && (
-              <p className="mb-4 text-lg text-gray-500 dark:text-gray-400">
-                {displayPhonetic}
-              </p>
-            )}
-            <button
-              type="button"
-              className="mb-6 flex items-center gap-2 rounded-full bg-blue-50 px-4 py-2 text-sm font-medium text-blue-600 transition-colors hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20"
-              onClick={(e) => {
-                e.stopPropagation();
-                speakWord(word);
-              }}
-            >
-              <Volume2 className="h-4 w-4" />
-              发音
-            </button>
+
+            {/* 英音 / 美音 分区 */}
+            <div className="mb-6 flex items-center gap-6">
+              {uk_phonetic && (
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1.5 text-sm text-sky-700 transition-colors hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400 dark:hover:bg-sky-500/20"
+                  onClick={(e) => handlePlay(e, 'uk')}
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wide">英</span>
+                  <span className="text-sm">{uk_phonetic}</span>
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
+              )}
+              {us_phonetic && (
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 rounded-full bg-orange-50 px-3 py-1.5 text-sm text-orange-700 transition-colors hover:bg-orange-100 dark:bg-orange-500/10 dark:text-orange-400 dark:hover:bg-orange-500/20"
+                  onClick={(e) => handlePlay(e, 'us')}
+                >
+                  <span className="text-xs font-semibold uppercase tracking-wide">美</span>
+                  <span className="text-sm">{us_phonetic}</span>
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
+              )}
+              {!uk_phonetic && !us_phonetic && phonetic && (
+                <button
+                  type="button"
+                  className="flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-sm text-blue-600 transition-colors hover:bg-blue-100 dark:bg-blue-500/10 dark:text-blue-400 dark:hover:bg-blue-500/20"
+                  onClick={(e) => handlePlay(e, 'us')}
+                >
+                  <span className="text-sm">{phonetic}</span>
+                  <Volume2 className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+
             <p className="text-sm text-gray-400 dark:text-gray-500">
               点击卡片查看释义
             </p>
@@ -129,16 +158,39 @@ export default function LearnCard({
               transform: 'rotateY(180deg)',
             }}
           >
-            <h3 className="mb-1 text-2xl font-bold text-gray-950 dark:text-gray-100">
-              {word}
-            </h3>
+            <div className="mb-3 flex items-center gap-3">
+              <h3 className="text-2xl font-bold text-gray-950 dark:text-gray-100">
+                {word}
+              </h3>
+              <div className="flex items-center gap-2">
+                {uk_phonetic && (
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 rounded-full bg-sky-50 px-2 py-0.5 text-xs text-sky-700 hover:bg-sky-100 dark:bg-sky-500/10 dark:text-sky-400"
+                    onClick={(e) => handlePlay(e, 'uk')}
+                  >
+                    <span className="font-semibold">英</span>
+                    <Volume2 className="h-3 w-3" />
+                  </button>
+                )}
+                {us_phonetic && (
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 rounded-full bg-orange-50 px-2 py-0.5 text-xs text-orange-700 hover:bg-orange-100 dark:bg-orange-500/10 dark:text-orange-400"
+                    onClick={(e) => handlePlay(e, 'us')}
+                  >
+                    <span className="font-semibold">美</span>
+                    <Volume2 className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            </div>
             {translation && (
               <p className="mb-4 text-lg font-medium text-blue-600 dark:text-blue-400">
                 {translation}
               </p>
             )}
 
-            {/* 释义列表 */}
             {defs.length > 0 && (
               <div className="mb-4 space-y-2">
                 {defs.map((d, i) => (
@@ -152,7 +204,7 @@ export default function LearnCard({
               </div>
             )}
 
-            {/* 例句 */}
+            {/* 例句：直接读后端已有的翻译数据 */}
             {exs.length > 0 && (
               <div className="mb-4 space-y-3">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
@@ -161,13 +213,14 @@ export default function LearnCard({
                 {exs.map((ex, i) => (
                   <div key={i} className="text-sm">
                     <p className="text-gray-800 dark:text-gray-200">{ex.en}</p>
-                    <p className="text-gray-500 dark:text-gray-400">{ex.zh}</p>
+                    {ex.zh && (
+                      <p className="mt-0.5 text-gray-500 dark:text-gray-400">{ex.zh}</p>
+                    )}
                   </div>
                 ))}
               </div>
             )}
 
-            {/* 搭配 */}
             {colls.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {colls.map((c, i) => (
