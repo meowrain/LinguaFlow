@@ -2,12 +2,14 @@ package database
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"gugudu-backend/models"
 	"log"
 	"os"
 	"path/filepath"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -94,7 +96,6 @@ func seedOneWordBook(filePath string) error {
 		return fmt.Errorf("parse JSON %s: %w", filePath, err)
 	}
 
-	// 统计词条总数和单元数
 	totalEntries := 0
 	unitSet := make(map[int]bool)
 	for _, u := range data.Units {
@@ -102,86 +103,92 @@ func seedOneWordBook(filePath string) error {
 		unitSet[u.Unit] = true
 	}
 
-	// FirstOrCreate 词书
-	book := models.WordBook{
-		Name:        data.Meta.Name,
-		NameEN:      data.Meta.NameEN,
-		Slug:        data.Meta.Slug,
-		Description: fmt.Sprintf("%s (%s)", data.Meta.Name, data.Meta.Source),
-		Category:    data.Meta.Category,
-		Difficulty:  data.Meta.Difficulty,
-		CEFRLevel:   data.Meta.CEFRLevel,
-		WordCount:   totalEntries,
-		UnitCount:   len(unitSet),
-		IsPublished: true,
-		Source:      data.Meta.Source,
-		License:     data.Meta.License,
-		Version:     data.Meta.Version,
+	var existing models.WordBook
+	err = DB.Where("slug = ? AND version = ? AND word_count = ? AND unit_count = ?",
+		data.Meta.Slug, data.Meta.Version, totalEntries, len(unitSet)).First(&existing).Error
+	if err == nil {
+		return nil
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return fmt.Errorf("check wordbook %s: %w", data.Meta.Slug, err)
 	}
 
-	var saved models.WordBook
-	if err := DB.Where("slug = ?", data.Meta.Slug).Attrs(book).FirstOrCreate(&saved).Error; err != nil {
-		return fmt.Errorf("create wordbook %s: %w", data.Meta.Slug, err)
-	}
+	return DB.Transaction(func(tx *gorm.DB) error {
+		book := models.WordBook{
+			Name:        data.Meta.Name,
+			NameEN:      data.Meta.NameEN,
+			Slug:        data.Meta.Slug,
+			Description: fmt.Sprintf("%s (%s)", data.Meta.Name, data.Meta.Source),
+			Category:    data.Meta.Category,
+			Difficulty:  data.Meta.Difficulty,
+			CEFRLevel:   data.Meta.CEFRLevel,
+			WordCount:   totalEntries,
+			UnitCount:   len(unitSet),
+			IsPublished: true,
+			Source:      data.Meta.Source,
+			License:     data.Meta.License,
+			Version:     data.Meta.Version,
+		}
 
-	// 如果 JSON 里的元信息与数据库不一致(比如升级了词库数据),同步更新
-	updates := map[string]interface{}{
-		"name":         data.Meta.Name,
-		"name_en":      data.Meta.NameEN,
-		"description":  book.Description,
-		"category":     data.Meta.Category,
-		"difficulty":   data.Meta.Difficulty,
-		"cefr_level":   data.Meta.CEFRLevel,
-		"word_count":   totalEntries,
-		"unit_count":   len(unitSet),
-		"is_published": true,
-		"source":       data.Meta.Source,
-		"license":      data.Meta.License,
-		"version":      data.Meta.Version,
-	}
-	if saved.WordCount != totalEntries || saved.UnitCount != len(unitSet) || saved.Name != data.Meta.Name {
-		DB.Model(&saved).Updates(updates)
-		saved.WordCount = totalEntries
-		saved.UnitCount = len(unitSet)
-	}
+		var saved models.WordBook
+		if err := tx.Where("slug = ?", data.Meta.Slug).Attrs(book).FirstOrCreate(&saved).Error; err != nil {
+			return fmt.Errorf("create wordbook %s: %w", data.Meta.Slug, err)
+		}
 
-	// 写入词条
-	sortOrder := 0
-	for _, unit := range data.Units {
-		for _, entry := range unit.Entries {
-			sortOrder++
-			definitionsJSON, _ := json.Marshal(entry.Definitions)
-			examplesJSON, _ := json.Marshal(entry.Examples)
-			collJSON, _ := json.Marshal(entry.Collocations)
-			tagsJSON, _ := json.Marshal(entry.Tags)
+		tx.Model(&saved).Updates(map[string]interface{}{
+			"name":         data.Meta.Name,
+			"name_en":      data.Meta.NameEN,
+			"description":  book.Description,
+			"category":     data.Meta.Category,
+			"difficulty":   data.Meta.Difficulty,
+			"cefr_level":   data.Meta.CEFRLevel,
+			"word_count":   totalEntries,
+			"unit_count":   len(unitSet),
+			"is_published": true,
+			"source":       data.Meta.Source,
+			"license":      data.Meta.License,
+			"version":      data.Meta.Version,
+		})
 
-			wbe := models.WordBookEntry{
-				WordBookID:  saved.ID,
-				SortOrder:   sortOrder,
-				Unit:        unit.Unit,
-				Word:        entry.Word,
-				UKPhonetic:  entry.UKPhonetic,
-				USPhonetic:  entry.USPhonetic,
-				Phonetic:    entry.USPhonetic,
-				Definitions: string(definitionsJSON),
-				Translation: entry.Translation,
-				Examples:    string(examplesJSON),
-				Collocations: string(collJSON),
-				Frequency:   entry.Frequency,
-				Difficulty:  data.Meta.Difficulty,
-				Tags:        string(tagsJSON),
-			}
+		entries := make([]models.WordBookEntry, 0, totalEntries)
+		sortOrder := 0
+		for _, unit := range data.Units {
+			for _, entry := range unit.Entries {
+				sortOrder++
+				definitionsJSON, _ := json.Marshal(entry.Definitions)
+				examplesJSON, _ := json.Marshal(entry.Examples)
+				collJSON, _ := json.Marshal(entry.Collocations)
+				tagsJSON, _ := json.Marshal(entry.Tags)
 
-			result := DB.Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "word_book_id"}, {Name: "word"}},
-				DoNothing: true,
-			}).Create(&wbe)
-			if result.Error != nil {
-				log.Printf("词书词条写入跳过 (%s/%s): %v", data.Meta.Slug, entry.Word, result.Error)
+				entries = append(entries, models.WordBookEntry{
+					WordBookID:   saved.ID,
+					SortOrder:    sortOrder,
+					Unit:         unit.Unit,
+					Word:         entry.Word,
+					UKPhonetic:   entry.UKPhonetic,
+					USPhonetic:   entry.USPhonetic,
+					Phonetic:     entry.USPhonetic,
+					Definitions:  string(definitionsJSON),
+					Translation:  entry.Translation,
+					Examples:     string(examplesJSON),
+					Collocations: string(collJSON),
+					Frequency:    entry.Frequency,
+					Difficulty:   data.Meta.Difficulty,
+					Tags:         string(tagsJSON),
+				})
 			}
 		}
-	}
 
-	log.Printf("词书 seed 完成: %s (%d 词)", data.Meta.Name, totalEntries)
-	return nil
+		if len(entries) > 0 {
+			if err := tx.Clauses(clause.OnConflict{
+				Columns:   []clause.Column{{Name: "word_book_id"}, {Name: "word"}},
+				DoNothing: true,
+			}).CreateInBatches(&entries, 500).Error; err != nil {
+				return fmt.Errorf("batch insert entries for %s: %w", data.Meta.Slug, err)
+			}
+		}
+
+		log.Printf("词书 seed 完成: %s (%d 词)", data.Meta.Name, totalEntries)
+		return nil
+	})
 }
