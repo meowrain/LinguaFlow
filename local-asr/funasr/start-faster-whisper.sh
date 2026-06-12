@@ -5,8 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 MODEL_DIR="${MODEL_DIR:-$SCRIPT_DIR/models/faster-whisper-large-v3}"
-DEVICE="${DEVICE:-cpu}"
-COMPUTE_TYPE="${COMPUTE_TYPE:-int8}"
+# DEVICE and COMPUTE_TYPE are auto-detected in faster_whisper_server.py
+# Set them explicitly to override (e.g. DEVICE=cuda COMPUTE_TYPE=float16)
 DEFAULT_CPU_THREADS="$(getconf _NPROCESSORS_ONLN 2>/dev/null || echo 4)"
 CPU_THREADS="${CPU_THREADS:-$DEFAULT_CPU_THREADS}"
 BEAM_SIZE="${BEAM_SIZE:-1}"
@@ -26,7 +26,10 @@ export HTTP_PROXY="$http_proxy"
 export HTTPS_PROXY="$https_proxy"
 export HF_HUB_DISABLE_XET="${HF_HUB_DISABLE_XET:-1}"
 export UV_HTTP_TIMEOUT="${UV_HTTP_TIMEOUT:-300}"
-export MODEL_DIR DEVICE COMPUTE_TYPE CPU_THREADS BEAM_SIZE NUM_WORKERS VAD_FILTER
+export MODEL_DIR CPU_THREADS BEAM_SIZE NUM_WORKERS VAD_FILTER
+# Only export DEVICE/COMPUTE_TYPE if explicitly set (let Python auto-detect otherwise)
+[ -n "${DEVICE:-}" ] && export DEVICE || true
+[ -n "${COMPUTE_TYPE:-}" ] && export COMPUTE_TYPE || true
 export VAD_MIN_SILENCE_MS CONDITION_ON_PREVIOUS_TEXT NO_SPEECH_THRESHOLD LOG_PROB_THRESHOLD COMPRESSION_RATIO_THRESHOLD
 
 if [ ! -d "$MODEL_DIR" ]; then

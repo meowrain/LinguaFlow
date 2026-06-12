@@ -13,10 +13,47 @@ from faster_whisper import WhisperModel
 
 
 MODEL_DIR = os.getenv("MODEL_DIR", str(Path(__file__).parent / "models/faster-whisper-large-v3"))
-DEVICE = os.getenv("DEVICE", "cpu")
-COMPUTE_TYPE = os.getenv("COMPUTE_TYPE", "int8")
 CPU_THREADS = int(os.getenv("CPU_THREADS", "4"))
 NUM_WORKERS = int(os.getenv("NUM_WORKERS", "1"))
+
+
+def _auto_detect_device() -> tuple[str, str]:
+    """Auto-detect best available device. Returns (device, compute_type)."""
+    try:
+        import torch
+        if torch.cuda.is_available():
+            name = torch.cuda.get_device_name(0)
+            print(f"[ASR] CUDA detected: {name}", flush=True)
+            return "cuda", "float16"
+    except ImportError:
+        pass
+
+    # Fallback: try ctranslate2 CUDA probe
+    try:
+        import ctranslate2
+        cuda_supported = ctranslate2.get_supported_compute_types("cuda")
+        if cuda_supported:
+            print("[ASR] CUDA available (via ctranslate2)", flush=True)
+            compute = "float16" if "float16" in cuda_supported else next(iter(cuda_supported))
+            return "cuda", compute
+    except Exception:
+        pass
+
+    print("[ASR] No CUDA found, using CPU", flush=True)
+    return "cpu", "int8"
+
+
+_env_device = os.getenv("DEVICE")
+_env_compute = os.getenv("COMPUTE_TYPE")
+
+if _env_device:
+    DEVICE = _env_device
+    COMPUTE_TYPE = _env_compute or ("float16" if _env_device == "cuda" else "int8")
+else:
+    DEVICE, COMPUTE_TYPE = _auto_detect_device()
+    if _env_compute:
+        COMPUTE_TYPE = _env_compute
+
 BEAM_SIZE = int(os.getenv("BEAM_SIZE", "5"))
 VAD_FILTER = os.getenv("VAD_FILTER", "true").lower() in {"1", "true", "yes", "on"}
 VAD_MIN_SILENCE_MS = int(os.getenv("VAD_MIN_SILENCE_MS", "500"))
