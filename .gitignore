@@ -7,6 +7,10 @@ frontend/tsconfig.tsbuildinfo
 backend/gugudu-backend
 backend/storage/
 .omo/
+.qoder/
+# Runtime logs
+*.log
+backend/data/wordbooks/*.log
 local-asr/funasr/.venv/
 local-asr/funasr/models/
 local-asr/funasr/*.log
