@@ -181,8 +181,12 @@ func seedOneWordBook(filePath string) error {
 
 		if len(entries) > 0 {
 			if err := tx.Clauses(clause.OnConflict{
-				Columns:   []clause.Column{{Name: "word_book_id"}, {Name: "word"}},
-				DoNothing: true,
+				Columns: []clause.Column{{Name: "word_book_id"}, {Name: "word"}},
+				DoUpdates: clause.AssignmentColumns([]string{
+					"definitions", "translation", "examples", "collocations",
+					"phonetic", "uk_phonetic", "us_phonetic",
+					"tags", "frequency", "difficulty", "sort_order", "unit",
+				}),
 			}).CreateInBatches(&entries, 500).Error; err != nil {
 				return fmt.Errorf("batch insert entries for %s: %w", data.Meta.Slug, err)
 			}

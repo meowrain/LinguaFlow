@@ -9,6 +9,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -170,6 +171,22 @@ func main() {
 	if err := writeJSON(*filePath, &data); err != nil {
 		log.Fatalf("保存文件失败: %v", err)
 	}
+
+	oldVer := data.Meta.Version
+	parts := strings.Split(oldVer, ".")
+	if len(parts) == 3 {
+		if n, err := strconv.Atoi(parts[2]); err == nil {
+			parts[2] = strconv.Itoa(n + 1)
+		}
+	} else {
+		parts = append(parts, "1")
+	}
+	data.Meta.Version = strings.Join(parts, ".")
+
+	if err := writeJSON(*filePath, &data); err != nil {
+		log.Fatalf("更新版本号失败: %v", err)
+	}
+	log.Printf("版本号: %s → %s（重启后端自动 re-seed）", oldVer, data.Meta.Version)
 
 	log.Printf("修复完成: 成功 %d, 失败 %d", fixedCount.Load(), failedCount.Load())
 }
