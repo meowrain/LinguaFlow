@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
 
@@ -157,12 +156,7 @@ func seedOneWordBook(filePath string) error {
 				DoNothing: true,
 			}).Create(&wbe)
 			if result.Error != nil {
-				// 如果没有唯一索引约束,使用 FirstOrCreate 兜底
-				var existing models.WordBookEntry
-				err := DB.Where("word_book_id = ? AND word = ?", saved.ID, entry.Word).First(&existing).Error
-				if err == gorm.ErrRecordNotFound {
-					DB.Create(&wbe)
-				}
+				log.Printf("词书词条写入跳过 (%s/%s): %v", data.Meta.Slug, entry.Word, result.Error)
 			}
 		}
 	}

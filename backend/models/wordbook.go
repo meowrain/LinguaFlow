@@ -46,12 +46,12 @@ type WordBookEntry struct {
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 
-	WordBookID uint `gorm:"not null;index:idx_wbe_book_sort,priority:1" json:"word_book_id"`
-	SortOrder  int  `gorm:"not null;index:idx_wbe_book_sort,priority:2" json:"sort_order"`
-	Unit       int  `gorm:"default:0;index" json:"unit"`
+	WordBookID uint   `gorm:"not null;uniqueIndex:idx_wbe_book_word,priority:1;index:idx_wbe_book_sort,priority:1" json:"word_book_id"`
+	SortOrder  int    `gorm:"not null;index:idx_wbe_book_sort,priority:2" json:"sort_order"`
+	Unit       int    `gorm:"default:0;index" json:"unit"`
 
 	// 词汇信息
-	Word         string `gorm:"size:100;not null;index:idx_wbe_word" json:"word"`
+	Word         string `gorm:"size:100;not null;uniqueIndex:idx_wbe_book_word,priority:2;index:idx_wbe_word" json:"word"`
 	Phonetic     string `gorm:"size:100" json:"phonetic"`
 	UKPhonetic   string `gorm:"size:100" json:"uk_phonetic"`
 	USPhonetic   string `gorm:"size:100" json:"us_phonetic"`
