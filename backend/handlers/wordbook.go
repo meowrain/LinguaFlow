@@ -9,7 +9,9 @@ import (
 	"gugudu-backend/services"
 	"math"
 	"net/http"
+	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -31,6 +33,14 @@ const (
 	srsMasteryInterval    = 7
 	srsDefaultEase        = 2.5
 	srsMinEase            = 1.3
+)
+
+const (
+	wordBookExerciseFlashcard        = "flashcard"
+	wordBookExerciseEnToZhChoice     = "en_to_zh_choice"
+	wordBookExerciseZhToEnSpelling   = "zh_to_en_spelling"
+	wordBookExerciseAudioWordChoice  = "audio_word_choice"
+	wordBookExerciseContextFillBlank = "context_fill_blank"
 )
 
 // ---------- 请求 / 响应结构 ----------
@@ -55,17 +65,32 @@ type wordBookReviewRequest struct {
 	Rating     string `json:"rating" binding:"required,oneof=good hard forgot"`
 }
 
+type wordBookExerciseItem struct {
+	EntryID     uint     `json:"entry_id"`
+	ProgressID  uint     `json:"progress_id,omitempty"`
+	Phase       string   `json:"phase"`
+	Type        string   `json:"type"`
+	Word        string   `json:"word"`
+	Prompt      string   `json:"prompt"`
+	Translation string   `json:"translation"`
+	Options     []string `json:"options,omitempty"`
+	Answer      string   `json:"answer"`
+	AudioText   string   `json:"audio_text,omitempty"`
+	Context     string   `json:"context,omitempty"`
+	Placeholder string   `json:"placeholder,omitempty"`
+}
+
 type dailyTaskNewWord struct {
-	EntryID     uint   `json:"entry_id"`
-	Word        string `json:"word"`
-	Phonetic    string `json:"phonetic"`
-	UKPhonetic  string `json:"uk_phonetic"`
-	USPhonetic  string `json:"us_phonetic"`
-	Translation string `json:"translation"`
-	Definitions string `json:"definitions"`
-	Examples    string `json:"examples"`
+	EntryID      uint   `json:"entry_id"`
+	Word         string `json:"word"`
+	Phonetic     string `json:"phonetic"`
+	UKPhonetic   string `json:"uk_phonetic"`
+	USPhonetic   string `json:"us_phonetic"`
+	Translation  string `json:"translation"`
+	Definitions  string `json:"definitions"`
+	Examples     string `json:"examples"`
 	Collocations string `json:"collocations"`
-	Status      string `json:"status"`
+	Status       string `json:"status"`
 }
 
 type dailyTaskReviewWord struct {
@@ -83,44 +108,44 @@ type dailyTaskReviewWord struct {
 }
 
 type dailyTasksResponse struct {
-	Date          string                `json:"date"`
-	NewWords      []dailyTaskNewWord    `json:"new_words"`
-	ReviewWords   []dailyTaskReviewWord `json:"review_words"`
-	TotalNew      int                   `json:"total_new"`
-	TotalReview   int                   `json:"total_review"`
-	BacklogCount  int                   `json:"backlog_count"`
-	NewWordQuota  int                   `json:"new_word_quota"`
-	Plan          struct {
+	Date         string                `json:"date"`
+	NewWords     []dailyTaskNewWord    `json:"new_words"`
+	ReviewWords  []dailyTaskReviewWord `json:"review_words"`
+	TotalNew     int                   `json:"total_new"`
+	TotalReview  int                   `json:"total_review"`
+	BacklogCount int                   `json:"backlog_count"`
+	NewWordQuota int                   `json:"new_word_quota"`
+	Plan         struct {
 		DailyNewWords    int `json:"daily_new_words"`
 		DailyReviewWords int `json:"daily_review_words"`
 	} `json:"plan"`
-	Progress      struct {
-		NewLearned   int `json:"new_learned"`
-		NewTotal     int `json:"new_total"`
-		ReviewDone   int `json:"review_done"`
-		ReviewTotal  int `json:"review_total"`
-		IsCompleted  bool `json:"is_completed"`
+	Progress struct {
+		NewLearned  int  `json:"new_learned"`
+		NewTotal    int  `json:"new_total"`
+		ReviewDone  int  `json:"review_done"`
+		ReviewTotal int  `json:"review_total"`
+		IsCompleted bool `json:"is_completed"`
 	} `json:"progress"`
 }
 
 type wordBookStatsResponse struct {
-	TotalEntries          int     `json:"total_entries"`
-	NewCount              int     `json:"new_count"`
-	LearningCount         int     `json:"learning_count"`
-	MasteredCount         int     `json:"mastered_count"`
-	SkippedCount          int     `json:"skipped_count"`
-	LearnedPct            int     `json:"learned_pct"`
-	MasteredPct           int     `json:"mastered_pct"`
-	EstimatedDaysRemaining int    `json:"estimated_days_remaining"`
-	CurrentStreak         int     `json:"current_streak"`
-	TotalStudiedDays      int     `json:"total_studied_days"`
-	AvgDailyNew           float64 `json:"avg_daily_new"`
-	AvgDailyReview        float64 `json:"avg_daily_review"`
-	Calendar              []struct {
-		Date         string `json:"date"`
-		NewCount     int    `json:"new_count"`
-		ReviewCount  int    `json:"review_count"`
-		IsCompleted  bool   `json:"is_completed"`
+	TotalEntries           int     `json:"total_entries"`
+	NewCount               int     `json:"new_count"`
+	LearningCount          int     `json:"learning_count"`
+	MasteredCount          int     `json:"mastered_count"`
+	SkippedCount           int     `json:"skipped_count"`
+	LearnedPct             int     `json:"learned_pct"`
+	MasteredPct            int     `json:"mastered_pct"`
+	EstimatedDaysRemaining int     `json:"estimated_days_remaining"`
+	CurrentStreak          int     `json:"current_streak"`
+	TotalStudiedDays       int     `json:"total_studied_days"`
+	AvgDailyNew            float64 `json:"avg_daily_new"`
+	AvgDailyReview         float64 `json:"avg_daily_review"`
+	Calendar               []struct {
+		Date        string `json:"date"`
+		NewCount    int    `json:"new_count"`
+		ReviewCount int    `json:"review_count"`
+		IsCompleted bool   `json:"is_completed"`
 	} `json:"calendar"`
 }
 
@@ -658,19 +683,19 @@ func GetWordBookStats(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": wordBookStatsResponse{
-		TotalEntries:          book.WordCount,
-		NewCount:              newCount,
-		LearningCount:         learningCount,
-		MasteredCount:         masteredCount,
-		SkippedCount:          skippedCount,
-		LearnedPct:            learnedPct,
-		MasteredPct:           masteredPct,
+		TotalEntries:           book.WordCount,
+		NewCount:               newCount,
+		LearningCount:          learningCount,
+		MasteredCount:          masteredCount,
+		SkippedCount:           skippedCount,
+		LearnedPct:             learnedPct,
+		MasteredPct:            masteredPct,
 		EstimatedDaysRemaining: estimatedDays,
-		CurrentStreak:         ub.CurrentStreak,
-		TotalStudiedDays:      ub.TotalStudiedDays,
-		AvgDailyNew:           avgDailyNew,
-		AvgDailyReview:        avgDailyReview,
-		Calendar:              calendar,
+		CurrentStreak:          ub.CurrentStreak,
+		TotalStudiedDays:       ub.TotalStudiedDays,
+		AvgDailyNew:            avgDailyNew,
+		AvgDailyReview:         avgDailyReview,
+		Calendar:               calendar,
 	}})
 }
 
@@ -756,16 +781,16 @@ func generateDailyTasks(db *gorm.DB, userID uint, ub models.UserWordBook) (*dail
 	newWords := make([]dailyTaskNewWord, 0, len(newEntries))
 	for _, e := range newEntries {
 		newWords = append(newWords, dailyTaskNewWord{
-			EntryID:     e.ID,
-			Word:        e.Word,
-			Phonetic:    e.Phonetic,
-			UKPhonetic:  e.UKPhonetic,
-			USPhonetic:  e.USPhonetic,
-			Translation: e.Translation,
-			Definitions: e.Definitions,
-			Examples:    e.Examples,
+			EntryID:      e.ID,
+			Word:         e.Word,
+			Phonetic:     e.Phonetic,
+			UKPhonetic:   e.UKPhonetic,
+			USPhonetic:   e.USPhonetic,
+			Translation:  e.Translation,
+			Definitions:  e.Definitions,
+			Examples:     e.Examples,
 			Collocations: e.Collocations,
-			Status:      "new",
+			Status:       "new",
 		})
 	}
 
@@ -836,6 +861,114 @@ func applyWordBookReview(progress *models.UserWordBookProgress, rating string) e
 	progress.LastReviewAt = &now
 	progress.NextReviewAt = &nextReview
 	return nil
+}
+
+func pickWordBookExerciseType(entry models.WordBookEntry, mode string, allowed []string) string {
+	candidates := wordBookExerciseCandidates(mode)
+	if len(allowed) > 0 {
+		candidates = filterExerciseCandidates(candidates, allowed)
+	}
+	for _, candidate := range candidates {
+		if wordBookExerciseAvailable(entry, candidate) {
+			return candidate
+		}
+	}
+	return wordBookExerciseFlashcard
+}
+
+func wordBookExerciseCandidates(mode string) []string {
+	switch mode {
+	case "spelling_focus":
+		return []string{wordBookExerciseZhToEnSpelling, wordBookExerciseContextFillBlank, wordBookExerciseFlashcard}
+	case "quick_choice":
+		return []string{wordBookExerciseEnToZhChoice, wordBookExerciseAudioWordChoice, wordBookExerciseFlashcard}
+	case "new_only", "review_only", "mixed", "mistakes", "":
+		return []string{wordBookExerciseFlashcard, wordBookExerciseEnToZhChoice, wordBookExerciseZhToEnSpelling, wordBookExerciseAudioWordChoice, wordBookExerciseContextFillBlank}
+	default:
+		return []string{wordBookExerciseFlashcard}
+	}
+}
+
+func filterExerciseCandidates(candidates []string, allowed []string) []string {
+	allowedSet := make(map[string]bool, len(allowed))
+	for _, item := range allowed {
+		allowedSet[item] = true
+	}
+	filtered := make([]string, 0, len(candidates))
+	for _, candidate := range candidates {
+		if allowedSet[candidate] {
+			filtered = append(filtered, candidate)
+		}
+	}
+	return filtered
+}
+
+func wordBookExerciseAvailable(entry models.WordBookEntry, exerciseType string) bool {
+	switch exerciseType {
+	case wordBookExerciseFlashcard:
+		return true
+	case wordBookExerciseEnToZhChoice, wordBookExerciseZhToEnSpelling:
+		return strings.TrimSpace(entry.Translation) != ""
+	case wordBookExerciseAudioWordChoice:
+		return strings.TrimSpace(entry.Word) != ""
+	case wordBookExerciseContextFillBlank:
+		_, _, ok := buildWordBookContextBlank(entry)
+		return ok
+	default:
+		return false
+	}
+}
+
+func buildWordBookContextBlank(entry models.WordBookEntry) (string, string, bool) {
+	word := strings.TrimSpace(entry.Word)
+	if word == "" || strings.TrimSpace(entry.Examples) == "" {
+		return "", "", false
+	}
+
+	var examples []struct {
+		EN string `json:"en"`
+		ZH string `json:"zh"`
+	}
+	if err := json.Unmarshal([]byte(entry.Examples), &examples); err != nil {
+		return "", "", false
+	}
+
+	pattern, err := regexp.Compile(`(?i)\b` + regexp.QuoteMeta(word) + `\b`)
+	if err != nil {
+		return "", "", false
+	}
+	for _, example := range examples {
+		sentence := strings.TrimSpace(example.EN)
+		if sentence == "" {
+			continue
+		}
+		if pattern.FindStringIndex(sentence) == nil {
+			continue
+		}
+		return pattern.ReplaceAllString(sentence, "_____"), word, true
+	}
+	return "", "", false
+}
+
+func buildWordBookDistractors(entries []models.WordBookEntry, answer string, value func(models.WordBookEntry) string, limit int) []string {
+	if limit <= 0 {
+		return nil
+	}
+	normalizedAnswer := strings.TrimSpace(answer)
+	seen := map[string]bool{normalizedAnswer: true}
+	distractors := make([]string, 0, limit)
+	for _, entry := range entries {
+		candidate := strings.TrimSpace(value(entry))
+		if candidate == "" || seen[candidate] {
+			continue
+		}
+		seen[candidate] = true
+		distractors = append(distractors, candidate)
+		if len(distractors) >= limit {
+			break
+		}
+	}
+	return distractors
 }
 
 // autoCreateVocabulary 自动写入 Vocabulary(查重)
@@ -1023,32 +1156,32 @@ func ptrTime(t time.Time) *time.Time {
 
 // wordBookEntryItem 词表查询中的单个词条
 type wordBookEntryItem struct {
-	ID            uint   `json:"id"`
-	Word          string `json:"word"`
-	Phonetic      string `json:"phonetic"`
-	UKPhonetic    string `json:"uk_phonetic"`
-	USPhonetic    string `json:"us_phonetic"`
-	Translation   string `json:"translation"`
-	Definitions   string `json:"definitions"`
-	Examples      string `json:"examples"`
-	Collocations  string `json:"collocations"`
-	Unit          int    `json:"unit"`
-	SortOrder     int    `json:"sort_order"`
-	Frequency     int    `json:"frequency"`
-	Difficulty    string `json:"difficulty"`
+	ID           uint   `json:"id"`
+	Word         string `json:"word"`
+	Phonetic     string `json:"phonetic"`
+	UKPhonetic   string `json:"uk_phonetic"`
+	USPhonetic   string `json:"us_phonetic"`
+	Translation  string `json:"translation"`
+	Definitions  string `json:"definitions"`
+	Examples     string `json:"examples"`
+	Collocations string `json:"collocations"`
+	Unit         int    `json:"unit"`
+	SortOrder    int    `json:"sort_order"`
+	Frequency    int    `json:"frequency"`
+	Difficulty   string `json:"difficulty"`
 }
 
 // wordBookProgressSnapshot 用户进度快照
 type wordBookProgressSnapshot struct {
-	ProgressID     uint   `json:"progress_id"`
-	Status         string `json:"status"`
-	ReviewCount    int    `json:"review_count"`
-	ForgottenCount int    `json:"forgotten_count"`
-	ReviewInterval int    `json:"review_interval"`
+	ProgressID     uint    `json:"progress_id"`
+	Status         string  `json:"status"`
+	ReviewCount    int     `json:"review_count"`
+	ForgottenCount int     `json:"forgotten_count"`
+	ReviewInterval int     `json:"review_interval"`
 	ReviewEase     float64 `json:"review_ease"`
-	NextReviewAt   string `json:"next_review_at,omitempty"`
-	LastReviewAt   string `json:"last_review_at,omitempty"`
-	FirstSeenAt    string `json:"first_seen_at,omitempty"`
+	NextReviewAt   string  `json:"next_review_at,omitempty"`
+	LastReviewAt   string  `json:"last_review_at,omitempty"`
+	FirstSeenAt    string  `json:"first_seen_at,omitempty"`
 }
 
 // GetWordBookUnits 返回词书的单元列表(单元号 + 词条数),供词表页筛选器使用

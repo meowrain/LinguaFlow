@@ -216,6 +216,61 @@ func TestApplyWordBookReview_SRSUnifiedWithVocabulary(t *testing.T) {
 	}
 }
 
+func TestPickWordBookExerciseTypeFallbacks(t *testing.T) {
+	entry := models.WordBookEntry{Word: "abandon"}
+	if got := pickWordBookExerciseType(entry, "spelling_focus", []string{"zh_to_en_spelling"}); got != "flashcard" {
+		t.Fatalf("without translation should fallback to flashcard, got %s", got)
+	}
+
+	entry.Translation = "放弃"
+	if got := pickWordBookExerciseType(entry, "spelling_focus", nil); got != "zh_to_en_spelling" {
+		t.Fatalf("spelling_focus should prefer spelling, got %s", got)
+	}
+
+	entry.Examples = `[{"en":"They had to abandon the plan.","zh":"他们不得不放弃计划。"}]`
+	if got := pickWordBookExerciseType(entry, "mixed", []string{"context_fill_blank"}); got != "context_fill_blank" {
+		t.Fatalf("explicit context type should be allowed when examples exist, got %s", got)
+	}
+}
+
+func TestBuildContextBlank(t *testing.T) {
+	entry := models.WordBookEntry{
+		Word:     "abandon",
+		Examples: `[{"en":"They had to abandon the plan.","zh":"他们不得不放弃计划。"}]`,
+	}
+	context, placeholder, ok := buildWordBookContextBlank(entry)
+	if !ok {
+		t.Fatal("expected context blank")
+	}
+	if context != "They had to _____ the plan." {
+		t.Fatalf("context = %q", context)
+	}
+	if placeholder != "abandon" {
+		t.Fatalf("placeholder = %q", placeholder)
+	}
+}
+
+func TestBuildWordBookDistractors(t *testing.T) {
+	entries := []models.WordBookEntry{
+		{Word: "abandon", Translation: "放弃"},
+		{Word: "adapt", Translation: "适应"},
+		{Word: "obvious", Translation: "明显的"},
+		{Word: "maintain", Translation: "维持"},
+		{Word: "empty"},
+	}
+	got := buildWordBookDistractors(entries, "放弃", func(e models.WordBookEntry) string {
+		return e.Translation
+	}, 3)
+	if len(got) != 3 {
+		t.Fatalf("len = %d, want 3: %#v", len(got), got)
+	}
+	for _, value := range got {
+		if value == "放弃" || value == "" {
+			t.Fatalf("invalid distractor %q in %#v", value, got)
+		}
+	}
+}
+
 func TestCloseSpellingAnswer(t *testing.T) {
 	tests := []struct {
 		answer   string
