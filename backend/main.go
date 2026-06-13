@@ -188,6 +188,7 @@ func main() {
 			protected.GET("/article-knowledge-graph/:id", handlers.GetArticleKnowledgeGraph)
 			protected.GET("/article-notes/:id", handlers.GetArticleStudyNote)
 			protected.POST("/article-notes/:id", handlers.GenerateArticleStudyNote)
+			protected.GET("/articles/:id/next", handlers.GetRecommendedNextArticle)
 			protected.POST("/sentences/analyze", middleware.PremiumRequired(database.DB), handlers.AnalyzeSentence)
 			protected.POST("/tts", handlers.GenerateSpeech)
 
