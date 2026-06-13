@@ -1899,7 +1899,7 @@ func extractKeyPhrases(words []string) []string {
 const EventTypeSentenceSaved = "sentence_saved"
 
 type SaveSentenceRequest struct {
-	SentenceText string `json:"sentence_text" binding:"required"`
+	SentenceText string `json:"sentence_text" binding:"required,max=5000"`
 	Analysis     string `json:"analysis"`
 }
 
@@ -1914,7 +1914,16 @@ type UserSentenceCollection struct {
 
 // SaveSentence 保存用户收藏的句子
 func SaveSentence(c *gin.Context) {
-	userID, _ := c.Get("user_id")
+	userID, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+	uid, ok := userID.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
+		return
+	}
 	slug := c.Param("slug")
 
 	var article models.Article
@@ -1930,10 +1939,11 @@ func SaveSentence(c *gin.Context) {
 	}
 
 	sourceHash := hashString(req.SentenceText)
+	// context_hash: 使用 article:{id} 格式，与句子保存的去重索引保持一致
 	contextHash := hashString(fmt.Sprintf("article:%d", article.ID))
 
 	event := models.ArticleStudyEvent{
-		UserID:     userID.(uint),
+		UserID:     uid,
 		ArticleID:  article.ID,
 		EventType:  EventTypeSentenceSaved,
 		SourceText: req.SentenceText,
@@ -1944,13 +1954,20 @@ func SaveSentence(c *gin.Context) {
 
 	if err := database.DB.Where(
 		"user_id = ? AND article_id = ? AND event_type = ? AND source_hash = ?",
-		userID.(uint), article.ID, EventTypeSentenceSaved, sourceHash,
+		uid, article.ID, EventTypeSentenceSaved, sourceHash,
 	).Attrs(event).FirstOrCreate(&event).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save sentence"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": event})
+	c.JSON(http.StatusOK, gin.H{"data": UserSentenceCollection{
+		ID:            event.ID,
+		ArticleID:     article.ID,
+		ArticleTitle:  article.Title,
+		SentenceText:  event.SourceText,
+		Analysis:      event.ResultText,
+		CreatedAt:     event.CreatedAt.Format("2006-01-02T15:04:05Z"),
+	}})
 }
 
 // GetArticleSentences 获取当前文章的用户收藏句子
@@ -2013,15 +2030,44 @@ func DeleteSentence(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Sentence deleted"})
 }
 
-// GetAllUserSentences 获取当前用户所有收藏的句子，按文章分组
+// GetAllUserSentences 获取当前用户所有收藏的句子，按文章分组（分页）
 func GetAllUserSentences(c *gin.Context) {
-	userID, _ := c.Get("user_id")
+	userID, ok := c.Get("user_id")
+	if !ok {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+	uid, ok := userID.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 20
+	}
+	if pageSize > 100 {
+		pageSize = 100
+	}
+	offset := (page - 1) * pageSize
+
+	var total int64
+	database.DB.Model(&models.ArticleStudyEvent{}).
+		Where("user_id = ? AND event_type = ?", uid, EventTypeSentenceSaved).
+		Count(&total)
 
 	var events []models.ArticleStudyEvent
 	if err := database.DB.
 		Preload("Article", "status = ?", "published").
-		Where("user_id = ? AND event_type = ?", userID.(uint), EventTypeSentenceSaved).
+		Where("user_id = ? AND event_type = ?", uid, EventTypeSentenceSaved).
 		Order("created_at DESC").
+		Offset(offset).
+		Limit(pageSize).
 		Find(&events).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch sentences"})
 		return
@@ -2043,7 +2089,15 @@ func GetAllUserSentences(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": result})
+	c.JSON(http.StatusOK, gin.H{
+		"data": result,
+		"pagination": gin.H{
+			"page":       page,
+			"page_size":  pageSize,
+			"total":      total,
+			"total_page": (total + int64(pageSize) - 1) / int64(pageSize),
+		},
+	})
 }
 
 func hashString(s string) string {
