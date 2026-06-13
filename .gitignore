@@ -1,3 +1,4 @@
+.worktrees/
 backend/config.toml
 backend/.env
 frontend/.env.local
