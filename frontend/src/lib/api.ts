@@ -108,8 +108,22 @@ export const articleAPI = {
     api.post(`/article-notes/${id}`, { force }),
   getQuiz: (id: number) =>
     api.get(`/article-quizzes/${id}`),
+  generateQuiz: (id: number, data?: { question_types?: string[]; count?: number }) =>
+    api.post(`/article-quizzes/${id}/generate`, data),
   submitQuiz: (id: number, answers: number[]) =>
     api.post(`/article-quizzes/${id}/submit`, { answers }),
+  analyzeSentence: (slug: string, sentence: string) =>
+    api.post(`/articles/${slug}/sentence-analyze`, { sentence }),
+  saveSentence: (slug: string, sentence: string, analysis?: string) =>
+    api.post(`/articles/${slug}/sentences`, { sentence_text: sentence, analysis }),
+  getArticleSentences: (slug: string) =>
+    api.get(`/articles/${slug}/sentences`),
+  deleteSentence: (id: number) =>
+    api.delete(`/sentences/${id}`),
+  getUserSentences: () =>
+    api.get('/sentences'),
+  getRecommendedArticles: () =>
+    api.get('/articles/recommend'),
   getNextArticle: (id: number) =>
     api.get(`/articles/${id}/next`),
 };

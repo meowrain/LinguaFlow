@@ -48,6 +48,7 @@ import {
 import TranslationTooltip from '@/components/TranslationTooltip';
 import ArticleLearningPanel from '@/components/ArticleLearningPanel';
 import FavoriteFolderSelect from '@/components/FavoriteFolderSelect';
+import IntensiveReadingPanel from '@/components/IntensiveReadingPanel';
 import Toast from '@/components/Toast';
 
 const difficultyLabels = {
@@ -2865,10 +2866,13 @@ export default function ArticlePage() {
           </aside>
         )}
 
-        {readingMode !== 'browsing' && (
+        {readingMode === 'intensive' && article && (
+          <IntensiveReadingPanel article={article} />
+        )}
+
+        {readingMode !== 'browsing' && readingMode !== 'intensive' && (
           <div className="mb-4 rounded-lg border border-yellow-700/50 bg-yellow-900/20 p-4">
             <p className="text-sm text-yellow-200">
-              {readingMode === 'intensive' && '精读模式：点击句子查看详细解析'}
               {readingMode === 'exam' && '考试模式：计时阅读，完成后作答'}
               {readingMode === 'echo' && '跟读模式：播放音频，录音跟读'}
             </p>
