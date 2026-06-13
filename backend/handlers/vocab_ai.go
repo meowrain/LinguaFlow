@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"bufio"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -343,8 +344,18 @@ func streamAIChat(ctx context.Context, ai *services.AIAnalysisService, systemPro
 	}
 	defer resp.Body.Close()
 
-	decoder := json.NewDecoder(resp.Body)
-	for {
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if !strings.HasPrefix(line, "data: ") {
+			continue
+		}
+		data := strings.TrimPrefix(line, "data: ")
+		data = strings.TrimSpace(data)
+		if data == "[DONE]" {
+			break
+		}
+
 		var chunk struct {
 			Choices []struct {
 				Delta struct {
@@ -352,8 +363,8 @@ func streamAIChat(ctx context.Context, ai *services.AIAnalysisService, systemPro
 				} `json:"delta"`
 			} `json:"choices"`
 		}
-		if err := decoder.Decode(&chunk); err != nil {
-			break
+		if err := json.Unmarshal([]byte(data), &chunk); err != nil {
+			continue
 		}
 		if len(chunk.Choices) > 0 && chunk.Choices[0].Delta.Content != "" {
 			if err := onDelta(chunk.Choices[0].Delta.Content); err != nil {
@@ -361,7 +372,7 @@ func streamAIChat(ctx context.Context, ai *services.AIAnalysisService, systemPro
 			}
 		}
 	}
-	return nil
+	return scanner.Err()
 }
 
 func vocabFirstMeaning(v models.Vocabulary) string {
