@@ -1750,6 +1750,105 @@ func truncateRunes(text string, max int) string {
 	return string(runes[:max]) + "\n\n[内容已截断]"
 }
 
+// GetRecommendedNextArticle 获取推荐下一篇文章
+func GetRecommendedNextArticle(c *gin.Context) {
+	articleID, err := strconv.ParseUint(c.Param("id"), 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid article ID"})
+		return
+	}
+
+	var currentArticle models.Article
+	if err := database.DB.Preload("Category").First(&currentArticle, articleID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
+	}
+
+	currentTags := extractArticleTags(currentArticle.Tags)
+
+	if len(currentTags) == 0 {
+		var nextArticle models.Article
+		query := database.DB.Preload("Category").Where("id != ? AND status = ?", articleID, "published")
+		if currentArticle.CategoryID > 0 {
+			query = query.Where("category_id = ?", currentArticle.CategoryID)
+		}
+		query.Order("RANDOM()").First(&nextArticle)
+
+		c.JSON(http.StatusOK, gin.H{"data": nextArticle})
+		return
+	}
+
+	type scoredArticle struct {
+		ArticleID uint
+		Score     int
+	}
+
+	var candidates []scoredArticle
+	database.DB.Table("articles").
+		Select("articles.id, 0 as score").
+		Where("articles.id != ? AND articles.status = ?", articleID, "published").
+		Scan(&candidates)
+
+	for i := range candidates {
+		var article models.Article
+		if err := database.DB.First(&article, candidates[i].ArticleID).Error; err != nil {
+			continue
+		}
+		articleTags := extractArticleTags(article.Tags)
+		score := calculateTagOverlap(currentTags, articleTags)
+		candidates[i].Score = score
+	}
+
+	sort.Slice(candidates, func(i, j int) bool {
+		if candidates[i].Score == candidates[j].Score {
+			return candidates[i].ArticleID < candidates[j].ArticleID
+		}
+		return candidates[i].Score > candidates[j].Score
+	})
+
+	var recommendedArticle models.Article
+	if len(candidates) > 0 && candidates[0].Score > 0 {
+		database.DB.Preload("Category").First(&recommendedArticle, candidates[0].ArticleID)
+	}
+
+	if recommendedArticle.ID == 0 {
+		database.DB.Preload("Category").
+			Where("id != ? AND status = ?", articleID, "published").
+			Order("RANDOM()").
+			First(&recommendedArticle)
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": recommendedArticle})
+}
+
+func extractArticleTags(tagsStr string) []string {
+	if tagsStr == "" {
+		return nil
+	}
+	var tags []string
+	for _, t := range strings.Split(tagsStr, ",") {
+		t = strings.TrimSpace(t)
+		if t != "" {
+			tags = append(tags, strings.ToLower(t))
+		}
+	}
+	return tags
+}
+
+func calculateTagOverlap(tags1, tags2 []string) int {
+	tagSet2 := make(map[string]bool)
+	for _, t := range tags2 {
+		tagSet2[t] = true
+	}
+	score := 0
+	for _, t := range tags1 {
+		if tagSet2[t] {
+			score++
+		}
+	}
+	return score
+}
+
 type sentenceAnalysis struct {
 	Sentence       string   `json:"sentence"`
 	Translation    string   `json:"translation"`
