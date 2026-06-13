@@ -799,6 +799,42 @@ export interface WordBookEntry {
   tags?: string;
 }
 
+export type WordBookPracticeMode =
+  | 'mixed'
+  | 'new_only'
+  | 'review_only'
+  | 'spelling_focus'
+  | 'quick_choice'
+  | 'mistakes';
+
+export type WordBookExerciseType =
+  | 'flashcard'
+  | 'en_to_zh_choice'
+  | 'zh_to_en_spelling'
+  | 'audio_word_choice'
+  | 'context_fill_blank';
+
+export type WordBookExercisePhase = 'new' | 'review' | 'mistakes';
+
+export interface WordBookExercise {
+  entry_id: number;
+  progress_id?: number;
+  phase: WordBookExercisePhase;
+  type: WordBookExerciseType;
+  word: string;
+  prompt: string;
+  translation?: string;
+  options?: string[];
+  answer: string;
+  audio_text?: string;
+  context?: string;
+  placeholder?: string;
+}
+
+export interface WordBookExerciseResponse {
+  items: WordBookExercise[];
+}
+
 export interface UserWordBook {
   id: number;
   user_id: number;

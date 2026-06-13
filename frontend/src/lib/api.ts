@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AdminArticleInput } from '@/types';
+import { AdminArticleInput, WordBookPracticeMode } from '@/types';
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
 export const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
@@ -385,6 +385,15 @@ export const wordBookAPI = {
     api.patch(`/wordbooks/${id}/plan`, data),
   getToday: (id: number) =>
     api.get(`/wordbooks/${id}/today`),
+  getExercises: (
+    id: number,
+    params: {
+      entry_ids: string;
+      phase: 'new' | 'review';
+      mode?: WordBookPracticeMode;
+      types?: string;
+    }
+  ) => api.get(`/wordbooks/${id}/exercises`, { params }),
   learn: (id: number, data: { entry_id: number; rating: 'good' | 'hard' | 'forgot' }) =>
     api.post(`/wordbooks/${id}/learn`, data),
   review: (id: number, data: { progress_id: number; rating: 'good' | 'hard' | 'forgot' }) =>
