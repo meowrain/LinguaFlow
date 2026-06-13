@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"crypto/sha256"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -1893,4 +1894,160 @@ func extractKeyPhrases(words []string) []string {
 		phrases = append(phrases, strings.ToLower(words[0]))
 	}
 	return phrases
+}
+
+const EventTypeSentenceSaved = "sentence_saved"
+
+type SaveSentenceRequest struct {
+	SentenceText string `json:"sentence_text" binding:"required"`
+	Analysis     string `json:"analysis"`
+}
+
+type UserSentenceCollection struct {
+	ID            uint   `json:"id"`
+	ArticleID     uint   `json:"article_id"`
+	ArticleTitle  string `json:"article_title"`
+	SentenceText  string `json:"sentence_text"`
+	Analysis      string `json:"analysis"`
+	CreatedAt     string `json:"created_at"`
+}
+
+// SaveSentence 保存用户收藏的句子
+func SaveSentence(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	slug := c.Param("slug")
+
+	var article models.Article
+	if err := database.DB.Where("slug = ? AND status = ?", slug, "published").First(&article).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
+	}
+
+	var req SaveSentenceRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	sourceHash := hashString(req.SentenceText)
+	contextHash := hashString(fmt.Sprintf("article:%d", article.ID))
+
+	event := models.ArticleStudyEvent{
+		UserID:     userID.(uint),
+		ArticleID:  article.ID,
+		EventType:  EventTypeSentenceSaved,
+		SourceText: req.SentenceText,
+		ResultText: req.Analysis,
+		SourceHash: sourceHash,
+		ContextHash: contextHash,
+	}
+
+	if err := database.DB.Where(
+		"user_id = ? AND article_id = ? AND event_type = ? AND source_hash = ?",
+		userID.(uint), article.ID, EventTypeSentenceSaved, sourceHash,
+	).Attrs(event).FirstOrCreate(&event).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save sentence"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": event})
+}
+
+// GetArticleSentences 获取当前文章的用户收藏句子
+func GetArticleSentences(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	slug := c.Param("slug")
+
+	var article models.Article
+	if err := database.DB.Where("slug = ? AND status = ?", slug, "published").First(&article).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Article not found"})
+		return
+	}
+
+	var events []models.ArticleStudyEvent
+	if err := database.DB.
+		Where("user_id = ? AND article_id = ? AND event_type = ?", userID.(uint), article.ID, EventTypeSentenceSaved).
+		Order("created_at DESC").
+		Find(&events).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch sentences"})
+		return
+	}
+
+	result := make([]UserSentenceCollection, 0, len(events))
+	for _, event := range events {
+		result = append(result, UserSentenceCollection{
+			ID:            event.ID,
+			ArticleID:     article.ID,
+			ArticleTitle:  article.Title,
+			SentenceText:  event.SourceText,
+			Analysis:      event.ResultText,
+			CreatedAt:     event.CreatedAt.Format("2006-01-02T15:04:05Z"),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+// DeleteSentence 删除收藏的句子
+func DeleteSentence(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	sentenceID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil || sentenceID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid sentence id"})
+		return
+	}
+
+	result := database.DB.Where("id = ? AND user_id = ? AND event_type = ?", sentenceID, userID.(uint), EventTypeSentenceSaved).
+		Delete(&models.ArticleStudyEvent{})
+
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete sentence"})
+		return
+	}
+
+	if result.RowsAffected == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Sentence not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Sentence deleted"})
+}
+
+// GetAllUserSentences 获取当前用户所有收藏的句子，按文章分组
+func GetAllUserSentences(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+
+	var events []models.ArticleStudyEvent
+	if err := database.DB.
+		Preload("Article", "status = ?", "published").
+		Where("user_id = ? AND event_type = ?", userID.(uint), EventTypeSentenceSaved).
+		Order("created_at DESC").
+		Find(&events).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch sentences"})
+		return
+	}
+
+	result := make([]UserSentenceCollection, 0, len(events))
+	for _, event := range events {
+		articleTitle := ""
+		if event.Article.ID != 0 {
+			articleTitle = event.Article.Title
+		}
+		result = append(result, UserSentenceCollection{
+			ID:            event.ID,
+			ArticleID:     event.ArticleID,
+			ArticleTitle:  articleTitle,
+			SentenceText:  event.SourceText,
+			Analysis:      event.ResultText,
+			CreatedAt:     event.CreatedAt.Format("2006-01-02T15:04:05Z"),
+		})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": result})
+}
+
+func hashString(s string) string {
+	h := sha256.New()
+	h.Write([]byte(s))
+	return fmt.Sprintf("%x", h.Sum(nil))
 }

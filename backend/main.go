@@ -192,6 +192,11 @@ func main() {
 			protected.POST("/sentences/analyze", middleware.PremiumRequired(database.DB), handlers.AnalyzeSentence)
 			protected.POST("/tts", handlers.GenerateSpeech)
 
+			protected.POST("/articles/:slug/sentences", handlers.SaveSentence)
+			protected.GET("/articles/:slug/sentences", handlers.GetArticleSentences)
+			protected.DELETE("/sentences/:id", handlers.DeleteSentence)
+			protected.GET("/sentences", handlers.GetAllUserSentences)
+
 			videoLessons := protected.Group("/video-lessons")
 			{
 				videoLessons.POST("", handlers.CreateVideoLesson)
