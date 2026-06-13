@@ -404,6 +404,91 @@ func GetTodayTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": tasks})
 }
 
+// GetWordBookExercises 为今日词书任务生成练习题
+func GetWordBookExercises(c *gin.Context) {
+	bookID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid wordbook ID"})
+		return
+	}
+
+	userID, _ := c.Get("user_id")
+	uid := userID.(uint)
+
+	var ub models.UserWordBook
+	if err := database.DB.Where("user_id = ? AND word_book_id = ?", uid, bookID).First(&ub).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Subscription not found"})
+		return
+	}
+
+	entryIDs, err := parseUintCSV(c.Query("entry_ids"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid entry_ids"})
+		return
+	}
+	if len(entryIDs) == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "entry_ids is required"})
+		return
+	}
+
+	phase := c.DefaultQuery("phase", "new")
+	if phase != "new" && phase != "review" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "phase must be new or review"})
+		return
+	}
+	mode := c.DefaultQuery("mode", "mixed")
+	allowedTypes := parseStringCSV(c.Query("types"))
+
+	var entries []models.WordBookEntry
+	if err := database.DB.Where("word_book_id = ? AND id IN ?", bookID, entryIDs).Find(&entries).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load entries"})
+		return
+	}
+	if len(entries) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Entries not found"})
+		return
+	}
+
+	entriesByID := make(map[uint]models.WordBookEntry, len(entries))
+	for _, entry := range entries {
+		entriesByID[entry.ID] = entry
+	}
+
+	var pool []models.WordBookEntry
+	if err := database.DB.Where("word_book_id = ?", bookID).
+		Order("unit ASC, sort_order ASC").
+		Limit(200).
+		Find(&pool).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load exercise options"})
+		return
+	}
+
+	progressByEntryID := make(map[uint]uint)
+	if phase == "review" {
+		var progresses []models.UserWordBookProgress
+		if err := database.DB.Where("user_word_book_id = ? AND word_book_entry_id IN ?", ub.ID, entryIDs).
+			Find(&progresses).Error; err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to load review progress"})
+			return
+		}
+		for _, progress := range progresses {
+			progressByEntryID[progress.WordBookEntryID] = progress.ID
+		}
+	}
+
+	items := make([]wordBookExerciseItem, 0, len(entries))
+	for _, entryID := range entryIDs {
+		entry, ok := entriesByID[entryID]
+		if !ok {
+			continue
+		}
+		exerciseType := pickWordBookExerciseType(entry, mode, allowedTypes)
+		items = append(items, buildWordBookExerciseItem(entry, progressByEntryID[entry.ID], phase, exerciseType, pool))
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": gin.H{"items": items}})
+}
+
 // SubmitLearnResult 提交新词学习结果
 func SubmitLearnResult(c *gin.Context) {
 	bookID, err := strconv.ParseUint(c.Param("id"), 10, 64)
@@ -969,6 +1054,94 @@ func buildWordBookDistractors(entries []models.WordBookEntry, answer string, val
 		}
 	}
 	return distractors
+}
+
+func buildWordBookExerciseItem(entry models.WordBookEntry, progressID uint, phase string, exerciseType string, pool []models.WordBookEntry) wordBookExerciseItem {
+	item := wordBookExerciseItem{
+		EntryID:     entry.ID,
+		ProgressID:  progressID,
+		Phase:       phase,
+		Type:        exerciseType,
+		Word:        entry.Word,
+		Translation: entry.Translation,
+	}
+
+	switch exerciseType {
+	case wordBookExerciseEnToZhChoice:
+		answer := strings.TrimSpace(entry.Translation)
+		options := append([]string{answer}, buildWordBookDistractors(pool, answer, func(e models.WordBookEntry) string {
+			return e.Translation
+		}, 3)...)
+		if answer == "" || len(options) < 2 {
+			return buildWordBookExerciseItem(entry, progressID, phase, wordBookExerciseFlashcard, pool)
+		}
+		item.Prompt = "请选择正确的中文释义"
+		item.Answer = answer
+		item.Options = options
+	case wordBookExerciseZhToEnSpelling:
+		answer := strings.TrimSpace(entry.Word)
+		if answer == "" || strings.TrimSpace(entry.Translation) == "" {
+			return buildWordBookExerciseItem(entry, progressID, phase, wordBookExerciseFlashcard, pool)
+		}
+		item.Prompt = strings.TrimSpace(entry.Translation)
+		item.Answer = answer
+	case wordBookExerciseAudioWordChoice:
+		answer := strings.TrimSpace(entry.Word)
+		options := append([]string{answer}, buildWordBookDistractors(pool, answer, func(e models.WordBookEntry) string {
+			return e.Word
+		}, 3)...)
+		if answer == "" || len(options) < 2 {
+			return buildWordBookExerciseItem(entry, progressID, phase, wordBookExerciseFlashcard, pool)
+		}
+		item.Prompt = "听音选择正确单词"
+		item.Answer = answer
+		item.AudioText = answer
+		item.Options = options
+	case wordBookExerciseContextFillBlank:
+		context, placeholder, ok := buildWordBookContextBlank(entry)
+		if !ok {
+			return buildWordBookExerciseItem(entry, progressID, phase, wordBookExerciseFlashcard, pool)
+		}
+		item.Prompt = "根据语境补全单词"
+		item.Answer = placeholder
+		item.Context = context
+		item.Placeholder = placeholder
+	case wordBookExerciseFlashcard:
+		item.Prompt = "回忆这个单词的含义"
+		item.Answer = entry.Word
+	default:
+		return buildWordBookExerciseItem(entry, progressID, phase, wordBookExerciseFlashcard, pool)
+	}
+
+	return item
+}
+
+func parseUintCSV(value string) ([]uint, error) {
+	parts := parseStringCSV(value)
+	result := make([]uint, 0, len(parts))
+	for _, part := range parts {
+		parsed, err := strconv.ParseUint(part, 10, 64)
+		if err != nil || parsed == 0 {
+			return nil, fmt.Errorf("invalid uint value %q", part)
+		}
+		result = append(result, uint(parsed))
+	}
+	return result, nil
+}
+
+func parseStringCSV(value string) []string {
+	if strings.TrimSpace(value) == "" {
+		return nil
+	}
+	parts := strings.Split(value, ",")
+	result := make([]string, 0, len(parts))
+	for _, part := range parts {
+		item := strings.TrimSpace(part)
+		if item != "" {
+			result = append(result, item)
+		}
+	}
+	return result
 }
 
 // autoCreateVocabulary 自动写入 Vocabulary(查重)

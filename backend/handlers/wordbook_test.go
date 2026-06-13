@@ -271,6 +271,26 @@ func TestBuildWordBookDistractors(t *testing.T) {
 	}
 }
 
+func TestBuildWordBookExerciseItemChoice(t *testing.T) {
+	entry := models.WordBookEntry{ID: 1, Word: "abandon", Translation: "放弃"}
+	pool := []models.WordBookEntry{
+		entry,
+		{ID: 2, Word: "adapt", Translation: "适应"},
+		{ID: 3, Word: "obvious", Translation: "明显的"},
+		{ID: 4, Word: "maintain", Translation: "维持"},
+	}
+	item := buildWordBookExerciseItem(entry, 9, "review", wordBookExerciseEnToZhChoice, pool)
+	if item.ProgressID != 9 || item.Phase != "review" {
+		t.Fatalf("unexpected metadata: %#v", item)
+	}
+	if item.Answer != "放弃" {
+		t.Fatalf("answer = %q", item.Answer)
+	}
+	if len(item.Options) != 4 {
+		t.Fatalf("options = %#v", item.Options)
+	}
+}
+
 func TestCloseSpellingAnswer(t *testing.T) {
 	tests := []struct {
 		answer   string
