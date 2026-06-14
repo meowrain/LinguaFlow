@@ -874,6 +874,7 @@ export interface WordBookDailyTaskReview {
   uk_phonetic?: string;
   us_phonetic?: string;
   translation?: string;
+  examples?: string;
   status: 'learning' | 'mastered';
   review_count: number;
   forgotten_count: number;

@@ -3,16 +3,17 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, CheckCircle2, Loader2, PartyPopper, Shuffle, X } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Loader2, PartyPopper, Shuffle, Volume2, X } from 'lucide-react';
 import { wordBookAPI } from '@/lib/api';
 import { useAuthStore } from '@/store/authStore';
 import { DailyTasks, WordBookDailyTaskNew, WordBookDailyTaskReview } from '@/types';
 import LearnCard from '@/components/wordbook/LearnCard';
 import DailyProgress from '@/components/wordbook/DailyProgress';
+import { playWordAudio } from '@/lib/wordAudio';
 
 type StudyPhase = 'new' | 'review' | 'done';
-type ReviewType = 'card' | 'choice' | 'spelling';
-type QuestionMode = 'mixed' | 'card' | 'choice';
+type ReviewType = 'card' | 'choice' | 'spelling' | 'audio_choice' | 'context_blank' | 'sentence_meaning';
+type QuestionMode = 'mixed' | 'card' | 'choice' | 'listening' | 'spelling_focus' | 'context';
 
 // 计算 Levenshtein 距离
 function levenshtein(a: string, b: string): number {
@@ -30,21 +31,60 @@ function levenshtein(a: string, b: string): number {
   return dp[la][lb];
 }
 
+interface ExampleSentence { en: string; zh: string; }
+
+// 解析 examples JSON
+function parseExamples(raw: string | undefined): ExampleSentence[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed as ExampleSentence[];
+    return [];
+  } catch { return []; }
+}
+
+// 从例句中挖空目标词
+function blankOutWord(sentence: string, word: string): string | null {
+  if (!sentence || !word) return null;
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`\\b${escaped}\\b`, 'gi');
+  if (!re.test(sentence)) return null;
+  return sentence.replace(re, '_____');
+}
+
 // 随机选取复习题型
 function pickReviewType(mode: QuestionMode): ReviewType {
-  if (mode === 'card') return 'card';
-  if (mode === 'choice') return Math.random() < 0.5 ? 'choice' : 'spelling';
-  // mixed: 70% card, 15% choice, 15% spelling
   const r = Math.random();
-  if (r < 0.7) return 'card';
-  if (r < 0.85) return 'choice';
-  return 'spelling';
+  switch (mode) {
+    case 'card':
+      return 'card';
+    case 'choice':
+      return r < 0.5 ? 'choice' : 'spelling';
+    case 'listening':
+      return r < 0.6 ? 'audio_choice' : 'sentence_meaning';
+    case 'spelling_focus':
+      return r < 0.6 ? 'context_blank' : 'spelling';
+    case 'context':
+      if (r < 0.4) return 'context_blank';
+      if (r < 0.7) return 'sentence_meaning';
+      return 'choice';
+    default: // mixed: 40% card, 15% choice, 15% spelling, 10% audio, 10% context, 10% sentence
+      if (r < 0.40) return 'card';
+      if (r < 0.55) return 'choice';
+      if (r < 0.70) return 'spelling';
+      if (r < 0.80) return 'audio_choice';
+      if (r < 0.90) return 'context_blank';
+      return 'sentence_meaning';
+  }
 }
 
 const modeLabels: Record<QuestionMode, string> = {
   mixed: '混合题型',
   card: '纯翻卡',
   choice: '纯选择',
+  listening: '听力模式',
+  spelling_focus: '拼写模式',
+  context: '语境模式',
 };
 
 export default function WordBookLearnPage() {
@@ -80,6 +120,24 @@ export default function WordBookLearnPage() {
   const [spellingInput, setSpellingInput] = useState('');
   const [spellingResult, setSpellingResult] = useState<'correct' | 'wrong' | null>(null);
 
+  // 听音辨词状态
+  const [audioChoiceOptions, setAudioChoiceOptions] = useState<string[]>([]);
+  const [audioChoiceSelected, setAudioChoiceSelected] = useState<number | null>(null);
+  const [audioChoiceRevealed, setAudioChoiceRevealed] = useState(false);
+  const [audioPlayed, setAudioPlayed] = useState(false);
+
+  // 语境填空状态
+  const [blankInput, setBlankInput] = useState('');
+  const [blankResult, setBlankResult] = useState<'correct' | 'wrong' | null>(null);
+  const [blankSentence, setBlankSentence] = useState('');
+  const [blankHint, setBlankHint] = useState('');
+
+  // 例句释义状态
+  const [sentenceOptions, setSentenceOptions] = useState<string[]>([]);
+  const [sentenceSelected, setSentenceSelected] = useState<number | null>(null);
+  const [sentenceRevealed, setSentenceRevealed] = useState(false);
+  const [sentenceText, setSentenceText] = useState('');
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -111,24 +169,86 @@ export default function WordBookLearnPage() {
     [tasks]
   );
 
+  // 为听音辨词生成英文单词选项
+  const generateWordOptions = useCallback(
+    (correctWord: string) => {
+      if (!tasks) return [correctWord];
+      const allWords = new Set<string>();
+      for (const w of tasks.review_words) {
+        if (w.word && w.word.toLowerCase() !== correctWord.toLowerCase()) {
+          allWords.add(w.word);
+        }
+      }
+      for (const w of tasks.new_words) {
+        if (w.word && w.word.toLowerCase() !== correctWord.toLowerCase()) {
+          allWords.add(w.word);
+        }
+      }
+      const distractors = Array.from(allWords).sort(() => Math.random() - 0.5).slice(0, 3);
+      return [correctWord, ...distractors].sort(() => Math.random() - 0.5);
+    },
+    [tasks]
+  );
+
   // 当 reviewIndex 或 questionMode 变化时,重新生成题型
   useEffect(() => {
     if (phase !== 'review' || !tasks) return;
     const current = tasks.review_words[reviewIndex];
     if (!current) return;
 
-    const type = pickReviewType(questionMode);
-    setCurrentReviewType(type);
+    // 重置所有题型状态
     setChoiceSelected(null);
     setChoiceRevealed(false);
     setSpellingInput('');
     setSpellingResult(null);
+    setAudioChoiceSelected(null);
+    setAudioChoiceRevealed(false);
+    setAudioPlayed(false);
+    setBlankInput('');
+    setBlankResult(null);
+    setSentenceSelected(null);
+    setSentenceRevealed(false);
+
+    let type = pickReviewType(questionMode);
+    const examples = parseExamples(current.examples);
+
+    if (type === 'context_blank') {
+      const escaped = current.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const match = examples.find(ex => {
+        const re = new RegExp(`\\b${escaped}\\b`, 'i');
+        return ex.en && re.test(ex.en);
+      });
+      if (!match) {
+        type = 'card';
+      } else {
+        setBlankSentence(blankOutWord(match.en, current.word)!);
+        setBlankHint(current.translation || '');
+      }
+    }
+
+    if (type === 'sentence_meaning') {
+      if (examples.length === 0) {
+        type = 'card';
+      } else {
+        const ex = examples[Math.floor(Math.random() * examples.length)];
+        setSentenceText(ex.en);
+        const options = generateChoiceOptions(current.translation || '');
+        setSentenceOptions(options);
+      }
+    }
 
     if (type === 'choice') {
       const options = generateChoiceOptions(current.translation || '');
       setChoiceOptions(options);
     }
-  }, [reviewIndex, questionMode, phase, tasks, generateChoiceOptions]);
+
+    if (type === 'audio_choice') {
+      const options = generateWordOptions(current.word);
+      setAudioChoiceOptions(options);
+    }
+
+    setCurrentReviewType(type);
+  }, [reviewIndex, questionMode, phase, tasks, generateChoiceOptions, generateWordOptions]);
 
   // 加载今日任务
   useEffect(() => {
@@ -274,6 +394,76 @@ export default function WordBookLearnPage() {
     }, 1000);
   }, [spellingResult, submitting, tasks, reviewIndex, spellingInput, handleReviewRating]);
 
+  // 听音辨词:播放音频
+  const handlePlayAudio = useCallback(() => {
+    const current = tasks?.review_words[reviewIndex];
+    if (!current) return;
+    playWordAudio(current.word, 'us');
+    setAudioPlayed(true);
+  }, [tasks, reviewIndex]);
+
+  // 听音辨词:选择答案
+  const handleAudioChoiceSelect = useCallback(
+    (index: number) => {
+      if (audioChoiceRevealed || submitting) return;
+      setAudioChoiceSelected(index);
+      setAudioChoiceRevealed(true);
+
+      const current = tasks?.review_words[reviewIndex];
+      if (!current) return;
+
+      const selected = audioChoiceOptions[index];
+      const isCorrect = selected.toLowerCase() === current.word.toLowerCase();
+      const rating = isCorrect ? 'good' : 'forgot';
+
+      setTimeout(() => {
+        handleReviewRating(rating);
+      }, 800);
+    },
+    [audioChoiceRevealed, submitting, tasks, reviewIndex, audioChoiceOptions, handleReviewRating]
+  );
+
+  // 语境填空:提交答案
+  const handleBlankSubmit = useCallback(() => {
+    if (blankResult || submitting) return;
+    const current = tasks?.review_words[reviewIndex];
+    if (!current || !blankInput.trim()) return;
+
+    const correct = current.word.toLowerCase().trim();
+    const answer = blankInput.trim().toLowerCase();
+    const dist = levenshtein(answer, correct);
+
+    const isCorrect = dist <= 1;
+    setBlankResult(isCorrect ? 'correct' : 'wrong');
+
+    const rating = isCorrect ? 'good' : (dist <= 2 ? 'hard' : 'forgot');
+
+    setTimeout(() => {
+      handleReviewRating(rating);
+    }, 1000);
+  }, [blankResult, submitting, tasks, reviewIndex, blankInput, handleReviewRating]);
+
+  // 例句释义:选择答案
+  const handleSentenceMeaningSelect = useCallback(
+    (index: number) => {
+      if (sentenceRevealed || submitting) return;
+      setSentenceSelected(index);
+      setSentenceRevealed(true);
+
+      const current = tasks?.review_words[reviewIndex];
+      if (!current) return;
+
+      const selected = sentenceOptions[index];
+      const isCorrect = selected === current.translation;
+      const rating = isCorrect ? 'good' : 'forgot';
+
+      setTimeout(() => {
+        handleReviewRating(rating);
+      }, 800);
+    },
+    [sentenceRevealed, submitting, tasks, reviewIndex, sentenceOptions, handleReviewRating]
+  );
+
   // 当前新词之后的即将出现的单词列表（用于预加载音频）
   const upcomingNewWords = useMemo(() => {
     if (!tasks) return [];
@@ -346,7 +536,7 @@ export default function WordBookLearnPage() {
               {modeLabels[questionMode]}
             </button>
             {showModeMenu && (
-              <div className="absolute right-0 top-full z-10 mt-1 w-32 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+              <div className="absolute right-0 top-full z-10 mt-1 w-36 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 {(Object.keys(modeLabels) as QuestionMode[]).map((m) => (
                   <button
                     key={m}
@@ -502,6 +692,161 @@ export default function WordBookLearnPage() {
                   确认
                 </button>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 复习阶段 - 听音辨词 */}
+      {phase === 'review' && currentReview && currentReviewType === 'audio_choice' && (
+        <div className="flex-1">
+          <p className="mb-4 text-center text-xs font-medium text-orange-500">
+            复习阶段 ({reviewIndex + 1}/{tasks.total_review}) - 听音辨词
+          </p>
+          <div className="mx-auto max-w-md">
+            <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-gray-900">
+              <p className="mb-4 text-xs text-gray-400 dark:text-gray-500">请听发音并选择正确的单词</p>
+              <button
+                type="button"
+                onClick={handlePlayAudio}
+                className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-500 text-white transition-transform hover:scale-105 hover:bg-blue-600"
+              >
+                <Volume2 className="h-8 w-8" />
+              </button>
+              {!audioPlayed && (
+                <p className="mt-3 text-xs text-gray-400">点击播放发音</p>
+              )}
+            </div>
+            <div className="space-y-3">
+              {audioChoiceOptions.map((opt, i) => {
+                const isCorrect = opt.toLowerCase() === currentReview.word.toLowerCase();
+                let style = 'border-gray-200 bg-white hover:border-blue-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-600';
+                if (audioChoiceRevealed && audioChoiceSelected !== null) {
+                  if (isCorrect) {
+                    style = 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300';
+                  } else if (audioChoiceSelected === i) {
+                    style = 'border-red-500 bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300';
+                  }
+                }
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleAudioChoiceSelect(i)}
+                    disabled={audioChoiceRevealed || submitting}
+                    className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all ${style} disabled:cursor-not-allowed`}
+                  >
+                    <span className="mr-2 inline-block h-5 w-5 rounded-full border border-gray-300 text-center text-xs leading-5 dark:border-gray-600">
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 复习阶段 - 语境填空 */}
+      {phase === 'review' && currentReview && currentReviewType === 'context_blank' && (
+        <div className="flex-1">
+          <p className="mb-4 text-center text-xs font-medium text-orange-500">
+            复习阶段 ({reviewIndex + 1}/{tasks.total_review}) - 语境填空
+          </p>
+          <div className="mx-auto max-w-md">
+            <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-gray-900">
+              <p className="mb-2 text-xs text-gray-400 dark:text-gray-500">根据语境补全单词</p>
+              <p className="mb-4 text-lg leading-relaxed font-medium text-gray-950 dark:text-gray-100">
+                {blankSentence}
+              </p>
+              {blankHint && (
+                <span className="inline-block rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+                  提示: {blankHint}
+                </span>
+              )}
+            </div>
+            <div className="space-y-4">
+              <input
+                type="text"
+                value={blankInput}
+                onChange={(e) => setBlankInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === 'Enter') handleBlankSubmit(); }}
+                placeholder="输入英文单词..."
+                disabled={blankResult !== null || submitting}
+                autoFocus
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 text-center text-lg font-medium dark:border-gray-700 dark:bg-gray-800 disabled:opacity-50"
+              />
+              {blankResult && (
+                <div className={`rounded-xl p-3 text-center text-sm font-bold ${
+                  blankResult === 'correct'
+                    ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400'
+                    : 'bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400'
+                }`}>
+                  {blankResult === 'correct'
+                    ? '正确!'
+                    : `正确拼写: ${currentReview.word}`
+                  }
+                </div>
+              )}
+              {!blankResult && (
+                <button
+                  type="button"
+                  onClick={handleBlankSubmit}
+                  disabled={submitting || !blankInput.trim()}
+                  className="w-full rounded-xl bg-blue-500 px-4 py-3 text-sm font-bold text-white hover:bg-blue-600 disabled:opacity-50"
+                >
+                  确认
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 复习阶段 - 例句释义 */}
+      {phase === 'review' && currentReview && currentReviewType === 'sentence_meaning' && (
+        <div className="flex-1">
+          <p className="mb-4 text-center text-xs font-medium text-orange-500">
+            复习阶段 ({reviewIndex + 1}/{tasks.total_review}) - 例句释义
+          </p>
+          <div className="mx-auto max-w-md">
+            <div className="mb-8 rounded-2xl border border-gray-200 bg-white p-8 text-center dark:border-gray-800 dark:bg-gray-900">
+              <p className="mb-3 text-xs text-gray-400 dark:text-gray-500">请选择该句的正确中文含义</p>
+              <p className="text-base leading-relaxed font-medium text-gray-950 dark:text-gray-100">
+                {sentenceText.split(new RegExp(`(${currentReview.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi')).map((part, i) =>
+                  part.toLowerCase() === currentReview.word.toLowerCase()
+                    ? <span key={i} className="font-bold text-blue-600 dark:text-blue-400">{part}</span>
+                    : <span key={i}>{part}</span>
+                )}
+              </p>
+            </div>
+            <div className="space-y-3">
+              {sentenceOptions.map((opt, i) => {
+                const isCorrect = opt === currentReview.translation;
+                let style = 'border-gray-200 bg-white hover:border-blue-300 dark:border-gray-700 dark:bg-gray-900 dark:hover:border-blue-600';
+                if (sentenceRevealed && sentenceSelected !== null) {
+                  if (isCorrect) {
+                    style = 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300';
+                  } else if (sentenceSelected === i) {
+                    style = 'border-red-500 bg-red-50 text-red-700 dark:bg-red-500/10 dark:text-red-300';
+                  }
+                }
+                return (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleSentenceMeaningSelect(i)}
+                    disabled={sentenceRevealed || submitting}
+                    className={`w-full rounded-xl border px-4 py-3 text-left text-sm font-medium transition-all ${style} disabled:cursor-not-allowed`}
+                  >
+                    <span className="mr-2 inline-block h-5 w-5 rounded-full border border-gray-300 text-center text-xs leading-5 dark:border-gray-600">
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    {opt}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>

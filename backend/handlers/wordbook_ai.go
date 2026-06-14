@@ -67,7 +67,7 @@ func GetWordBookEntryMnemonic(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	mnemonic, err := simpleAIChat(ctx, ai, prompt, 0.7, 300)
+	mnemonic, err := simpleAIChat(ctx, ai.ChatModel, prompt, 0.7, 300)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "AI 生成失败"})
 		return
@@ -124,7 +124,7 @@ func GetWordBookEntryAIExamples(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	response, err := simpleAIChat(ctx, ai, prompt, 0.7, 800)
+	response, err := simpleAIChat(ctx, ai.ChatModel, prompt, 0.7, 800)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "AI 生成失败"})
 		return
@@ -220,7 +220,7 @@ func ChatWithWordBookEntry(c *gin.Context) {
 			return
 		}
 
-		err := streamAIChat(c.Request.Context(), ai, systemPrompt, req.Messages, 0.7, 1000, func(delta string) error {
+		err := streamAIChat(c.Request.Context(), ai.ChatModel, systemPrompt, req.Messages, 0.7, 1000, func(delta string) error {
 			c.SSEvent("message", delta)
 			flusher.Flush()
 			return nil
@@ -243,7 +243,7 @@ func ChatWithWordBookEntry(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 		defer cancel()
 
-		response, err := simpleAIChat(ctx, ai, fullPrompt, 0.7, 1000)
+		response, err := simpleAIChat(ctx, ai.ChatModel, fullPrompt, 0.7, 1000)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "AI 回复失败"})
 			return

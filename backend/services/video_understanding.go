@@ -1,15 +1,14 @@
 package services
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"gugudu-backend/models"
-	"net/http"
 	"strings"
 	"time"
 
+	"github.com/cloudwego/eino/schema"
 	"gorm.io/gorm"
 )
 
@@ -342,58 +341,23 @@ func estimateTokens(text string) int {
 }
 
 func (s *VideoUnderstandingService) callAI(ctx context.Context, prompt string) (string, error) {
-	type chatMessage struct {
-		Role    string `json:"role"`
-		Content string `json:"content"`
-	}
-	type chatRequest struct {
-		Model    string        `json:"model"`
-		Messages []chatMessage `json:"messages"`
-	}
-	type chatResponse struct {
-		Choices []struct {
-			Message chatMessage `json:"message"`
-		} `json:"choices"`
-		Error *struct {
-			Message string `json:"message"`
-		} `json:"error"`
+	if s.aiService == nil || s.aiService.ChatModel == nil {
+		return "", fmt.Errorf("AI 服务未配置")
 	}
 
-	reqBody := chatRequest{
-		Model: s.aiService.Model,
-		Messages: []chatMessage{
-			{Role: "user", Content: prompt},
-		},
+	messages := []*schema.Message{
+		schema.UserMessage(prompt),
 	}
 
-	jsonData, _ := json.Marshal(reqBody)
-	req, err := http.NewRequestWithContext(ctx, "POST", s.aiService.BaseURL+"/chat/completions", bytes.NewBuffer(jsonData))
+	resp, err := s.aiService.ChatModel.Generate(ctx, messages)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("AI API error: %w", err)
 	}
 
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+s.aiService.APIKey)
-
-	client := &http.Client{Timeout: 120 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	var result chatResponse
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", err
-	}
-
-	if result.Error != nil {
-		return "", fmt.Errorf("AI API error: %s", result.Error.Message)
-	}
-
-	if len(result.Choices) == 0 {
+	content := strings.TrimSpace(resp.Content)
+	if content == "" {
 		return "", fmt.Errorf("no response from AI")
 	}
 
-	return result.Choices[0].Message.Content, nil
+	return content, nil
 }

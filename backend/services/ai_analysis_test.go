@@ -1,69 +1,53 @@
 package services
 
 import (
-	"encoding/json"
 	"testing"
 )
 
-func TestChatCompletionRequestOmitsTemperatureForMimoV25(t *testing.T) {
-	payload := chatCompletionRequest{
-		Model:       "mimo-v2.5-pro",
-		Messages:    []chatMessage{{Role: "user", Content: "hello"}},
-		Temperature: temperatureForModel("mimo-v2.5-pro", 0.4),
-		MaxTokens:   1200,
-	}
-
-	body, err := json.Marshal(payload)
-	if err != nil {
-		t.Fatalf("marshal request: %v", err)
-	}
-	if string(body) == "" {
-		t.Fatal("expected request body")
-	}
-	if jsonContainsKey(body, "temperature") {
-		t.Fatalf("expected temperature to be omitted for MiMo v2.5 request: %s", string(body))
+func TestTemperatureForModelOmitsForMimoV25(t *testing.T) {
+	temp := temperatureForModel("mimo-v2.5-pro", 0.4)
+	if temp != nil {
+		t.Fatalf("expected nil temperature for mimo-v2.5-pro, got %v", *temp)
 	}
 }
 
-func TestChatCompletionRequestKeepsTemperatureForOtherModels(t *testing.T) {
-	payload := chatCompletionRequest{
-		Model:       "gpt-4o-mini",
-		Messages:    []chatMessage{{Role: "user", Content: "hello"}},
-		Temperature: temperatureForModel("gpt-4o-mini", 0.4),
-		MaxTokens:   1200,
+func TestTemperatureForModelKeepsForOtherModels(t *testing.T) {
+	temp := temperatureForModel("gpt-4o-mini", 0.4)
+	if temp == nil {
+		t.Fatal("expected non-nil temperature for gpt-4o-mini")
 	}
-
-	body, err := json.Marshal(payload)
-	if err != nil {
-		t.Fatalf("marshal request: %v", err)
-	}
-	if !jsonContainsKey(body, "temperature") {
-		t.Fatalf("expected temperature for non-MiMo request: %s", string(body))
+	if *temp != 0.4 {
+		t.Fatalf("expected temperature 0.4, got %v", *temp)
 	}
 }
 
-func TestChatCompletionRequestIncludesStreamWhenEnabled(t *testing.T) {
-	payload := chatCompletionRequest{
-		Model:     "mimo-v2.5-pro",
-		Messages:  []chatMessage{{Role: "user", Content: "hello"}},
-		MaxTokens: 1200,
-		Stream:    true,
-	}
-
-	body, err := json.Marshal(payload)
-	if err != nil {
-		t.Fatalf("marshal request: %v", err)
-	}
-	if !jsonContainsKey(body, "stream") {
-		t.Fatalf("expected stream flag in request: %s", string(body))
+func TestTemperatureForModelTrimsWhitespace(t *testing.T) {
+	temp := temperatureForModel("  mimo-v2.5-tts  ", 0.7)
+	if temp != nil {
+		t.Fatalf("expected nil temperature for mimo-v2.5-tts with whitespace, got %v", *temp)
 	}
 }
 
-func jsonContainsKey(body []byte, key string) bool {
-	var payload map[string]any
-	if err := json.Unmarshal(body, &payload); err != nil {
-		return false
+func TestChatOptsIncludesTemperature(t *testing.T) {
+	svc := &AIAnalysisService{Model: "gpt-4o-mini"}
+	opts := svc.chatOpts(0.7, 1200)
+	if len(opts) != 2 {
+		t.Fatalf("expected 2 opts (temperature + maxTokens), got %d", len(opts))
 	}
-	_, ok := payload[key]
-	return ok
+}
+
+func TestChatOptsOmitsTemperatureForMimo(t *testing.T) {
+	svc := &AIAnalysisService{Model: "mimo-v2.5-pro"}
+	opts := svc.chatOpts(0.7, 1200)
+	if len(opts) != 1 {
+		t.Fatalf("expected 1 opt (maxTokens only) for mimo, got %d", len(opts))
+	}
+}
+
+func TestChatOptsOmitsZeroMaxTokens(t *testing.T) {
+	svc := &AIAnalysisService{Model: "gpt-4o-mini"}
+	opts := svc.chatOpts(0.7, 0)
+	if len(opts) != 1 {
+		t.Fatalf("expected 1 opt (temperature only) when maxTokens=0, got %d", len(opts))
+	}
 }
