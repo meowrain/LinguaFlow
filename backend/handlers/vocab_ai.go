@@ -1,17 +1,20 @@
 package handlers
 
 import (
-	"bufio"
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"gugudu-backend/database"
 	"gugudu-backend/models"
-	"gugudu-backend/services"
+	"io"
 	"net/http"
 	"strings"
 	"time"
 
+	openai "github.com/cloudwego/eino-ext/components/model/openai"
+	"github.com/cloudwego/eino/components/model"
+	"github.com/cloudwego/eino/schema"
 	"github.com/gin-gonic/gin"
 )
 
@@ -61,7 +64,7 @@ func GetVocabMnemonic(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	mnemonic, err := simpleAIChat(ctx, ai, prompt, 0.7, 300)
+	mnemonic, err := simpleAIChat(ctx, ai.ChatModel, prompt, 0.7, 300)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "AI 生成失败"})
 		return
@@ -130,7 +133,7 @@ func GetVocabAIExamples(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 	defer cancel()
 
-	response, err := simpleAIChat(ctx, ai, prompt, 0.7, 800)
+	response, err := simpleAIChat(ctx, ai.ChatModel, prompt, 0.7, 800)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "AI 生成失败"})
 		return
@@ -215,7 +218,7 @@ func ChatWithVocab(c *gin.Context) {
 			return
 		}
 
-		err := streamAIChat(c.Request.Context(), ai, systemPrompt, req.Messages, 0.7, 1000, func(delta string) error {
+		err := streamAIChat(c.Request.Context(), ai.ChatModel, systemPrompt, req.Messages, 0.7, 1000, func(delta string) error {
 			c.SSEvent("message", delta)
 			flusher.Flush()
 			return nil
@@ -238,7 +241,7 @@ func ChatWithVocab(c *gin.Context) {
 		ctx, cancel := context.WithTimeout(c.Request.Context(), 30*time.Second)
 		defer cancel()
 
-		response, err := simpleAIChat(ctx, ai, fullPrompt, 0.7, 1000)
+		response, err := simpleAIChat(ctx, ai.ChatModel, fullPrompt, 0.7, 1000)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "AI 回复失败"})
 			return
@@ -247,132 +250,71 @@ func ChatWithVocab(c *gin.Context) {
 	}
 }
 
-// ---------- 内部工具函数 ----------
+// ---------- 内部工具函数（基于 Eino） ----------
 
-type chatMsg struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+// einoChatOpts 构建 Eino ChatModel 选项
+func einoChatOpts(temperature float64, maxTokens int) []model.Option {
+	var opts []model.Option
+	opts = append(opts, model.WithTemperature(float32(temperature)))
+	if maxTokens > 0 {
+		opts = append(opts, model.WithMaxTokens(maxTokens))
+	}
+	return opts
 }
 
-func simpleAIChat(ctx context.Context, ai *services.AIAnalysisService, prompt string, temperature float64, maxTokens int) (string, error) {
-	type chatReq struct {
-		Model       string    `json:"model"`
-		Messages    []chatMsg `json:"messages"`
-		Temperature *float64  `json:"temperature,omitempty"`
-		MaxTokens   int       `json:"max_tokens"`
-	}
-	type chatResp struct {
-		Choices []struct {
-			Message chatMsg `json:"message"`
-		} `json:"choices"`
-		Error *struct {
-			Message string `json:"message"`
-		} `json:"error"`
+// simpleAIChat 同步调用 LLM，返回文本响应
+func simpleAIChat(ctx context.Context, cm *openai.ChatModel, prompt string, temperature float64, maxTokens int) (string, error) {
+	messages := []*schema.Message{
+		schema.UserMessage(prompt),
 	}
 
-	payload := chatReq{
-		Model: ai.Model,
-		Messages: []chatMsg{
-			{Role: "user", Content: prompt},
-		},
-		Temperature: &temperature,
-		MaxTokens:   maxTokens,
-	}
-
-	body, _ := json.Marshal(payload)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, ai.BaseURL+"/chat/completions", strings.NewReader(string(body)))
+	resp, err := cm.Generate(ctx, messages, einoChatOpts(temperature, maxTokens)...)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("AI error: %w", err)
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+ai.APIKey)
-
-	client := &http.Client{Timeout: 60 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-
-	var result chatResp
-	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-		return "", err
-	}
-	if result.Error != nil {
-		return "", fmt.Errorf("AI error: %s", result.Error.Message)
-	}
-	if len(result.Choices) == 0 {
+	content := strings.TrimSpace(resp.Content)
+	if content == "" {
 		return "", fmt.Errorf("no response from AI")
 	}
-	return result.Choices[0].Message.Content, nil
+	return content, nil
 }
 
-func streamAIChat(ctx context.Context, ai *services.AIAnalysisService, systemPrompt string, messages []vocabChatMsg, temperature float64, maxTokens int, onDelta func(string) error) error {
-	chatMessages := []chatMsg{
-		{Role: "system", Content: systemPrompt},
+// streamAIChat 流式调用 LLM，逐段回调 onDelta
+func streamAIChat(ctx context.Context, cm *openai.ChatModel, systemPrompt string, messages []vocabChatMsg, temperature float64, maxTokens int, onDelta func(string) error) error {
+	chatMessages := []*schema.Message{
+		schema.SystemMessage(systemPrompt),
 	}
 	for _, msg := range messages {
-		chatMessages = append(chatMessages, chatMsg{Role: msg.Role, Content: msg.Content})
-	}
-
-	payload := struct {
-		Model       string    `json:"model"`
-		Messages    []chatMsg `json:"messages"`
-		Temperature *float64  `json:"temperature,omitempty"`
-		MaxTokens   int       `json:"max_tokens"`
-		Stream      bool      `json:"stream"`
-	}{
-		Model:       ai.Model,
-		Messages:    chatMessages,
-		Temperature: &temperature,
-		MaxTokens:   maxTokens,
-		Stream:      true,
-	}
-
-	body, _ := json.Marshal(payload)
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, ai.BaseURL+"/chat/completions", strings.NewReader(string(body)))
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+ai.APIKey)
-
-	client := &http.Client{Timeout: 120 * time.Second}
-	resp, err := client.Do(req)
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
-
-	scanner := bufio.NewScanner(resp.Body)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if !strings.HasPrefix(line, "data: ") {
-			continue
+		switch msg.Role {
+		case "user":
+			chatMessages = append(chatMessages, schema.UserMessage(msg.Content))
+		case "assistant":
+			chatMessages = append(chatMessages, schema.AssistantMessage(msg.Content, nil))
 		}
-		data := strings.TrimPrefix(line, "data: ")
-		data = strings.TrimSpace(data)
-		if data == "[DONE]" {
+	}
+
+	sr, err := cm.Stream(ctx, chatMessages, einoChatOpts(temperature, maxTokens)...)
+	if err != nil {
+		return fmt.Errorf("AI stream error: %w", err)
+	}
+	defer sr.Close()
+
+	for {
+		chunk, err := sr.Recv()
+		if errors.Is(err, io.EOF) {
 			break
 		}
-
-		var chunk struct {
-			Choices []struct {
-				Delta struct {
-					Content string `json:"content"`
-				} `json:"delta"`
-			} `json:"choices"`
+		if err != nil {
+			return err
 		}
-		if err := json.Unmarshal([]byte(data), &chunk); err != nil {
-			continue
-		}
-		if len(chunk.Choices) > 0 && chunk.Choices[0].Delta.Content != "" {
-			if err := onDelta(chunk.Choices[0].Delta.Content); err != nil {
+		delta := chunk.Content
+		if delta != "" {
+			if err := onDelta(delta); err != nil {
 				return err
 			}
 		}
 	}
-	return scanner.Err()
+	return nil
 }
 
 func vocabFirstMeaning(v models.Vocabulary) string {
