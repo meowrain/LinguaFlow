@@ -23,10 +23,15 @@ export default function RootLayout({
               (function () {
                 try {
                   var theme = localStorage.getItem('linguaflow-theme') || 'system';
-                  var dark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-                  document.documentElement.classList.toggle('dark', dark);
-                  document.documentElement.dataset.theme = theme;
-                  document.documentElement.style.colorScheme = dark ? 'dark' : 'light';
+                  var resolved = theme;
+                  if (theme === 'system') {
+                    resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  var dark = resolved === 'dark' || resolved === 'ocean';
+                  var root = document.documentElement;
+                  root.classList.toggle('dark', dark);
+                  root.dataset.theme = resolved;
+                  root.style.colorScheme = dark ? 'dark' : 'light';
                 } catch (_) {}
               })();
             `,
@@ -38,9 +43,12 @@ export default function RootLayout({
         <ThemeProvider>
           <Header />
           <main className="min-h-screen">{children}</main>
-          <footer className="mt-16 border-t border-gray-200 bg-white py-8 dark:border-gray-800 dark:bg-gray-900">
+          <footer
+            className="mt-16 border-t py-8"
+            style={{ backgroundColor: 'var(--surface)', borderColor: 'var(--border)' }}
+          >
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-              <div className="text-center text-sm text-gray-500">
+              <div className="text-center text-sm" style={{ color: 'var(--muted)' }}>
                 © 2024 LinguaFlow. All rights reserved.
               </div>
             </div>

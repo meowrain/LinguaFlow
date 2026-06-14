@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, type CSSProperties } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -186,17 +186,18 @@ export default function WordBookStatsPage() {
               <div
                 key={i}
                 title={`${day.date}: ${day.count} 词`}
-                className={`h-3 w-3 rounded-sm ${getHeatColor(day.count)}`}
+                className="h-3 w-3 rounded-sm"
+                style={heatColorStyle(day.count)}
               />
             ))}
           </div>
         </div>
         <div className="mt-3 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
           <span>少</span>
-          <div className="h-3 w-3 rounded-sm bg-gray-100 dark:bg-gray-800" />
-          <div className="h-3 w-3 rounded-sm bg-blue-200 dark:bg-blue-900" />
-          <div className="h-3 w-3 rounded-sm bg-blue-400 dark:bg-blue-700" />
-          <div className="h-3 w-3 rounded-sm bg-blue-600 dark:bg-blue-500" />
+          <div className="h-3 w-3 rounded-sm" style={heatColorStyle(0)} />
+          <div className="h-3 w-3 rounded-sm" style={heatColorStyle(3)} />
+          <div className="h-3 w-3 rounded-sm" style={heatColorStyle(10)} />
+          <div className="h-3 w-3 rounded-sm" style={heatColorStyle(40)} />
           <span>多</span>
         </div>
       </section>
@@ -260,10 +261,16 @@ function DataItem({ icon, label, value }: { icon: React.ReactNode; label: string
   );
 }
 
-function getHeatColor(count: number): string {
-  if (count === 0) return 'bg-gray-100 dark:bg-gray-800';
-  if (count <= 5) return 'bg-blue-200 dark:bg-blue-900';
-  if (count <= 15) return 'bg-blue-400 dark:bg-blue-700';
-  if (count <= 30) return 'bg-blue-500 dark:bg-blue-600';
-  return 'bg-blue-600 dark:bg-blue-500';
+// Heatmap intensity → accent-tinted background, theme-aware via CSS variables.
+// 0 counts use the muted surface; higher counts blend more of the accent in.
+function heatColorStyle(count: number): CSSProperties {
+  if (count === 0) return { backgroundColor: 'var(--surface-muted)' };
+  const intensity =
+    count <= 5 ? 0.25 :
+    count <= 15 ? 0.45 :
+    count <= 30 ? 0.68 :
+    0.92;
+  return {
+    backgroundColor: `color-mix(in srgb, var(--accent) ${Math.round(intensity * 100)}%, var(--surface-muted))`,
+  };
 }

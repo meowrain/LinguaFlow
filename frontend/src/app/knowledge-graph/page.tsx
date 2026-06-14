@@ -29,15 +29,106 @@ const nodeLabels: Record<string, string> = {
   weakness: '薄弱点', review: '复习',
 };
 
-const typeColors: Record<string, string> = {
-  word: '#3b82f6', meaning: '#10b981', definition: '#06b6d4', context: '#8b5cf6',
-  example: '#d946ef', article: '#f59e0b', topic: '#0ea5e9', grammar: '#6366f1',
-  weakness: '#ef4444', review: '#84cc16',
+/*
+ * Node/group color palette.
+ *
+ * The graph needs visually distinct hues per type, but those hues must also
+ * stay readable in every theme (the old literal hex like #d946ef vanished on
+ * the green/sunset backgrounds). Each type/group maps to one of the theme-aware
+ * semantic tokens defined in globals.css. We read the resolved value via
+ * getComputedStyle so the palette tracks the active theme and updates live when
+ * the user switches themes. The resolved palette is cached and cleared on
+ * theme change by the MutationObserver wired up in the component effect below.
+ *
+ * Keys not in the palette fall back to the theme muted color.
+ */
+const typeColorTokens: Record<string, string> = {
+  word: '--accent',
+  meaning: '--success',
+  definition: '--accent-soft-fg',
+  context: '--warning',
+  example: '--danger',
+  article: '--accent',
+  topic: '--success-soft-fg',
+  grammar: '--warning-soft-fg',
+  weakness: '--danger',
+  review: '--success-soft-fg',
 };
 
-const groupColors: Record<string, string> = {
-  vocabulary: '#3b82f6', context: '#8b5cf6', article: '#f59e0b', study: '#ef4444',
+const groupColorTokens: Record<string, string> = {
+  vocabulary: '--accent',
+  context: '--warning',
+  article: '--accent',
+  study: '--danger',
 };
+
+let paletteCache: Record<string, string> | null = null;
+
+function invalidatePaletteCache() {
+  paletteCache = null;
+}
+
+function resolvePalette(): Record<string, string> {
+  if (paletteCache) return paletteCache;
+  if (typeof window === 'undefined') {
+    paletteCache = {};
+    return paletteCache;
+  }
+  const styles = getComputedStyle(document.documentElement);
+  const resolved: Record<string, string> = {};
+  const keys = new Set<string>([
+    ...Object.values(typeColorTokens),
+    ...Object.values(groupColorTokens),
+    '--muted',
+    '--accent',
+  ]);
+  keys.forEach((token) => {
+    const v = styles.getPropertyValue(token).trim();
+    if (v) resolved[token] = v;
+  });
+  paletteCache = resolved;
+  return resolved;
+}
+
+function getToken(token: string): string {
+  const p = resolvePalette();
+  return p[token] || p['--muted'] || '#6b7280';
+}
+
+function typeColor(type: string): string {
+  return getToken(typeColorTokens[type] || '--muted');
+}
+
+function groupColor(group: string): string {
+  return getToken(groupColorTokens[group] || '--muted');
+}
+
+// Apply an alpha to a color that may be hex or rgba() (tokens can be either).
+// Uses color-mix, which all evergreen browsers support.
+function withAlpha(color: string, alpha: number): string {
+  return `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, transparent)`;
+}
+
+// Parse a CSS color (hex or rgb()/rgba()) into r,g,b ints. Returns null on failure.
+function parseRGB(color: string): { r: number; g: number; b: number } | null {
+  const hex = color.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (hex) {
+    let h = hex[1];
+    if (h.length === 3) h = h.split('').map((c) => c + c).join('');
+    return { r: parseInt(h.slice(0, 2), 16), g: parseInt(h.slice(2, 4), 16), b: parseInt(h.slice(4, 6), 16) };
+  }
+  const m = color.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+  if (m) return { r: +m[1], g: +m[2], b: +m[3] };
+  return null;
+}
+
+// Canvas-compatible rgba() with alpha. Canvas fillStyle does not support
+// color-mix(), so we must emit a plain rgba() string here.
+function canvasRGBA(color: string, alpha: number): string {
+  const rgb = parseRGB(color);
+  if (!rgb) return color;
+  return `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alpha})`;
+}
 
 /* ── force simulation types ──────────────────────────────── */
 interface SimNode {
@@ -172,6 +263,18 @@ export default function KnowledgeGraphPage() {
 
   useEffect(() => { setMounted(true); }, []);
 
+  // Invalidate the theme palette cache whenever the active theme changes so
+  // the canvas + inline styles pick up the new colors on the next paint.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => {
+      invalidatePaletteCache();
+    });
+    observer.observe(root, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+    return () => observer.disconnect();
+  }, []);
+
   /* ── data loading ──────────────────────────────────────── */
   const loadGraph = useCallback(async (params?: { focus_key?: string; types?: string; search?: string }) => {
     const requestID = graphRequestRef.current + 1;
@@ -297,32 +400,33 @@ export default function KnowledgeGraphPage() {
         const active = selectedID === e.source || selectedID === e.target;
         ctx.beginPath();
         ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
-        ctx.strokeStyle = active ? 'rgba(96,165,250,0.8)' : 'rgba(75,85,99,0.3)';
+        ctx.strokeStyle = active ? canvasRGBA(getToken('--accent'), 0.8) : canvasRGBA(getToken('--muted'), 0.3);
         ctx.lineWidth = active ? 2 / t.scale : 0.8 / t.scale;
         ctx.stroke();
       }
 
       // nodes
+      const labelColor = getToken('--muted');
       for (const n of sim.nodes) {
         const isSelected = n.id === selectedID;
         const isMatch = searchMatches ? searchMatches.has(n.id) : true;
-        const color = typeColors[n.type] || '#6b7280';
+        const color = typeColor(n.type);
         const alpha = searchMatches && !isMatch ? 0.18 : 1;
         ctx.globalAlpha = alpha;
         // glow for selected
         if (isSelected) {
           ctx.beginPath(); ctx.arc(n.x, n.y, n.radius + 6, 0, Math.PI * 2);
-          ctx.fillStyle = color + '33'; ctx.fill();
+          ctx.fillStyle = canvasRGBA(color, 0.2); ctx.fill();
         }
         // circle
         ctx.beginPath(); ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-        ctx.fillStyle = color + '30'; ctx.fill();
+        ctx.fillStyle = canvasRGBA(color, 0.19); ctx.fill();
         ctx.strokeStyle = color; ctx.lineWidth = isSelected ? 2.5 / t.scale : 1.5 / t.scale;
         ctx.stroke();
         // label
         const fontSize = Math.max(9, Math.min(12, n.radius * 0.85));
         ctx.font = `600 ${fontSize}px system-ui, sans-serif`;
-        ctx.fillStyle = '#e5e7eb';
+        ctx.fillStyle = labelColor;
         ctx.textAlign = 'center'; ctx.textBaseline = 'top';
         const label = n.data.label.length > 10 ? n.data.label.slice(0, 9) + '…' : n.data.label;
         ctx.fillText(label, n.x, n.y + n.radius + 3);
@@ -528,8 +632,8 @@ export default function KnowledgeGraphPage() {
           {(graph?.groups || []).length > 0 && (
             <div className="mb-3 flex flex-wrap items-center gap-3">
               {graph!.groups!.map(g => (
-                <button key={g.id} type="button" onClick={() => toggleGroup(g.id)} className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-opacity ${hiddenGroups.has(g.id) ? 'opacity-30' : 'opacity-100'}`} style={{ borderColor: g.color + '66', color: g.color }}>
-                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: g.color }} />{g.label}
+                <button key={g.id} type="button" onClick={() => toggleGroup(g.id)} className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold transition-opacity ${hiddenGroups.has(g.id) ? 'opacity-30' : 'opacity-100'}`} style={{ borderColor: withAlpha(groupColor(g.id), 0.4), color: groupColor(g.id) }}>
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: groupColor(g.id) }} />{g.label}
                   <span className="text-gray-500">({g.node_count})</span>
                 </button>
               ))}
@@ -543,7 +647,7 @@ export default function KnowledgeGraphPage() {
               <canvas ref={canvasRef} className="absolute inset-0" onMouseDown={handleCanvasMouseDown} onMouseMove={handleCanvasMouseMove} onMouseUp={handleCanvasMouseUp} onMouseLeave={() => { handleCanvasMouseUp(); setTooltip(null); }} onClick={handleCanvasClick} onDoubleClick={handleCanvasDblClick} onWheel={handleWheel} />
               {tooltip && (
                 <div className="pointer-events-none fixed z-50 rounded-lg border border-gray-700 bg-gray-900/95 px-3 py-2 shadow-xl" style={{ left: tooltip.x + 14, top: tooltip.y - 10 }}>
-                  <p className="text-xs font-semibold" style={{ color: typeColors[tooltip.node.type] }}>{nodeLabels[tooltip.node.type]} · {tooltip.node.data.label}</p>
+                  <p className="text-xs font-semibold" style={{ color: typeColor(tooltip.node.type) }}>{nodeLabels[tooltip.node.type]} · {tooltip.node.data.label}</p>
                   {tooltip.node.data.mastery !== undefined && <p className="mt-1 text-[11px] text-gray-400">掌握度 {tooltip.node.data.mastery}%</p>}
                   <p className="text-[11px] text-gray-500">单击选中 · 双击聚焦</p>
                 </div>
@@ -552,10 +656,10 @@ export default function KnowledgeGraphPage() {
           ) : (
             <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-3">
               {visibleNodes.map(node => (
-                <button key={node.id} type="button" onClick={() => setSelectedNode(node)} onDoubleClick={() => focusNode(node)} className={`flex flex-col justify-between rounded-lg border p-4 text-left transition-transform hover:-translate-y-0.5 ${selectedNode?.id === node.id ? 'ring-2 ring-blue-400/70' : ''}`} style={{ borderColor: typeColors[node.type] + '55', backgroundColor: typeColors[node.type] + '10' }}>
+                <button key={node.id} type="button" onClick={() => setSelectedNode(node)} onDoubleClick={() => focusNode(node)} className={`flex flex-col justify-between rounded-lg border p-4 text-left transition-transform hover:-translate-y-0.5 ${selectedNode?.id === node.id ? 'ring-2 ring-accent-soft-border' : ''}`} style={{ borderColor: withAlpha(typeColor(node.type), 0.33), backgroundColor: withAlpha(typeColor(node.type), 0.06) }}>
                   <span>
                     <span className="mb-3 flex items-center justify-between gap-3">
-                      <span className="rounded-full bg-black/20 px-2 py-1 text-xs font-semibold" style={{ color: typeColors[node.type] }}>{nodeLabels[node.type]}</span>
+                      <span className="rounded-full px-2 py-1 text-xs font-semibold" style={{ color: typeColor(node.type), backgroundColor: 'color-mix(in srgb, var(--surface-muted) 60%, transparent)' }}>{nodeLabels[node.type]}</span>
                       {node.mastery !== undefined && <span className="flex items-center gap-1 text-xs font-semibold"><span className={`h-2 w-2 rounded-full ${masteryColor(node.mastery)}`} />{node.mastery}</span>}
                     </span>
                     <span className="block break-words text-lg font-bold leading-6 text-gray-100">{node.label}</span>
@@ -575,8 +679,8 @@ export default function KnowledgeGraphPage() {
             <h2 className="mb-3 text-lg font-bold">节点详情</h2>
             {selectedNode ? (
               <div>
-                <div className="mb-3 rounded-lg border p-4" style={{ borderColor: typeColors[selectedNode.type] + '55', backgroundColor: typeColors[selectedNode.type] + '10' }}>
-                  <p className="mb-1 text-xs font-semibold" style={{ color: typeColors[selectedNode.type] }}>{nodeLabels[selectedNode.type]}</p>
+                <div className="mb-3 rounded-lg border p-4" style={{ borderColor: withAlpha(typeColor(selectedNode.type), 0.33), backgroundColor: withAlpha(typeColor(selectedNode.type), 0.06) }}>
+                  <p className="mb-1 text-xs font-semibold" style={{ color: typeColor(selectedNode.type) }}>{nodeLabels[selectedNode.type]}</p>
                   <h3 className="break-words text-xl font-bold text-gray-100">{selectedNode.label}</h3>
                   {selectedNode.description && <p className="mt-2 text-sm leading-6 text-gray-400">{selectedNode.description}</p>}
                 </div>
@@ -615,7 +719,7 @@ export default function KnowledgeGraphPage() {
                   return (
                     <button key={edge.id} type="button" onClick={() => { if (other) setSelectedNode(other); }} onDoubleClick={() => { if (other) focusNode(other); }} className="block w-full rounded-md border border-gray-800 bg-gray-950/40 p-3 text-left hover:border-blue-500/60">
                       <p className="text-sm font-semibold text-gray-200">{edge.label || edge.relation}</p>
-                      <p className="mt-1 line-clamp-1 text-xs" style={{ color: other ? typeColors[other.type] : '#9ca3af' }}>{other ? `${nodeLabels[other.type]} · ${other.label}` : otherID}</p>
+                      <p className="mt-1 line-clamp-1 text-xs" style={{ color: other ? typeColor(other.type) : 'var(--muted)' }}>{other ? `${nodeLabels[other.type]} · ${other.label}` : otherID}</p>
                     </button>
                   );
                 })}

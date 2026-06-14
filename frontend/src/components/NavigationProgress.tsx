@@ -53,8 +53,12 @@ function NavigationProgressBar() {
       aria-hidden="true"
     >
       <div
-        className="h-full bg-gradient-to-r from-blue-500 via-blue-600 to-cyan-500 shadow-[0_0_8px_rgba(59,130,246,0.6)] transition-[width] duration-300 ease-out"
-        style={{ width: `${progress}%` }}
+        className="h-full transition-[width] duration-300 ease-out"
+        style={{
+          width: `${progress}%`,
+          background: 'linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #ffffff))',
+          boxShadow: '0 0 8px color-mix(in srgb, var(--accent) 60%, transparent)',
+        }}
       />
     </div>
   );

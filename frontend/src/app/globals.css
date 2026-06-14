@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Semantic theme tokens.
+ *
+ * Every theme defines the full set below so components can reference one stable
+ * token and get a coordinated color in any theme:
+ *   --accent / --accent-foreground        primary brand action color
+ *   --accent-soft / -border / -fg         tinted "info" surface (was bg-blue-500/10)
+ *   --success / --success-soft(-*)        positive / done states (was emerald-*)
+ *   --warning / --warning-soft(-*)        caution states (was amber-*)
+ *   --danger  / --danger-soft(-*)         destructive / error states (was red-*)
+ * The -soft variants are background tints; -soft-fg is readable text on them.
+ */
 :root,
 html[data-theme="light"] {
   --background: #f7f7f4;
@@ -12,6 +24,21 @@ html[data-theme="light"] {
   --muted: #6b7280;
   --accent: #0ea5e9;
   --accent-foreground: #ffffff;
+  --accent-soft: rgba(14, 165, 233, 0.10);
+  --accent-soft-border: rgba(14, 165, 233, 0.35);
+  --accent-soft-fg: #0369a1;
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.12);
+  --success-soft-border: rgba(5, 150, 105, 0.32);
+  --success-soft-fg: #047857;
+  --warning: #d97706;
+  --warning-soft: rgba(217, 119, 6, 0.12);
+  --warning-soft-border: rgba(217, 119, 6, 0.32);
+  --warning-soft-fg: #b45309;
+  --danger: #dc2626;
+  --danger-soft: rgba(220, 38, 38, 0.10);
+  --danger-soft-border: rgba(220, 38, 38, 0.32);
+  --danger-soft-fg: #b91c1c;
   --selection: rgba(14, 165, 233, 0.3);
   --selection-border: rgba(56, 189, 248, 0.72);
   color-scheme: light;
@@ -27,6 +54,21 @@ html[data-theme="dark"] {
   --muted: #9ca3af;
   --accent: #38bdf8;
   --accent-foreground: #0b1220;
+  --accent-soft: rgba(56, 189, 248, 0.14);
+  --accent-soft-border: rgba(56, 189, 248, 0.40);
+  --accent-soft-fg: #7dd3fc;
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.16);
+  --success-soft-border: rgba(52, 211, 153, 0.40);
+  --success-soft-fg: #6ee7b7;
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.16);
+  --warning-soft-border: rgba(251, 191, 36, 0.40);
+  --warning-soft-fg: #fcd34d;
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.16);
+  --danger-soft-border: rgba(248, 113, 113, 0.40);
+  --danger-soft-fg: #fca5a5;
   --selection: rgba(56, 189, 248, 0.32);
   --selection-border: rgba(125, 211, 252, 0.7);
   color-scheme: dark;
@@ -41,6 +83,21 @@ html[data-theme="green"] {
   --muted: #6b7a63;
   --accent: #4d8a3c;
   --accent-foreground: #ffffff;
+  --accent-soft: rgba(77, 138, 60, 0.12);
+  --accent-soft-border: rgba(77, 138, 60, 0.34);
+  --accent-soft-fg: #3f6e31;
+  --success: #2f7d3a;
+  --success-soft: rgba(47, 125, 58, 0.14);
+  --success-soft-border: rgba(47, 125, 58, 0.34);
+  --success-soft-fg: #2f6e2a;
+  --warning: #b97706;
+  --warning-soft: rgba(185, 119, 6, 0.14);
+  --warning-soft-border: rgba(185, 119, 6, 0.34);
+  --warning-soft-fg: #92590a;
+  --danger: #c0392b;
+  --danger-soft: rgba(192, 57, 43, 0.12);
+  --danger-soft-border: rgba(192, 57, 43, 0.34);
+  --danger-soft-fg: #a5281b;
   --selection: rgba(77, 138, 60, 0.26);
   --selection-border: rgba(77, 138, 60, 0.55);
   color-scheme: light;
@@ -55,6 +112,21 @@ html[data-theme="ocean"] {
   --muted: #8aa3c2;
   --accent: #38bdf8;
   --accent-foreground: #04101c;
+  --accent-soft: rgba(56, 189, 248, 0.14);
+  --accent-soft-border: rgba(56, 189, 248, 0.40);
+  --accent-soft-fg: #7dd3fc;
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.16);
+  --success-soft-border: rgba(52, 211, 153, 0.40);
+  --success-soft-fg: #6ee7b7;
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.16);
+  --warning-soft-border: rgba(251, 191, 36, 0.40);
+  --warning-soft-fg: #fcd34d;
+  --danger: #f87171;
+  --danger-soft: rgba(248, 113, 113, 0.16);
+  --danger-soft-border: rgba(248, 113, 113, 0.40);
+  --danger-soft-fg: #fca5a5;
   --selection: rgba(56, 189, 248, 0.32);
   --selection-border: rgba(125, 211, 252, 0.7);
   color-scheme: dark;
@@ -69,6 +141,21 @@ html[data-theme="sunset"] {
   --muted: #8a6f56;
   --accent: #d97706;
   --accent-foreground: #ffffff;
+  --accent-soft: rgba(217, 119, 6, 0.12);
+  --accent-soft-border: rgba(217, 119, 6, 0.34);
+  --accent-soft-fg: #b45309;
+  --success: #2f7d3a;
+  --success-soft: rgba(47, 125, 58, 0.14);
+  --success-soft-border: rgba(47, 125, 58, 0.34);
+  --success-soft-fg: #2f6e2a;
+  --warning: #b45309;
+  --warning-soft: rgba(180, 83, 9, 0.14);
+  --warning-soft-border: rgba(180, 83, 9, 0.34);
+  --warning-soft-fg: #92590a;
+  --danger: #c0392b;
+  --danger-soft: rgba(192, 57, 43, 0.12);
+  --danger-soft-border: rgba(192, 57, 43, 0.34);
+  --danger-soft-fg: #a5281b;
   --selection: rgba(217, 119, 6, 0.26);
   --selection-border: rgba(217, 119, 6, 0.55);
   color-scheme: light;
@@ -112,6 +199,15 @@ a { color: inherit; text-decoration: none; }
 }
 .dark .translation-tooltip { box-shadow: 0 14px 44px rgba(0,0,0,0.46); }
 
+/*
+ * Neutral-gray overrides.
+ *
+ * Many components still use Tailwind gray utilities (bg-gray-900, text-gray-300,
+ * border-gray-700, …). In the non-dark themes (light/green/sunset) those grays
+ * would look out of place, so we remap the common gray utilities to theme
+ * tokens. This block is a NO-OP for the dark and ocean themes, which carry the
+ * .dark class and are already dark enough that the raw grays read correctly.
+ */
 html:not(.dark) .bg-gray-950 { background-color: var(--surface-muted) !important; }
 html:not(.dark) .bg-gray-950\/30, html:not(.dark) .bg-gray-950\/40, html:not(.dark) .bg-gray-950\/50 { background-color: var(--surface-muted) !important; }
 html:not(.dark) .bg-gray-900 { background-color: var(--surface) !important; }
@@ -130,51 +226,172 @@ html:not(.dark) .hover\:bg-gray-900:hover, html:not(.dark) .hover\:bg-gray-800:h
 html:not(.dark) .hover\:border-gray-800:hover, html:not(.dark) .hover\:border-gray-600:hover { border-color: var(--muted) !important; }
 html:not(.dark) .hover\:text-gray-200:hover, html:not(.dark) .hover\:text-gray-300:hover, html:not(.dark) .hover\:text-white:hover { color: var(--foreground) !important; }
 
-/* 彩色文字适配：深色文字色值在非深色主题上对比度不足，需映射到更深色值 */
-html:not(.dark) .text-blue-300 { color: var(--accent) !important; }
-html:not(.dark) .text-blue-200 { color: #1e40af !important; }
-html:not(.dark) .text-blue-100 { color: #1e3a8a !important; }
+/*
+ * Semantic color overrides for the LEGACY color utilities still in use.
+ *
+ * Components were historically written with raw Tailwind color families
+ * (blue/sky = accent, emerald/green = success, amber = warning, red = danger).
+ * Rather than chase every class, we remap each family to the matching semantic
+ * token. The selectors apply in EVERY theme here (light, green, sunset via
+ * html:not(.dark), and dark/ocean via .dark), so the legacy classes now read as
+ * coordinated semantic colors everywhere instead of clashing literal hues.
+ *
+ * Note: this intentionally does NOT remap colors used for full-color buttons
+ * (bg-blue-600, bg-emerald-600 …) because those need to keep their solid fill —
+ * those are handled by the component refactor where the accent class is used.
+ */
+
+/* —— accent family: blue / sky (and indigo used as accent) —— */
+html:not(.dark) .text-blue-300 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .text-blue-200 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .text-blue-100 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .text-sky-400 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .text-sky-300 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .bg-blue-500\/10, html:not(.dark) .bg-blue-500\/5 { background-color: var(--accent-soft) !important; }
+html:not(.dark) .bg-sky-500\/10 { background-color: var(--accent-soft) !important; }
+html:not(.dark) .border-blue-500, html:not(.dark) .border-blue-500\/70, html:not(.dark) .border-blue-500\/80 { border-color: var(--accent-soft-border) !important; }
+html:not(.dark) .border-sky-500 { border-color: var(--accent-soft-border) !important; }
+html:not(.dark) .hover\:border-blue-500:hover, html:not(.dark) .hover\:border-blue-500\/80:hover, html:not(.dark) .hover\:border-blue-500\/70:hover { border-color: var(--accent-soft-border) !important; }
+html:not(.dark) .hover\:text-blue-200:hover { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .hover\:text-sky-300:hover, html:not(.dark) .hover\:text-sky-400:hover { color: var(--accent-soft-fg) !important; }
+
+/* —— success family: emerald / green —— */
+html:not(.dark) .text-emerald-300 { color: var(--success-soft-fg) !important; }
+html:not(.dark) .text-emerald-200 { color: var(--success-soft-fg) !important; }
+html:not(.dark) .text-emerald-100 { color: var(--success-soft-fg) !important; }
+html:not(.dark) .text-emerald-400 { color: var(--success-soft-fg) !important; }
+html:not(.dark) .bg-emerald-500\/10 { background-color: var(--success-soft) !important; }
+html:not(.dark) .border-emerald-500, html:not(.dark) .border-emerald-500\/50 { border-color: var(--success-soft-border) !important; }
+html:not(.dark) .border-emerald-600\/70 { border-color: var(--success-soft-border) !important; }
+html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: var(--success-soft) !important; }
+html:not(.dark) .hover\:border-emerald-500:hover { border-color: var(--success-soft-border) !important; }
+
+/* —— warning family: amber / yellow —— */
+html:not(.dark) .text-amber-300 { color: var(--warning-soft-fg) !important; }
+html:not(.dark) .text-amber-200 { color: var(--warning-soft-fg) !important; }
+html:not(.dark) .bg-amber-500\/10 { background-color: var(--warning-soft) !important; }
+html:not(.dark) .border-amber-500 { border-color: var(--warning-soft-border) !important; }
+html:not(.dark) .border-amber-600\/70 { border-color: var(--warning-soft-border) !important; }
+html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: var(--warning-soft) !important; }
+
+/* —— danger family: red —— */
+html:not(.dark) .text-red-300 { color: var(--danger-soft-fg) !important; }
+html:not(.dark) .text-red-200 { color: var(--danger-soft-fg) !important; }
+html:not(.dark) .text-red-100 { color: var(--danger-soft-fg) !important; }
+html:not(.dark) .bg-red-500\/10 { background-color: var(--danger-soft) !important; }
+html:not(.dark) .border-red-500, html:not(.dark) .border-red-500\/50 { border-color: var(--danger-soft-border) !important; }
+html:not(.dark) .hover\:bg-red-500\/10:hover { background-color: var(--danger-soft) !important; }
+
+/*
+ * —— teal family: the translation/video "teal mini-theme" ——
+ *
+ * TranslationTooltip, VideoUnderstandingPanel, the study/videos pages and the
+ * success Toast all use a self-contained teal palette as their primary accent.
+ * That teal clashes with the green/sunset/ocean accents, so remap the whole
+ * teal family to the accent token in every theme. Solid teal buttons
+ * (bg-teal-600/700) become the accent fill; teal text/borders/soft-tints track
+ * the accent-soft variants.
+ */
+html:not(.dark) .text-teal-600, html:not(.dark) .text-teal-700 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .text-teal-50 { color: var(--accent-foreground) !important; }
+html:not(.dark) .bg-teal-100 { background-color: var(--accent-soft) !important; }
+html:not(.dark) .bg-teal-500\/10 { background-color: var(--accent-soft) !important; }
+html:not(.dark) .bg-teal-700\/10 { background-color: var(--accent-soft) !important; }
+html:not(.dark) .border-teal-500, html:not(.dark) .border-teal-500\/30 { border-color: var(--accent-soft-border) !important; }
+html:not(.dark) .border-teal-600 { border-color: var(--accent-soft-border) !important; }
+html:not(.dark) .hover\:bg-teal-500\/10:hover { background-color: var(--accent-soft) !important; }
+html:not(.dark) .hover\:text-teal-600:hover, html:not(.dark) .hover\:text-teal-700:hover { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .hover\:border-teal-500:hover, html:not(.dark) .hover\:border-teal-400:hover { border-color: var(--accent-soft-border) !important; }
+html:not(.dark) .focus\:border-teal-600:focus, html:not(.dark) .focus\:border-teal-500:focus { border-color: var(--accent) !important; }
+html:not(.dark) .focus\:ring-teal-600:focus { --tw-ring-color: var(--accent) !important; }
+/* teal solid buttons → accent fill in green & sunset (in light/dark/ocean teal already reads okay-ish, but
+   to keep ONE source of truth we remap solid teal buttons everywhere) */
+html:not(.dark) .bg-teal-600, html:not(.dark) .bg-teal-700 { background-color: var(--accent) !important; }
+html:not(.dark) .hover\:bg-teal-600:hover, html:not(.dark) .hover\:bg-teal-700:hover { background-color: color-mix(in srgb, var(--accent) 88%, #000) !important; }
+
+/* —— violet used as a secondary accent (study banner, tags) —— */
 html:not(.dark) .text-violet-300 { color: #6d28d9 !important; }
 html:not(.dark) .text-violet-200 { color: #5b21b6 !important; }
-html:not(.dark) .text-amber-300 { color: #b45309 !important; }
-html:not(.dark) .text-amber-200 { color: #92400e !important; }
-html:not(.dark) .text-emerald-300 { color: #047857 !important; }
-html:not(.dark) .text-emerald-200 { color: #065f46 !important; }
-html:not(.dark) .text-emerald-100 { color: #064e3b !important; }
-html:not(.dark) .text-emerald-400 { color: #047857 !important; }
-html:not(.dark) .text-red-300 { color: #b91c1c !important; }
-html:not(.dark) .text-red-200 { color: #991b1b !important; }
-html:not(.dark) .text-red-100 { color: #7f1d1d !important; }
-html:not(.dark) .text-sky-400 { color: #0369a1 !important; }
-html:not(.dark) .text-sky-300 { color: #075985 !important; }
-
-/* 彩色透明背景适配：淡色底在非深色主题上几乎不可见 */
-html:not(.dark) .bg-blue-500\/10, html:not(.dark) .bg-blue-500\/5 { background-color: rgba(30, 64, 175, 0.1) !important; }
-html:not(.dark) .bg-emerald-500\/10 { background-color: rgba(4, 120, 87, 0.1) !important; }
-html:not(.dark) .bg-amber-500\/10 { background-color: rgba(180, 83, 9, 0.1) !important; }
-html:not(.dark) .bg-red-500\/10 { background-color: rgba(185, 28, 28, 0.1) !important; }
-
-/* 彩色透明边框适配 */
-html:not(.dark) .border-blue-500 { border-color: var(--accent) !important; }
-html:not(.dark) .border-blue-500\/70, html:not(.dark) .border-blue-500\/80 { border-color: var(--accent) !important; }
-html:not(.dark) .border-emerald-500 { border-color: #047857 !important; }
-html:not(.dark) .border-emerald-500\/50 { border-color: rgba(4, 120, 87, 0.5) !important; }
-html:not(.dark) .border-emerald-600\/70 { border-color: rgba(4, 120, 87, 0.7) !important; }
-html:not(.dark) .border-amber-500 { border-color: #b45309 !important; }
-html:not(.dark) .border-amber-600\/70 { border-color: rgba(180, 83, 9, 0.7) !important; }
-html:not(.dark) .border-red-500 { border-color: #b91c1c !important; }
-html:not(.dark) .border-red-500\/50 { border-color: rgba(185, 28, 28, 0.5) !important; }
-
-/* 彩色 hover 背景适配 */
-html:not(.dark) .hover\:bg-amber-500\/10:hover { background-color: rgba(180, 83, 9, 0.1) !important; }
-html:not(.dark) .hover\:bg-emerald-500\/10:hover { background-color: rgba(4, 120, 87, 0.1) !important; }
-html:not(.dark) .hover\:bg-red-500\/10:hover { background-color: rgba(185, 28, 28, 0.1) !important; }
-html:not(.dark) .hover\:border-blue-500:hover, html:not(.dark) .hover\:border-blue-500\/80:hover, html:not(.dark) .hover\:border-blue-500\/70:hover { border-color: var(--accent) !important; }
 html:not(.dark) .hover\:border-violet-500:hover { border-color: #6d28d9 !important; }
-html:not(.dark) .hover\:border-emerald-500:hover { border-color: #047857 !important; }
-html:not(.dark) .hover\:text-blue-200:hover { color: #1e40af !important; }
 html:not(.dark) .hover\:text-violet-200:hover { color: #5b21b6 !important; }
-html:not(.dark) .hover\:text-sky-300:hover, html:not(.dark) .hover\:text-sky-400:hover { color: #0369a1 !important; }
+
+/*
+ * Decorative -500 foreground accents.
+ *
+ * A handful of icons/links use the mid-tone of a hue (text-blue-500,
+ * text-orange-500, text-purple-500) for visual distinction. In the green/sunset
+ * themes those literal hues clash; remap to semantic foregrounds. Orange tracks
+ * the warning token (which is already theme-shifted — orange in light, amber in
+ * sunset), blue tracks accent-fg, purple stays as a fixed secondary hue that
+ * reads well on all backgrounds.
+ */
+html:not(.dark) .text-blue-500 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .text-orange-500 { color: var(--warning-soft-fg) !important; }
+html:not(.dark) .text-purple-500 { color: #7c3aed !important; }
+html:not(.dark) .hover\:text-blue-500:hover { color: var(--accent-soft-fg) !important; }
+
+/*
+ * Soft "chip/badge" tints: the -50 / -700 / -800 family.
+ *
+ * Dozens of badges, pills and error banners use the pattern
+ * `bg-{color}-50 text-{color}-700` (e.g. bg-emerald-50 text-emerald-700). Those
+ * literal pastels clash hard in green/sunset and become invisible in ocean.
+ * Remap the whole -50 tint layer (and its -700/-800/-900 foreground partners)
+ * to the semantic soft tokens so every chip reads as a coordinated tint in any
+ * theme. blue/sky/green map to accent (they are used as the primary brand tint).
+ */
+/* — accent tints (blue / sky / green / indigo) — */
+html:not(.dark) .bg-blue-50, html:not(.dark) .bg-sky-50, html:not(.dark) .bg-green-50, html:not(.dark) .bg-indigo-50 { background-color: var(--accent-soft) !important; }
+html:not(.dark) .text-blue-700, html:not(.dark) .text-blue-800, html:not(.dark) .text-sky-700, html:not(.dark) .text-green-700, html:not(.dark) .text-indigo-700 { color: var(--accent-soft-fg) !important; }
+html:not(.dark) .border-blue-200, html:not(.dark) .border-sky-200, html:not(.dark) .border-green-200 { border-color: var(--accent-soft-border) !important; }
+/* — success tints (emerald) — */
+html:not(.dark) .bg-emerald-50 { background-color: var(--success-soft) !important; }
+html:not(.dark) .text-emerald-700, html:not(.dark) .text-emerald-800 { color: var(--success-soft-fg) !important; }
+html:not(.dark) .border-emerald-200 { border-color: var(--success-soft-border) !important; }
+/* — warning tints (amber / yellow) — */
+html:not(.dark) .bg-amber-50, html:not(.dark) .bg-yellow-50 { background-color: var(--warning-soft) !important; }
+html:not(.dark) .text-amber-700, html:not(.dark) .text-amber-800, html:not(.dark) .text-amber-900, html:not(.dark) .text-yellow-700 { color: var(--warning-soft-fg) !important; }
+html:not(.dark) .border-amber-200, html:not(.dark) .border-yellow-200 { border-color: var(--warning-soft-border) !important; }
+/* — danger tints (red) — */
+html:not(.dark) .bg-red-50 { background-color: var(--danger-soft) !important; }
+html:not(.dark) .text-red-700, html:not(.dark) .text-red-800 { color: var(--danger-soft-fg) !important; }
+html:not(.dark) .border-red-200 { border-color: var(--danger-soft-border) !important; }
+
+/*
+ * Solid accent buttons in the green & sunset themes.
+ *
+ * bg-blue-600/bg-blue-500 buttons are the de-facto "primary action" button all
+ * over the app. In light/dark/ocean that blue is acceptable (ocean's accent is
+ * sky blue anyway), but in the green and sunset themes a literal blue button
+ * clashes with the green/orange accent. Remap just those two themes so primary
+ * buttons pick up the theme accent automatically.
+ */
+html[data-theme="green"] .bg-blue-600, html[data-theme="green"] .bg-blue-500,
+html[data-theme="sunset"] .bg-blue-600, html[data-theme="sunset"] .bg-blue-500 { background-color: var(--accent) !important; }
+html[data-theme="green"] .hover\:bg-blue-700:hover, html[data-theme="green"] .hover\:bg-blue-600:hover, html[data-theme="green"] .hover\:bg-blue-500:hover,
+html[data-theme="sunset"] .hover\:bg-blue-700:hover, html[data-theme="sunset"] .hover\:bg-blue-600:hover, html[data-theme="sunset"] .hover\:bg-blue-500:hover { background-color: color-mix(in srgb, var(--accent) 88%, #000) !important; }
+html[data-theme="green"] .text-blue-600, html[data-theme="green"] .text-blue-500,
+html[data-theme="sunset"] .text-blue-600, html[data-theme="sunset"] .text-blue-500 { color: var(--accent) !important; }
+html[data-theme="green"] .group:hover .group-hover\:text-blue-600,
+html[data-theme="sunset"] .group:hover .group-hover\:text-blue-600 { color: var(--accent) !important; }
+
+/*
+ * Solid semantic-action buttons (emerald/amber/red) in green & sunset.
+ * Same rationale: literal green-on-green has no contrast, and amber in sunset
+ * is too close to the background. Darken via color-mix so the button stays
+ * visibly distinct from its soft-tint background.
+ */
+html[data-theme="green"] .bg-emerald-600, html[data-theme="green"] .bg-emerald-500,
+html[data-theme="sunset"] .bg-emerald-600, html[data-theme="sunset"] .bg-emerald-500 { background-color: var(--success) !important; }
+html[data-theme="green"] .bg-green-500, html[data-theme="green"] .bg-green-600,
+html[data-theme="sunset"] .bg-green-500, html[data-theme="sunset"] .bg-green-600 { background-color: var(--success) !important; }
+html[data-theme="green"] .bg-amber-600\/70, html[data-theme="sunset"] .bg-amber-600\/70 { background-color: color-mix(in srgb, var(--warning) 80%, transparent) !important; }
+html[data-theme="green"] .bg-amber-600, html[data-theme="green"] .bg-amber-500,
+html[data-theme="sunset"] .bg-amber-600, html[data-theme="sunset"] .bg-amber-500 { background-color: var(--warning) !important; }
+html[data-theme="green"] .bg-yellow-500, html[data-theme="green"] .bg-yellow-600,
+html[data-theme="sunset"] .bg-yellow-500, html[data-theme="sunset"] .bg-yellow-600 { background-color: var(--warning) !important; }
+html[data-theme="green"] .bg-red-600, html[data-theme="green"] .bg-red-500,
+html[data-theme="sunset"] .bg-red-600, html[data-theme="sunset"] .bg-red-500 { background-color: var(--danger) !important; }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
@@ -198,8 +415,8 @@ html:not(.dark) .hover\:text-sky-300:hover, html:not(.dark) .hover\:text-sky-400
 .ao3-work-content h2 { font-size: 1.75rem; }
 .ao3-work-content h3 { font-size: 1.35rem; }
 .ao3-work-content p { margin-bottom: 1.25rem; }
-.ao3-work-content a { color: #047857; font-weight: 600; }
-.dark .ao3-work-content a { color: #6ee7b7; }
+.ao3-work-content a { color: var(--accent); font-weight: 600; }
+.dark .ao3-work-content a { color: var(--accent-soft-fg); }
 .ao3-work-content blockquote { border-left: 4px solid var(--accent); color: var(--muted); margin: 1.5rem 0; padding-left: 1rem; }
 .ao3-work-content hr { border: 0; border-top: 1px solid var(--border); margin: 2rem 0; }
 .ao3-work-content ul, .ao3-work-content ol { margin: 0 0 1.25rem 1.5rem; }

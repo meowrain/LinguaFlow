@@ -317,19 +317,28 @@ export default function StudyPage() {
         </div>
       )}
 
-      <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-xl p-6 text-white mb-6">
+      <div
+        className="rounded-xl p-6 mb-6"
+        style={{
+          background: 'linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 72%, #000))',
+          color: 'var(--accent-foreground)',
+        }}
+      >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5" />
             <h2 className="text-lg font-semibold">今日学习规划</h2>
             {aiPlan?.cached && (
-              <span className="text-xs bg-white/20 px-2 py-0.5 rounded-full">已缓存</span>
+              <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.22)' }}>已缓存</span>
             )}
           </div>
           <button
             onClick={handleRegeneratePlan}
             disabled={loadingPlan}
-            className="flex items-center gap-1 text-sm bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+            className="flex items-center gap-1 text-sm px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+            style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
+            onMouseEnter={(e) => { if (!loadingPlan) e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.3)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'; }}
           >
             <RotateCcw className={`w-4 h-4 ${loadingPlan ? 'animate-spin' : ''}`} />
             重新规划
@@ -338,19 +347,20 @@ export default function StudyPage() {
 
         {loadingPlan && !aiPlan ? (
           <div className="space-y-2">
-            <div className="h-4 bg-white/20 rounded animate-pulse w-3/4"></div>
-            <div className="h-4 bg-white/20 rounded animate-pulse w-1/2"></div>
+            <div className="h-4 rounded animate-pulse w-3/4" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}></div>
+            <div className="h-4 rounded animate-pulse w-1/2" style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}></div>
           </div>
         ) : planError ? (
-          <p className="text-red-200 text-sm">{planError}</p>
+          <p className="text-sm" style={{ color: 'var(--danger-soft-fg)' }}>{planError}</p>
         ) : aiPlan ? (
           <p className="text-lg leading-relaxed">{aiPlan.content}</p>
         ) : (
           <div>
-            <p className="text-white/70">设置学习目标后，AI 将为你规划今日学习内容</p>
+            <p style={{ opacity: 0.8 }}>设置学习目标后，AI 将为你规划今日学习内容</p>
             <Link
               href="/profile"
-              className="mt-3 inline-flex items-center gap-1 text-sm bg-white/30 hover:bg-white/40 px-3 py-1.5 rounded-lg transition-colors"
+              className="mt-3 inline-flex items-center gap-1 text-sm px-3 py-1.5 rounded-lg transition-colors"
+              style={{ backgroundColor: 'rgba(255,255,255,0.28)' }}
             >
               <Target className="w-4 h-4" />
               设置你的考试目标
@@ -494,28 +504,34 @@ export default function StudyPage() {
                 <div
                   key={record.date}
                   title={`${record.date} · 阅读 ${Math.ceil(record.read_seconds / 60)} 分钟 · 复习 ${record.reviewed_words} 个 · 完成 ${record.completed_articles} 篇`}
-                  className={`aspect-square rounded-md border ${
-                    record.is_completed
-                      ? 'border-green-500/50 bg-green-500/40'
+                  className="aspect-square rounded-md border"
+                  style={{
+                    borderColor: record.is_completed
+                      ? 'var(--success-soft-border)'
                       : active
-                        ? 'border-blue-500/40 bg-blue-500/20'
-                        : 'border-gray-800 bg-gray-950'
-                  }`}
+                        ? 'var(--accent-soft-border)'
+                        : 'var(--border)',
+                    backgroundColor: record.is_completed
+                      ? 'var(--success-soft)'
+                      : active
+                        ? 'var(--accent-soft)'
+                        : 'var(--surface-muted)',
+                  }}
                 />
               );
             })}
           </div>
           <div className="mt-4 flex flex-wrap items-center gap-3 text-xs text-gray-500">
             <span className="inline-flex items-center gap-1">
-              <span className="h-3 w-3 rounded-sm bg-gray-950 ring-1 ring-gray-800" />
+              <span className="h-3 w-3 rounded-sm ring-1" style={{ backgroundColor: 'var(--surface-muted)', boxShadow: '0 0 0 1px var(--border)' }} />
               未学习
             </span>
             <span className="inline-flex items-center gap-1">
-              <span className="h-3 w-3 rounded-sm bg-blue-500/20 ring-1 ring-blue-500/40" />
+              <span className="h-3 w-3 rounded-sm ring-1" style={{ backgroundColor: 'var(--accent-soft)', boxShadow: '0 0 0 1px var(--accent-soft-border)' }} />
               有学习
             </span>
             <span className="inline-flex items-center gap-1">
-              <span className="h-3 w-3 rounded-sm bg-green-500/40 ring-1 ring-green-500/50" />
+              <span className="h-3 w-3 rounded-sm ring-1" style={{ backgroundColor: 'var(--success-soft)', boxShadow: '0 0 0 1px var(--success-soft-border)' }} />
               已完成
             </span>
           </div>

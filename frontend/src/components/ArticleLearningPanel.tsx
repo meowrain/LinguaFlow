@@ -82,7 +82,13 @@ export default function ArticleLearningPanel({
   if (!isAuthenticated || vocabularyByWord.size === 0) return null;
 
   return (
-    <div className="mb-8 rounded-xl border border-sky-900/30 bg-gradient-to-r from-sky-950/30 via-gray-950/60 to-gray-950/60">
+    <div
+      className="mb-8 rounded-xl border"
+      style={{
+        backgroundColor: 'color-mix(in srgb, var(--accent-soft) 60%, var(--surface))',
+        borderColor: 'var(--accent-soft-border)',
+      }}
+    >
       {/* Header — always visible */}
       <div className="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-start gap-3">
@@ -135,10 +141,10 @@ export default function ArticleLearningPanel({
 
       {/* Coverage bar */}
       <div className="mx-5 mb-5">
-        <div className="h-1.5 overflow-hidden rounded-full bg-gray-800">
+        <div className="h-1.5 overflow-hidden rounded-full" style={{ backgroundColor: 'var(--surface-muted)' }}>
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-sky-500 transition-[width] duration-700 ease-out"
-            style={{ width: `${analysis.coveragePercent}%` }}
+            className="h-full rounded-full transition-[width] duration-700 ease-out"
+            style={{ width: `${analysis.coveragePercent}%`, backgroundColor: 'var(--accent)' }}
           />
         </div>
       </div>

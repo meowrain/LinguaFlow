@@ -14,9 +14,9 @@ interface ArticleCardProps {
 }
 
 const difficultyColors = {
-  easy: 'bg-green-500/20 text-green-400',
-  medium: 'bg-yellow-500/20 text-yellow-400',
-  hard: 'bg-red-500/20 text-red-400',
+  easy: 'bg-success-soft text-success-soft-fg',
+  medium: 'bg-warning-soft text-warning-soft-fg',
+  hard: 'bg-danger-soft text-danger-soft-fg',
 };
 
 const difficultyLabels = {
@@ -39,11 +39,12 @@ export default function ArticleCard({ article }: ArticleCardProps) {
   return (
     <Link
       href={`/articles/${article.slug}`}
-      className="block bg-gray-900/50 border border-gray-800 rounded-lg overflow-hidden hover:border-blue-500 transition-all duration-300 group mb-6 break-inside-avoid"
+      className="block rounded-lg overflow-hidden transition-all duration-300 group mb-6 break-inside-avoid"
+      style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 60%, transparent)', border: '1px solid var(--border)' }}
     >
       {/* Cover Image */}
       {coverImageURL && !imageError ? (
-        <div className={`relative ${imageHeight} w-full overflow-hidden bg-gray-800`}>
+        <div className={`relative ${imageHeight} w-full overflow-hidden`} style={{ backgroundColor: 'var(--surface-muted)' }}>
           <Image
             src={coverImageURL}
             alt={article.title}
@@ -54,15 +55,18 @@ export default function ArticleCard({ article }: ArticleCardProps) {
           />
         </div>
       ) : (
-        <div className={`${placeholderHeight} w-full bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center`}>
-          <BookOpen className="w-16 h-16 text-gray-700" />
+        <div
+          className={`${placeholderHeight} w-full flex items-center justify-center`}
+          style={{ background: 'linear-gradient(135deg, var(--surface-muted), var(--border))' }}
+        >
+          <BookOpen className="w-16 h-16" style={{ color: 'var(--muted)' }} />
         </div>
       )}
 
       <div className="p-5">
         {/* Category and Difficulty */}
         <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-medium text-blue-400">
+          <span className="text-xs font-medium" style={{ color: 'var(--accent-soft-fg)' }}>
             {article.category?.name || article.source || 'MIT Technology Review'}
           </span>
           <span
@@ -75,7 +79,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold mb-2 line-clamp-2 group-hover:text-blue-400 transition-colors">
+        <h3 className="text-lg font-semibold mb-2 line-clamp-2 transition-colors group-hover:text-[var(--accent)]">
           {article.title}
         </h3>
 

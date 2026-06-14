@@ -60,7 +60,10 @@ export default function Header() {
   const isGroupActive = (items: { path: string }[]) => items.some((item) => isPathActive(item.path));
 
   return (
-    <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur-sm dark:border-gray-800 dark:bg-[#1d1d1d]/95">
+    <header
+      className="sticky top-0 z-50 border-b backdrop-blur-sm"
+      style={{ backgroundColor: 'color-mix(in srgb, var(--surface) 95%, transparent)', borderColor: 'var(--border)' }}
+    >
       <div className="mx-auto max-w-[1460px] px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

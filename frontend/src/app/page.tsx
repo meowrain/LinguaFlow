@@ -333,14 +333,17 @@ export default function Home() {
   const latestArticles = useMemo(() => articles.slice(1, 9), [articles]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
+    <div
+      className="min-h-screen"
+      style={{ background: 'linear-gradient(to bottom, var(--background), var(--surface))' }}
+    >
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <section className="mb-16 text-center">
           <div className="mx-auto max-w-3xl">
-            <h1 className="mb-4 text-4xl font-black tracking-tight text-gray-900 dark:text-gray-100 sm:text-5xl">
+            <h1 className="mb-4 text-4xl font-black tracking-tight sm:text-5xl" style={{ color: 'var(--foreground)' }}>
               把每一篇英文材料
-              <span className="block text-blue-600 dark:text-blue-400">读成可复习的积累</span>
+              <span className="block" style={{ color: 'var(--accent)' }}>读成可复习的积累</span>
             </h1>
             <p className="mb-8 text-lg text-gray-600 dark:text-gray-400">
               划词查义、收藏句子、间隔复习，让英文阅读真正产生积累
@@ -376,10 +379,16 @@ export default function Home() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">每日一句</h2>
               <span className="ml-auto text-xs text-gray-400">{dailySentence.date}</span>
             </div>
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 p-8 shadow-sm dark:from-emerald-950/30 dark:to-teal-950/30 dark:shadow-emerald-900/10">
-              <Quote className="absolute right-6 top-6 h-16 w-16 text-emerald-200/50 dark:text-emerald-800/30" />
+            <div
+              className="relative overflow-hidden rounded-2xl p-8"
+              style={{ background: 'linear-gradient(135deg, var(--success-soft), var(--accent-soft))' }}
+            >
+              <Quote className="absolute right-6 top-6 h-16 w-16" style={{ color: 'color-mix(in srgb, var(--accent) 18%, transparent)' }} />
               <div className="relative z-10 max-w-3xl">
-                <span className="mb-4 inline-block rounded-full bg-emerald-200/60 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-800/40 dark:text-emerald-300">
+                <span
+                  className="mb-4 inline-block rounded-full px-3 py-1 text-xs font-medium"
+                  style={{ backgroundColor: 'var(--surface)', color: 'var(--accent-soft-fg)' }}
+                >
                   {dailySentence.topic || '每日精选'}
                 </span>
                 <p className="mb-3 text-xl font-bold leading-relaxed text-gray-900 dark:text-gray-100 sm:text-2xl">
