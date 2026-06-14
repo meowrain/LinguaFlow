@@ -76,6 +76,7 @@ type dailyTaskReviewWord struct {
 	UKPhonetic     string `json:"uk_phonetic"`
 	USPhonetic     string `json:"us_phonetic"`
 	Translation    string `json:"translation"`
+	Examples       string `json:"examples"`
 	Status         string `json:"status"`
 	ReviewCount    int    `json:"review_count"`
 	ForgottenCount int    `json:"forgotten_count"`
@@ -708,6 +709,7 @@ func generateDailyTasks(db *gorm.DB, userID uint, ub models.UserWordBook) (*dail
 			UKPhonetic:     entry.UKPhonetic,
 			USPhonetic:     entry.USPhonetic,
 			Translation:    entry.Translation,
+			Examples:       entry.Examples,
 			Status:         p.Status,
 			ReviewCount:    p.ReviewCount,
 			ForgottenCount: p.ForgottenCount,

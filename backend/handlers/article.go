@@ -100,7 +100,7 @@ func GetArticles(c *gin.Context) {
 
 // GetArticleBySlug 根据 slug 获取文章详情
 func GetArticleBySlug(c *gin.Context) {
-	slug := c.Param("slug")
+	slug := c.Param("id")
 
 	var article models.Article
 	if err := database.DB.Preload("Category").
@@ -2023,7 +2023,7 @@ func SaveSentence(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid user ID"})
 		return
 	}
-	slug := c.Param("slug")
+	slug := c.Param("id")
 
 	var article models.Article
 	if err := database.DB.Where("slug = ? AND status = ?", slug, "published").First(&article).Error; err != nil {
@@ -2072,7 +2072,7 @@ func SaveSentence(c *gin.Context) {
 // GetArticleSentences 获取当前文章的用户收藏句子
 func GetArticleSentences(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-	slug := c.Param("slug")
+	slug := c.Param("id")
 
 	var article models.Article
 	if err := database.DB.Where("slug = ? AND status = ?", slug, "published").First(&article).Error; err != nil {

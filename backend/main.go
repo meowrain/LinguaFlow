@@ -106,7 +106,7 @@ func main() {
 		{
 			articles.GET("", middleware.OptionalAuth(), handlers.GetArticles)
 			articles.GET("/featured", handlers.GetFeaturedArticles)
-			articles.GET("/:slug", middleware.OptionalAuth(), handlers.GetArticleBySlug)
+			articles.GET("/:id", middleware.OptionalAuth(), handlers.GetArticleBySlug)
 		}
 
 		// 分类
@@ -194,8 +194,8 @@ func main() {
 			protected.POST("/sentences/analyze", middleware.PremiumRequired(database.DB), handlers.AnalyzeSentence)
 			protected.POST("/tts", handlers.GenerateSpeech)
 
-			protected.POST("/articles/:slug/sentences", handlers.SaveSentence)
-			protected.GET("/articles/:slug/sentences", handlers.GetArticleSentences)
+			protected.POST("/articles/:id/sentences", handlers.SaveSentence)
+			protected.GET("/articles/:id/sentences", handlers.GetArticleSentences)
 			protected.DELETE("/sentences/:id", handlers.DeleteSentence)
 			protected.GET("/sentences", handlers.GetAllUserSentences)
 
